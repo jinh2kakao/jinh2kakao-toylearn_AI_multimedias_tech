@@ -1,0 +1,117 @@
+{
+  "name": "01_aciton_node_editField",
+  "nodes": [
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.manualTrigger",
+      "typeVersion": 1,
+      "position": [
+        0,
+        0
+      ],
+      "id": "b54453bc-9c98-4e42-8537-40aa6a840679",
+      "name": "When clicking ‘Execute workflow’",
+      "alwaysOutputData": false,
+      "retryOnFail": false
+    },
+    {
+      "parameters": {
+        "url": "https://zenquotes.io/api/random",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        208,
+        0
+      ],
+      "id": "8d373266-4be4-4139-a0d0-ed5c48b7d248",
+      "name": "HTTP Request"
+    },
+    {
+      "parameters": {
+        "content": "## 노드 추가\nEdit Fileds 노드로 필드명 수정하여 output 가능",
+        "width": 352
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        416,
+        176
+      ],
+      "id": "4eb1d665-009c-4c01-8fdd-f439c560a74b",
+      "name": "Sticky Note"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "3529d3d1-9a32-4a0c-b466-be99516784be",
+              "name": "quote",
+              "value": "={{ $json.q }}",
+              "type": "string"
+            },
+            {
+              "id": "206c80d4-9722-45e6-a37b-a7aa067a6e30",
+              "name": "answer",
+              "value": "={{ $json.a }}",
+              "type": "string"
+            },
+            {
+              "id": "57f18ddd-245a-481f-9885-75733b3a1cc7",
+              "name": "help",
+              "value": "={{ $json.h }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        416,
+        0
+      ],
+      "id": "30e80d29-3a18-491d-a436-673f538e6e52",
+      "name": "Edit Fields"
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "When clicking ‘Execute workflow’": {
+      "main": [
+        [
+          {
+            "node": "HTTP Request",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "HTTP Request": {
+      "main": [
+        [
+          {
+            "node": "Edit Fields",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "590c3419-baa2-434c-8db0-544ec43af644",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "07fa8df5807eeb509640aac98cd116c080a81f798af86561ee9fca5b74b98f54"
+  },
+  "id": "AtnnAORDDqHsxOtd",
+  "tags": []
+}
