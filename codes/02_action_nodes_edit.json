@@ -1,0 +1,110 @@
+{
+  "name": "02_action_nodes_edit",
+  "nodes": [
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.manualTrigger",
+      "typeVersion": 1,
+      "position": [
+        -208,
+        32
+      ],
+      "id": "7802eb1d-ac36-4c72-af99-ea00408eaccc",
+      "name": "When clicking ‘Execute workflow’",
+      "alwaysOutputData": false,
+      "retryOnFail": false
+    },
+    {
+      "parameters": {
+        "url": "https://jsonplaceholder.typicode.com/todos/2",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        0,
+        32
+      ],
+      "id": "7e07b61f-a4f6-4523-b47d-df437ad3b983",
+      "name": "HTTP Request"
+    },
+    {
+      "parameters": {
+        "content": "## 노드 추가\nEdit Fileds 노드로 필드명 수정하여 output 가능",
+        "width": 352
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        208,
+        208
+      ],
+      "id": "65edfc32-6e49-4a44-a509-ed8b9aa5d7ec",
+      "name": "Sticky Note"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "6bfbd329-01ea-4039-95fc-775206194337",
+              "name": "유저 아이디",
+              "value": "={{ $json.userId }}",
+              "type": "number"
+            },
+            {
+              "id": "d9b47a5d-cb3c-4539-aa94-68b9847512d0",
+              "name": "타이틀",
+              "value": "={{ $json.title }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        208,
+        32
+      ],
+      "id": "4668c1fa-fbd5-4537-a3e7-240becd9510f",
+      "name": "Edit Fields"
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "When clicking ‘Execute workflow’": {
+      "main": [
+        [
+          {
+            "node": "HTTP Request",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "HTTP Request": {
+      "main": [
+        [
+          {
+            "node": "Edit Fields",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "32a94ad0-b721-4dd2-a579-f5000697b90b",
+  "meta": {
+    "instanceId": "07fa8df5807eeb509640aac98cd116c080a81f798af86561ee9fca5b74b98f54"
+  },
+  "id": "gBC3K4dMqAhZFOma",
+  "tags": []
+}
