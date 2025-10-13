@@ -2,7 +2,7 @@
 
 ### [21_WebScrapings](https://github.com/yojulab/learn_gatheringdatas/wiki/21_WebScrapings)
 
-### [21_APIs] (https://github.com/yojulab/learn_gatheringdatas/wiki/21_APIs)
+### [21_APIs](https://github.com/yojulab/learn_gatheringdatas/wiki/21_APIs)
 
 ### [n8n 기본 개요](https://github.com/yojulab/learn_n8ns/wiki)
 
