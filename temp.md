@@ -1,0 +1,12 @@
+https://search.daum.net/search?
+w=news
+&
+q=%EC%B9%B4%EC%B9%B4%EC%98%A4%EB%B1%85%ED%81%AC
+&
+enc=utf8
+&
+cluster=y
+&
+cluster_page=1
+&
+DA=DNS
