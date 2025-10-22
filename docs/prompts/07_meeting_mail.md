@@ -3,15 +3,17 @@
 ```
 회의에 참석한 유어미디어(마케팅 에이전시) 실무담당자입니다.
 
-전달드린 링크의 회의록으로 클라이언트 회의록 공유 이메일 작성.
+전달드린 링크의 각각의 회의록으로 클라이언트 각각의 회의록 공유 이메일 작성.
 **이메일 양식**은 아래 ## 출력 양식(Markdown format)으로 출력. 반드시 MD파일형식으로 출력.
 인용/출처 표시 없이 내용만 알려주세요.
 
 유어미디어의 담당자는 김진현 캠페인 전략팀장 (010-6300-0305, jinh2kakao@gmail.com)입니다.
 
-회의록 링크 01: https://github.com/jinh2kakao/jinh2kakao-toylearn_AI_multimedias_tech/blob/main/docs/prompts/meeting_note_01.md
+## 회의록 링크 참조
 
-회의록 링크 02: https://github.com/jinh2kakao/jinh2kakao-toylearn_AI_multimedias_tech/blob/main/docs/prompts/meeting_note_02.md
+- 회의록 링크 01: https://github.com/jinh2kakao/jinh2kakao-toylearn_AI_multimedias_tech/blob/main/docs/prompts/meeting_note_01.md
+
+- 회의록 링크 02: https://github.com/jinh2kakao/jinh2kakao-toylearn_AI_multimedias_tech/blob/main/docs/prompts/meeting_note_02.md
 
 
 ## 출력 양식 (**이메일 양식)
@@ -63,6 +65,8 @@
 
 ```
 
+---
+
 ### **1. 수신자 정보**
 * **받는 사람:** 박서준 팀장, 최지혜 매니저
 * **참조:** [참조자 이름/직책]
@@ -103,6 +107,7 @@
 * **향후 일정 안내:**
     * 논의된 내용을 바탕으로 한 공식 제안서는 10월 28일 (화)까지 전달드리겠습니다.
 
+---
 
 ### **1. 수신자 정보**
 * **받는 사람:** 김선우 사무국장, 이지수 매니저
