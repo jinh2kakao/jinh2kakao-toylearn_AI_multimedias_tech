@@ -15,6 +15,8 @@
 
 - 회의록 링크 02: https://github.com/jinh2kakao/jinh2kakao-toylearn_AI_multimedias_tech/blob/main/docs/prompts/meeting_note_02.md
 
+- 가격정책 참조: https://docs.google.com/document/d/1KLU4oAAprirq1TxqV0p-rOtNxQEIuWCn5Mcd8sbXr8Y/edit?usp=sharing
+
 
 ## 출력 양식 (**이메일 양식)
 
