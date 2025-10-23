@@ -3,18 +3,18 @@
 ```
 회의에 참석한 유어미디어(마케팅 에이전시) 실무담당자입니다.
 
-전달드린 링크의 회의록과 이메일로 클라이언트에게 프로젝트 제안서 작성 
+전달드린 링크의 ##회의록과 ##이메일로 클라이언트에게 프로젝트 제안서 작성 
 **프로젝트 제안서**는 아래 ## 출력양식으로 출력.
 인용/출처 표시 없이 내용만 알려주세요.
 
 유어미디어의 담당자는 김진현 캠페인 전략팀장 (010-6300-0305, jinh2kakao@gmail.com)입니다.
 
-## 회의록 링크 참조
-
+## 회의록/이메일 링크 참조
 - 회의록 링크: https://docs.google.com/document/d/1e0OkwJt9kxA_UkoWPWubhyLfmoQy0nGUneSnlOsIejk/edit?usp=sharing
 
 - 이메일 링크: https://docs.google.com/document/d/10mrylzsQDZcxFGXfTugg-fEtCVzPqhhMuRTuQF4UJUc/edit?usp=sharing
 
+## 가격 정책 참조
 - 가격정책 참조: https://docs.google.com/document/d/1KLU4oAAprirq1TxqV0p-rOtNxQEIuWCn5Mcd8sbXr8Y/edit?usp=sharing
 
 
@@ -293,12 +293,12 @@
 
 유어미디어의 담당자는 김진현 캠페인 전략팀장 (010-6300-0305, jinh2kakao@gmail.com)입니다.
 
-## 회의록 링크 참조
-
+## 회의록/이메일 링크 참조
 - 회의록 링크: https://docs.google.com/document/d/1H6UQO4gzWSWzwKs6VZbp4syuJxT8LXiLY8JAmMosPCo/edit?usp=sharing
 
 - 이메일 링크: https://docs.google.com/document/d/1FbFlWZrUE-_x5NHsep9GXdhRFNFfPUC2hZOscgttGaM/edit?usp=sharing
 
+## 가격정책 참조
 - 가격정책 참조: https://docs.google.com/document/d/1KLU4oAAprirq1TxqV0p-rOtNxQEIuWCn5Mcd8sbXr8Y/edit?usp=sharing
 
 
@@ -414,3 +414,4 @@
     * (유사 프로젝트 성공 사례를 1~2개 선별하여 성과 위주로 제시합니다.)
 
 ```
+
