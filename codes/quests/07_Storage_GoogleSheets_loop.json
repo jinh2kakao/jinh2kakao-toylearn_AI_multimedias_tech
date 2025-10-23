@@ -12,8 +12,8 @@
       "type": "n8n-nodes-base.scheduleTrigger",
       "typeVersion": 1.2,
       "position": [
-        0,
-        0
+        -32,
+        -64
       ],
       "id": "18d34bb7-cab5-4869-b25a-756d70fcc3ec",
       "name": "Schedule Trigger"
@@ -37,8 +37,8 @@
       "type": "n8n-nodes-base.googleSheets",
       "typeVersion": 4.7,
       "position": [
-        208,
-        0
+        176,
+        -64
       ],
       "id": "c202ecdc-96b6-4023-a4a7-04808307ab50",
       "name": "Get row(s) in sheet",
@@ -57,7 +57,7 @@
       "typeVersion": 3,
       "position": [
         400,
-        288
+        368
       ],
       "id": "8368a52c-222c-41cf-884d-d06cd8d3f53b",
       "name": "Loop Over Items"
@@ -80,7 +80,7 @@
       "typeVersion": 4.2,
       "position": [
         656,
-        288
+        368
       ],
       "id": "b117e087-3dde-4d58-a368-ae4bbf7bb553",
       "name": "HTTP Request"
@@ -211,7 +211,7 @@
       "typeVersion": 4.7,
       "position": [
         1072,
-        288
+        368
       ],
       "id": "036c97f3-6632-45e1-a464-18caa89ac993",
       "name": "Append or update row in sheet",
@@ -236,8 +236,8 @@
       "type": "n8n-nodes-base.aggregate",
       "typeVersion": 1,
       "position": [
-        400,
-        0
+        368,
+        -64
       ],
       "id": "04051a6b-2e5d-4771-bfd8-adc780346da7",
       "name": "Aggregate"
@@ -252,7 +252,7 @@
       "typeVersion": 1,
       "position": [
         192,
-        288
+        368
       ],
       "id": "660efeba-19dc-47e0-a86c-e91cf9d298d7",
       "name": "Split Out"
@@ -267,7 +267,7 @@
       "typeVersion": 1.2,
       "position": [
         2256,
-        288
+        368
       ],
       "id": "4f1fc41d-4114-4d39-8509-78483e2578a8",
       "name": "Send a text message",
@@ -307,7 +307,7 @@
       "typeVersion": 4.7,
       "position": [
         192,
-        656
+        784
       ],
       "id": "8346c18a-4081-473f-bfeb-100fb4c15b63",
       "name": "Get row(s) in sheet2",
@@ -320,29 +320,6 @@
     },
     {
       "parameters": {
-        "assignments": {
-          "assignments": [
-            {
-              "id": "c8553118-e5f4-442b-934c-c999c0a250b8",
-              "name": "newsSummary",
-              "value": "={{ $('geminiNewsEditField').item.json.title }}, {{ $('geminiNewsEditField').item.json.keyPoints }}, {{ $('geminiNewsEditField').item.json.oneLineReview }}",
-              "type": "string"
-            }
-          ]
-        },
-        "options": {}
-      },
-      "type": "n8n-nodes-base.set",
-      "typeVersion": 3.4,
-      "position": [
-        448,
-        656
-      ],
-      "id": "639002b8-13ef-478b-846f-cc4507868ff2",
-      "name": "Edit Fields3"
-    },
-    {
-      "parameters": {
         "sendTo": "={{ $json['google Email'].join(',') }}",
         "subject": "테스트] news summary",
         "message": "={{ $('newsAggregate').item.json.text.join('\\n\\n') }}",
@@ -352,7 +329,7 @@
       "typeVersion": 2.1,
       "position": [
         1824,
-        656
+        784
       ],
       "id": "607ba28b-6e7f-4926-b046-2a8888cab88a",
       "name": "Send a message",
@@ -488,7 +465,7 @@
       "typeVersion": 4.7,
       "position": [
         2496,
-        288
+        368
       ],
       "id": "1a37404c-6147-49d9-8322-282ebd6ce3d0",
       "name": "telegramSendYn",
@@ -535,7 +512,7 @@
       "typeVersion": 3.4,
       "position": [
         864,
-        288
+        368
       ],
       "id": "470eab3d-4f23-42b3-9f2d-63c5a5b8133e",
       "name": "htmlDataEditField"
@@ -558,7 +535,7 @@
       "typeVersion": 3.4,
       "position": [
         1632,
-        288
+        368
       ],
       "id": "3ccdb9d0-02e9-458e-a579-532326438a3e",
       "name": "geminiNewsObject"
@@ -623,7 +600,7 @@
       "typeVersion": 3.4,
       "position": [
         1840,
-        288
+        368
       ],
       "id": "8cb65dd9-9353-459d-b87d-97425c7ea047",
       "name": "geminiNewsEditField"
@@ -752,7 +729,7 @@
       "typeVersion": 4.7,
       "position": [
         2048,
-        288
+        368
       ],
       "id": "fdbaa1fb-bff4-46aa-a0ea-d43dac2ccecf",
       "name": "newsSummaryUpdate",
@@ -786,7 +763,7 @@
       "typeVersion": 1,
       "position": [
         672,
-        656
+        784
       ],
       "id": "a0bc34ff-7d13-4cef-8b49-211c1081894d",
       "name": "geminiEmailSummary",
@@ -820,7 +797,7 @@
       "typeVersion": 1,
       "position": [
         1280,
-        288
+        368
       ],
       "id": "21767ab2-482b-4ddb-9df3-6fe6986a2a08",
       "name": "geminiNewsSummary",
@@ -846,7 +823,7 @@
       "typeVersion": 1,
       "position": [
         1088,
-        656
+        784
       ],
       "id": "4743a324-d5fb-4d57-a8f5-f893fe795088",
       "name": "newsAggregate"
@@ -866,7 +843,7 @@
       "typeVersion": 1,
       "position": [
         1568,
-        656
+        784
       ],
       "id": "d046166f-0639-4e41-b352-a4990a1f234a",
       "name": "emailAddrAggregate"
@@ -893,10 +870,196 @@
       "typeVersion": 4.7,
       "position": [
         1344,
-        656
+        784
       ],
       "id": "cca2865f-0b7d-433e-9543-98aa1acc1881",
       "name": "getEmailAddr",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "VCPdMeFhC2V9diqs",
+          "name": "jinh2kakao Google Sheets account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "n8n-nodes-base.splitInBatches",
+      "typeVersion": 3,
+      "position": [
+        2544,
+        784
+      ],
+      "id": "99cdef03-0966-4858-80b4-f12f72a4a1c8",
+      "name": "Loop Over Items1"
+    },
+    {
+      "parameters": {
+        "content": "## 스케줄에 따라 대상 기사 URL 가져와서 데이터 배열로 합치기",
+        "height": 320,
+        "width": 752
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        -112,
+        -176
+      ],
+      "typeVersion": 1,
+      "id": "591bb299-0efe-405e-85bb-08206f03a3fa",
+      "name": "Sticky Note"
+    },
+    {
+      "parameters": {
+        "content": "## loop 가능하도록 split\n* 이전 단계의 aggregate와 split Out 단계가 꼭 필요한지는 확인 필요."
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        -128,
+        336
+      ],
+      "typeVersion": 1,
+      "id": "cfacee68-cda7-4b71-a7c4-1809fab54305",
+      "name": "Sticky Note1"
+    },
+    {
+      "parameters": {
+        "content": "## News data 추출하여 요청할 data 정리",
+        "height": 320,
+        "width": 592
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        608,
+        272
+      ],
+      "typeVersion": 1,
+      "id": "91fe21f3-6682-4242-a872-79586b42d600",
+      "name": "Sticky Note2"
+    },
+    {
+      "parameters": {
+        "content": "## News 요약하여 data update",
+        "height": 320,
+        "width": 912
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        1264,
+        272
+      ],
+      "typeVersion": 1,
+      "id": "5a8a1d87-6473-443f-89bb-db640bfb1c9d",
+      "name": "Sticky Note3"
+    },
+    {
+      "parameters": {
+        "content": "## telegram 발송",
+        "height": 320,
+        "width": 496
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        2208,
+        272
+      ],
+      "typeVersion": 1,
+      "id": "5372740c-cfb0-40bc-a842-03a551614ef4",
+      "name": "Sticky Note4"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "c8553118-e5f4-442b-934c-c999c0a250b8",
+              "name": "newsSummary",
+              "value": "={{ $('geminiNewsEditField').item.json.title }}, {{ $('geminiNewsEditField').item.json.keyPoints }}, {{ $('geminiNewsEditField').item.json.oneLineReview }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        448,
+        784
+      ],
+      "id": "639002b8-13ef-478b-846f-cc4507868ff2",
+      "name": "newsSummaryMerge"
+    },
+    {
+      "parameters": {
+        "content": "## 발송대상 기사 콘텐츠 이메일 발송용 데이터로 AI 요청",
+        "height": 272,
+        "width": 1088
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        160,
+        704
+      ],
+      "typeVersion": 1,
+      "id": "d71ccaf7-850a-411c-8158-1602dd9a399d",
+      "name": "Sticky Note5"
+    },
+    {
+      "parameters": {
+        "content": "## 이메일 발송\n",
+        "height": 272,
+        "width": 672
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        1296,
+        704
+      ],
+      "typeVersion": 1,
+      "id": "01ec1363-7a88-4feb-980b-4c3260fb1735",
+      "name": "Sticky Note6"
+    },
+    {
+      "parameters": {
+        "content": "## 이메일 발송여부 및 발송 대상자 리스트 저장",
+        "height": 272,
+        "width": 1104
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        2032,
+        704
+      ],
+      "typeVersion": 1,
+      "id": "7df0f093-4fb5-4f6d-a399-e3fe9f30dee6",
+      "name": "Sticky Note7"
+    },
+    {
+      "parameters": {
+        "documentId": {
+          "__rl": true,
+          "value": "https://docs.google.com/spreadsheets/d/1oqnwLXHfSwU9BsxEji-2AMBox96xPvJEkDGz8U3FhDk/edit?usp=sharing",
+          "mode": "url"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": 1171067483,
+          "mode": "list",
+          "cachedResultName": "study_input_output_loop",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1oqnwLXHfSwU9BsxEji-2AMBox96xPvJEkDGz8U3FhDk/edit#gid=1171067483"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.7,
+      "position": [
+        2080,
+        784
+      ],
+      "id": "1ba97cd2-8bb2-4530-b5b0-1314ec5f3568",
+      "name": "keyValueLoad",
+      "alwaysOutputData": false,
       "credentials": {
         "googleSheetsOAuth2Api": {
           "id": "VCPdMeFhC2V9diqs",
@@ -913,23 +1076,10 @@
       "typeVersion": 1,
       "position": [
         2272,
-        656
+        784
       ],
       "id": "db8c9bb4-d55f-4e11-ab99-59d9834271c6",
-      "name": "Split Out1"
-    },
-    {
-      "parameters": {
-        "options": {}
-      },
-      "type": "n8n-nodes-base.splitInBatches",
-      "typeVersion": 3,
-      "position": [
-        2464,
-        656
-      ],
-      "id": "99cdef03-0966-4858-80b4-f12f72a4a1c8",
-      "name": "Loop Over Items1"
+      "name": "keyValueSplit"
     },
     {
       "parameters": {
@@ -950,7 +1100,7 @@
           "mappingMode": "defineBelow",
           "value": {
             "emailSendYn": "Y",
-            "keyValue": "={{ $('Split Out1').item.json.keyValue }}",
+            "keyValue": "={{ $('keyValueSplit').item.json.keyValue }}",
             "emailList": "={{ $('emailAddrAggregate').item.json['google Email'].join(',') }}"
           },
           "matchingColumns": [
@@ -1055,42 +1205,10 @@
       "typeVersion": 4.7,
       "position": [
         2880,
-        656
+        784
       ],
       "id": "25cc45e2-26b6-45ec-a28a-f22ceb3744c5",
-      "name": "Append or update row in sheet1",
-      "credentials": {
-        "googleSheetsOAuth2Api": {
-          "id": "VCPdMeFhC2V9diqs",
-          "name": "jinh2kakao Google Sheets account"
-        }
-      }
-    },
-    {
-      "parameters": {
-        "documentId": {
-          "__rl": true,
-          "value": "https://docs.google.com/spreadsheets/d/1oqnwLXHfSwU9BsxEji-2AMBox96xPvJEkDGz8U3FhDk/edit?usp=sharing",
-          "mode": "url"
-        },
-        "sheetName": {
-          "__rl": true,
-          "value": 1171067483,
-          "mode": "list",
-          "cachedResultName": "study_input_output_loop",
-          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1oqnwLXHfSwU9BsxEji-2AMBox96xPvJEkDGz8U3FhDk/edit#gid=1171067483"
-        },
-        "options": {}
-      },
-      "type": "n8n-nodes-base.googleSheets",
-      "typeVersion": 4.7,
-      "position": [
-        2032,
-        656
-      ],
-      "id": "1ba97cd2-8bb2-4530-b5b0-1314ec5f3568",
-      "name": "Get row(s) in sheet1",
-      "alwaysOutputData": false,
+      "name": "emailUpdate",
       "credentials": {
         "googleSheetsOAuth2Api": {
           "id": "VCPdMeFhC2V9diqs",
@@ -1200,18 +1318,7 @@
       "main": [
         [
           {
-            "node": "Edit Fields3",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
-    "Edit Fields3": {
-      "main": [
-        [
-          {
-            "node": "geminiEmailSummary",
+            "node": "newsSummaryMerge",
             "type": "main",
             "index": 0
           }
@@ -1222,7 +1329,7 @@
       "main": [
         [
           {
-            "node": "Get row(s) in sheet1",
+            "node": "keyValueLoad",
             "type": "main",
             "index": 0
           }
@@ -1339,7 +1446,41 @@
         ]
       ]
     },
-    "Split Out1": {
+    "Loop Over Items1": {
+      "main": [
+        [],
+        [
+          {
+            "node": "emailUpdate",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "newsSummaryMerge": {
+      "main": [
+        [
+          {
+            "node": "geminiEmailSummary",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "keyValueLoad": {
+      "main": [
+        [
+          {
+            "node": "keyValueSplit",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "keyValueSplit": {
       "main": [
         [
           {
@@ -1350,30 +1491,7 @@
         ]
       ]
     },
-    "Loop Over Items1": {
-      "main": [
-        [],
-        [
-          {
-            "node": "Append or update row in sheet1",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
-    "Get row(s) in sheet1": {
-      "main": [
-        [
-          {
-            "node": "Split Out1",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
-    "Append or update row in sheet1": {
+    "emailUpdate": {
       "main": [
         [
           {
@@ -1389,7 +1507,7 @@
   "settings": {
     "executionOrder": "v1"
   },
-  "versionId": "e5241608-e9d9-44aa-b046-ff382ac7b729",
+  "versionId": "65fcd2c8-f787-41be-954d-c28e8571a179",
   "meta": {
     "templateCredsSetupCompleted": true,
     "instanceId": "07fa8df5807eeb509640aac98cd116c080a81f798af86561ee9fca5b74b98f54"
