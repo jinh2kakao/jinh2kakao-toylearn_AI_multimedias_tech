@@ -260,7 +260,7 @@
 
 ## 8. 수행 조직 및 회사 소개 (About Us)
 
-* **수행 조직 (Project Team)**
+* **수행 조직 (Project Team)** 
 
   * **PM (총괄):** 김진현 캠페인 전략팀장 (010-6300-0305, jinh2kakao@gmail.com)
 
