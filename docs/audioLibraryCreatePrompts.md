@@ -1,13 +1,13 @@
 ## 작업 순서
-### 1. 준비물 (다른 영상 제작의 컨텐츠 Storyboard 또는 Narration 대본 / Loop 사용할 Image)
-### 2. [Gemini] Music Style & Lyric 제작
-### 3. [Gemini] 추가 곡 생성 (4~5회 반복)
-### 4. [Translate Google] 가사 검증
-### 5. [Suno] Music Style & Lyric Output으로 곡 생성
-### 6. [Pinterest or Midjourney] Image Reference Search
-### 7. [Whisk or Midjourney] 9:16 Loop 용 Image 생성
-### 8. [Gemini] Image 첨부하여 Loop 용 Movie Prompts 생성
-### 9. [Flow or Midjourney] Loop 영상 생성
+#### 1. 준비물 (다른 영상 제작의 컨텐츠 Storyboard 또는 Narration 대본 / Loop 사용할 Image)
+#### 2. [Gemini] Music Style & Lyric 제작
+#### 3. [Gemini] 추가 곡 생성 (4~5회 반복)
+#### 4. [Translate Google] 가사 검증
+#### 5. [Suno] Music Style & Lyric Output으로 곡 생성
+#### 6. [Pinterest or Midjourney] Image Reference Search
+#### 7. [Whisk or Midjourney] 9:16 Loop 용 Image 생성
+#### 8. [Gemini] Image 첨부하여 Loop 용 Movie Prompts 생성
+#### 9. [Flow or Midjourney] Loop 영상 생성
 
 
 ## [2.Music Style & Lyric 제작] Gems 설정
