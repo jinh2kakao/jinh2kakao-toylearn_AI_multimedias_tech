@@ -8,6 +8,8 @@
 7. [Whisk or Midjourney] 9:16 Loop 용 Image 생성
 8. [Gemini] Image 첨부하여 Loop 용 Movie Prompts 생성
 9. [Flow or Midjourney] Loop 영상 생성
+10. [Adobe Premier or Capcut] Image & Audio & Video Merge 하여 편집
+11. [Gemini] Youtube 등록 상세 정보 생성
 
 
 ## [2.Music Style & Lyric 제작] Gems 설정
@@ -98,7 +100,7 @@ Gemini에서 Image Prompt 분석 결과 사용하여 편집
 - 고양이는 잠을 자면서 꿈을 꾸는듯 미세한 움직임만 보인다.
 ```
 
-## [8.Loop 영상 생성] Prompt 예시
+## [9.Loop 영상 생성] Prompt 예시
 - Image to Video 로 생성
 - Start Frame과 End Frame에 동일한 이미지 삽입
 ```
@@ -109,4 +111,24 @@ A young woman, MIA (late 20s), is comfortably reclined in an armchair. She wears
 Gentle, mellow jazz music plays, faintly audible to the viewer. Mia subtly sways or bobs her head, perhaps a slight shoulder roll, keeping a soft rhythm to the music. A faint, peaceful smile plays on her lips.
 
 Near her, nestled on a book on her lap/side, is a tabby CAT, LUNA. Luna is deeply asleep, but shows subtle movements, as if dreaming. Her ears might twitch slightly, or her whiskers might quiver, indicating a dream-state. The warm orange light catches her fur, making it appear exceptionally soft and inviting.
+```
+
+## [10.Youtube 등록 상세 정보 생성] Prompt 예시
+```
+유튜브 동영상 제작 PD 및 마케팅 전문가로서 유튜브 동영상 등록 상세정보 작성.
+사용자 의 최대 유입을 고려하여 작성.
+
+등록 동영상은 [첨부된 음악]들로 구성된 유튜브 음악 플레이리스트 동영상입니다.
+곡의 순서는 다음과 같습니다.
+
+00:00 The Warmest Circuit (가장 따뜻한 회로)
+05:40 Amor Mecânico (기계의 사랑)
+11:56 An Unprogrammed Heart (프로그램에 없던 마음)
+18:48 The Verdant Lullaby (초록빛 자장가)
+24:34 Blue Circuitry (푸른 회로)
+32:34 The Green Algorithm (초록빛 알고리즘)
+37:39 Samba do Coração (심장의 삼바)
+42:41 The Warmth in the Wires (그 전선 속의 온기)
+48:09 Strings of Life (생명의 현)
+55:20 A Ghost in the Bossa (보사노바 속의 유령) 
 ```
