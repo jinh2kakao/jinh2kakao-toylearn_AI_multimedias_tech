@@ -1,0 +1,491 @@
+{
+  "name": "09_Storage_GoogleDrives_meeting_note",
+  "nodes": [
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "fd8aa648-3075-44c5-85fe-e616703d242d",
+              "leftValue": "={{ $json.meetingNoteUrl }}",
+              "rightValue": "",
+              "operator": {
+                "type": "string",
+                "operation": "notEmpty",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        -864,
+        288
+      ],
+      "id": "0e2d4156-9b15-449b-a08a-a4f8b26c1ef9",
+      "name": "If"
+    },
+    {
+      "parameters": {
+        "operation": "copy",
+        "fileId": {
+          "__rl": true,
+          "value": "1zgpbWKLaNF_MS4BQxFAnRmDLVspQ2AKR61_GMtKHRmY",
+          "mode": "list",
+          "cachedResultName": "meetingAutoSample",
+          "cachedResultUrl": "https://docs.google.com/document/d/1zgpbWKLaNF_MS4BQxFAnRmDLVspQ2AKR61_GMtKHRmY/edit?usp=drivesdk"
+        },
+        "name": "=회의록 자동요약 ( {{ $json.submittedAt }} )",
+        "sameFolder": false,
+        "driveId": {
+          "__rl": true,
+          "mode": "list",
+          "value": "My Drive"
+        },
+        "folderId": {
+          "__rl": true,
+          "value": "1zMWVilGdGue4ScwPa6v8-_7xpXV8nuD2",
+          "mode": "list",
+          "cachedResultName": "prompts",
+          "cachedResultUrl": "https://drive.google.com/drive/folders/1zMWVilGdGue4ScwPa6v8-_7xpXV8nuD2"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleDrive",
+      "typeVersion": 3,
+      "position": [
+        -656,
+        192
+      ],
+      "id": "b432dea6-95ab-44c5-9c59-d0dafd5b56e1",
+      "name": "Copy file",
+      "credentials": {
+        "googleDriveOAuth2Api": {
+          "id": "3nhYXSjneMsnD9gx",
+          "name": "jinh2kakao Google Drive account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "update",
+        "documentURL": "={{ $('Copy file').item.json.id }}",
+        "actionsUi": {
+          "actionFields": [
+            {
+              "action": "replaceAll",
+              "text": "=[회의록]",
+              "replaceText": "={{ $json.content.parts[0].text }}"
+            },
+            {
+              "action": "replaceAll",
+              "text": "[회의일시]",
+              "replaceText": "={{ $('meetingUrlInput').item.json.meetingDate }}"
+            },
+            {
+              "action": "replaceAll",
+              "text": "[참석자정보]",
+              "replaceText": "={{ $('meetingUrlInput').item.json.participants }}"
+            }
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.googleDocs",
+      "typeVersion": 2,
+      "position": [
+        -96,
+        176
+      ],
+      "id": "1eddffa8-72e4-4a98-9e98-7f614981f29e",
+      "name": "Update a document",
+      "credentials": {
+        "googleDocsOAuth2Api": {
+          "id": "eyXXvazddgS3aSsh",
+          "name": "jinh2kakao Google Docs account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "name": "={{ $('Copy file').item.json.name }}",
+        "driveId": {
+          "__rl": true,
+          "mode": "list",
+          "value": "My Drive"
+        },
+        "folderId": {
+          "__rl": true,
+          "value": "1zMWVilGdGue4ScwPa6v8-_7xpXV8nuD2",
+          "mode": "list",
+          "cachedResultName": "prompts",
+          "cachedResultUrl": "https://drive.google.com/drive/folders/1zMWVilGdGue4ScwPa6v8-_7xpXV8nuD2"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleDrive",
+      "typeVersion": 3,
+      "position": [
+        320,
+        176
+      ],
+      "id": "b7be50e7-a841-45d9-8c53-94655fa962e8",
+      "name": "Upload file",
+      "credentials": {
+        "googleDriveOAuth2Api": {
+          "id": "3nhYXSjneMsnD9gx",
+          "name": "jinh2kakao Google Drive account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "download",
+        "fileId": {
+          "__rl": true,
+          "value": "={{ $json.documentId }}",
+          "mode": "id"
+        },
+        "options": {
+          "googleFileConversion": {
+            "conversion": {
+              "docsToFormat": "application/pdf",
+              "drawingsToFormat": "application/pdf",
+              "sheetsToFormat": "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+            }
+          }
+        }
+      },
+      "type": "n8n-nodes-base.googleDrive",
+      "typeVersion": 3,
+      "position": [
+        112,
+        176
+      ],
+      "id": "adc48b05-6c1f-4d1f-9b32-ded511865c6e",
+      "name": "Download file",
+      "credentials": {
+        "googleDriveOAuth2Api": {
+          "id": "3nhYXSjneMsnD9gx",
+          "name": "jinh2kakao Google Drive account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "appendOrUpdate",
+        "documentId": {
+          "__rl": true,
+          "value": "https://docs.google.com/spreadsheets/d/16KD6lk1KLzm-gxrYgFv7bgfXUlntNLddS9TAok-ZogM/edit?usp=sharing",
+          "mode": "url"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "gid=0",
+          "mode": "list",
+          "cachedResultName": "Sheet1",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/16KD6lk1KLzm-gxrYgFv7bgfXUlntNLddS9TAok-ZogM/edit#gid=0"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "keyValue": "={{ $json.name }}",
+            "주관자": "={{ $('meetingUrlInput').item.json.hostEmail }}",
+            "참가자정보": "={{ $('meetingUrlInput').item.json.participants }}",
+            "회의록": "={{ $json.webViewLink }}"
+          },
+          "matchingColumns": [
+            "keyValue"
+          ],
+          "schema": [
+            {
+              "id": "keyValue",
+              "displayName": "keyValue",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "주관자",
+              "displayName": "주관자",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "참가자정보",
+              "displayName": "참가자정보",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "회의록",
+              "displayName": "회의록",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.7,
+      "position": [
+        528,
+        176
+      ],
+      "id": "84e4a291-daac-45df-8133-46eb23421cef",
+      "name": "Append or update row in sheet",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "pEaD2eovnJOnPETT",
+          "name": "jinh2kakao Google Sheets account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "sendTo": "={{ $('meetingUrlInput').item.json.hostEmail }}",
+        "subject": "=회의록 요약 서비스 알림",
+        "message": "={{ $('meetingUrlInput').item.json.hostEmail }} 님 meetingNoteUrl이 누락되었습니다.",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 2.1,
+      "position": [
+        -656,
+        384
+      ],
+      "id": "d39be28e-3f10-4667-a8dd-e00903576f4d",
+      "name": "Send a message",
+      "webhookId": "0fde7ff1-7b90-4aeb-8d03-5e2da99efe93",
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "zHmaKiCFQaATs5WS",
+          "name": "jinh2kakao Gmail account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "modelId": {
+          "__rl": true,
+          "value": "models/gemini-2.5-flash",
+          "mode": "list",
+          "cachedResultName": "models/gemini-2.5-flash"
+        },
+        "messages": {
+          "values": [
+            {
+              "content": "=회의에 참석한 유어미디어(마케팅 에이전시) 실무담당자입니다.\n\n전달드린 링크의 회의 녹취록으로 클라이언트 미팅 회의록 작성.\n**회의록 양식**은 아래 docs 문서에 업데이트 형식으로 출력. \n인용/출처 표시 없이 내용만 알려주세요.\n\n유어미디어의 담당자는 김진현 캠페인 전략팀장으로 변경하여 작성. (김민준 캠페인 전략팀장, 이수영 크리에이티브 디렉터는 삭제)\n\n녹취회의록: {{ $('meetingUrlInput').item.json.meetingNoteUrl }}\n\n\n[**회의록 양식**|docs format]\n# [프로젝트 명] 클라이언트 미팅 회의록\n\n\n**회의 일시**: 202X년 XX월 XX일 (요일) OO:OO ~ OO:OO (총 X시간)\n**회의 장소**: (예: OO빌딩 대회의실 / 온라인 Zoom) \n**작성자**: [이름/직책]\n**배포일**: 202X년 XX월 XX일\n\n---\n\n## 1. 참석자 정보\n\n[참석자 정보]\n\n---\n\n## 2. 회의 안건 (Agenda)\n\n* (예시)\n    1.  지난 Action Item 리뷰 (5분)\n    2.  [캠페인 명] 중간 성과 보고 (20분)\n    3.  차주 실행안 (광고 소재 및 매체 운영) 논의 (25분)\n    4.  이슈 및 기타 사항 논의 (10분)\n\n---\n\n## 3. 주요 논의 내용 (Discussion)\n\n* **[안건 1. 지난 Action Item 리뷰]**\n    * (내용) 지난 회의(X/XX)에서 결정된 'A 소재 시안 전달' 건 완료됨.\n    * (내용) 'B 매체 효율 분석 리포트' 금일 오전 공유 완료. 클라이언트 측 확인 예정.\n\n* **[안건 2. [캠페인 명] 중간 성과 보고 (X/XX ~ X/XX)]**\n    * (에이전시) 캠페인 핵심 성과(KPI)인 'OO' 수치 X% 달성. 주요 타겟 도달률 목표치 초과 달성.\n    * (에이전시) A 매체 대비 B 매체 효율(ROAS)이 X% 높게 나타남. (상세 리포트 별첨)\n    * (클라이언트) C 타겟 그룹에서의 전환율이 예상보다 낮은 원인 분석 요청.\n    * (클라이언트) 성과가 좋은 B 매체 소재 추가 아이디어 제안 요청.\n\n* **[안건 3. 차주 실행안 논의]**\n    * (에이전시) B 매체 효율 극대화를 위한 신규 소재 시안 3종 제안. (시안 별첨)\n    * (클라이언트) 2번 시안을 메인으로 하되, 'OOO' 문구 수정을 요청.\n    * (논의) C 타겟 그룹 반응률 개선을 위해 'XXX' 메시지를 강조하는 프로모션 기획 논의.\n\n* **[안건 4. 이슈 및 기타 사항]**\n    * (클라이언트) 경쟁사 'YYY'에서 유사 프로모션 시작. 대응 방안 논의 필요.\n    * (에이전시) 주말 이슈 발생 시 비상 연락망 재확인.\n\n---\n\n## 4. 결정 사항 및 Action Item\n\n*회의에서 결정된 사항과 향후 조치 계획을 명확히 기재합니다.*\n\n| No. | Action Item (수행 업무) | 담당자 (소속) | 기한 (Due) | 비고 (상태) |\n| :--- | :--- | :--- | :--- | :--- |\n| 1 | C 타겟 그룹 전환율 저조 원인 분석 리포트 전달 | OOO 매니저 (에이전시) | X월 XX일 (금) | 진행 중 |\n| 2 | B 매체 추가 소재 아이디어 (3종) 기획안 전달 | OOO AE (에이전시) | X월 XX일 (수) | 신규 |\n| 3 | 2번 시안 문구 수정본 (V2) 전달 | OOO 디자이너 (에이전시) | X월 XX일 (화) | 신규 |\n| 4 | B 매체 추가 소재 최종 컨펌 | OOO 팀장 (클라이언트) | X월 XX일 (목) | 예정 |\n| 5 | 경쟁사 'YYY' 동향 분석 및 대응 전략 제안 | OOO PM (에이전시) | X월 XX일 (금) | 신규 |\n\n---\n\n## 5. 차기 회의 일정 (Next Meeting)\n\n* **일시:** 202X년 XX월 XX일 (요일) OO:OO\n* **주요 안건:** (예: X월 마케팅 성과 리뷰 및 N분기 전략 논의)\n\n---"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.googleGemini",
+      "typeVersion": 1,
+      "position": [
+        -448,
+        192
+      ],
+      "id": "e7707692-ac2e-462c-8c3b-2c0fd0c04902",
+      "name": "Message a model",
+      "credentials": {
+        "googlePalmApi": {
+          "id": "4MyCsxNCns2s6sQe",
+          "name": "jinh2kakao Google Gemini(PaLM) Api account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "formTitle": "회의록 요약 자동화",
+        "formDescription": "- 회의록 기록 정리\n- 입력 : 주관자 Email, 참여 인원, 회의 내용(누락 확인 필요)\n- '회의 주제' AI 사용\n- 출력 \n- PDF 파일\n- 회의록 기록 sheet file \n + 주관자, 참여 인원, 회의 주제, 날짜(입력 날짜), PDF 링크",
+        "formFields": {
+          "values": [
+            {
+              "fieldLabel": "hostEmail",
+              "placeholder": "주관자 이메일",
+              "requiredField": true
+            },
+            {
+              "fieldLabel": "participants",
+              "placeholder": "참가자 정보",
+              "requiredField": true
+            },
+            {
+              "fieldLabel": "meetingDate",
+              "placeholder": "회의일시",
+              "requiredField": true
+            },
+            {
+              "fieldLabel": "meetingNoteUrl",
+              "placeholder": "회의록 URL을 입력해주세요."
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.formTrigger",
+      "typeVersion": 2.3,
+      "position": [
+        -1072,
+        288
+      ],
+      "id": "e1dd77e6-14aa-44c3-8acc-388d7d863fa8",
+      "name": "meetingUrlInput",
+      "webhookId": "001e2424-4981-4b9d-a077-9ff50b3e584f"
+    }
+  ],
+  "pinData": {
+    "meetingUrlInput": [
+      {
+        "json": {
+          "hostEmail": "jinh2kakao@gmail.com",
+          "participants": "이지수 캠페인 매니저, 김선우 사무국장, 김진현 캠페인 전략팀장, 이수영 크리에이티브 디렉터",
+          "meetingDate": "2025-10-27",
+          "meetingNoteUrl": "https://docs.google.com/document/d/1sNeN3GRr044wWSfXkF7h12mQ9arGzgoEdD_eUM8YLOU/edit?usp=sharing",
+          "submittedAt": "2025-10-27T17:30:56.864+09:00",
+          "formMode": "test"
+        }
+      }
+    ],
+    "Message a model": [
+      {
+        "json": {
+          "content": {
+            "parts": [
+              {
+                "text": "# [스타일랩] 디지털 마케팅 캠페인 클라이언트 미팅 회의록\n\n**회의 일시**: 2024년 05월 15일 (수) 14:00 ~ 15:15 (총 1시간 15분)\n**회의 장소**: 온라인 Zoom\n**작성자**: 유어미디어 실무담당자\n**배포일**: 2024년 05월 15일\n\n---\n\n## 1. 참석자 정보\n\n*   **클라이언트 (스타일랩)**\n    *   박선영 마케팅팀장\n    *   최민서 마케팅 담당자\n*   **에이전시 (유어미디어)**\n    *   김진현 캠페인 전략팀장\n    *   유어미디어 실무담당자\n\n---\n\n## 2. 회의 안건 (Agenda)\n\n1.  지난 Action Item 리뷰 (5분)\n2.  '스타일랩' 디지털 마케팅 캠페인 중간 성과 보고 (5/1 ~ 5/15) (20분)\n3.  차주 광고 소재 및 매체 운영 전략 논의 (25분)\n4.  신규 캠페인 아이디어 논의 (15분)\n5.  이슈 및 기타 사항 논의 (10분)\n\n---\n\n## 3. 주요 논의 내용 (Discussion)\n\n*   **[안건 1. 지난 Action Item 리뷰]**\n    *   (에이전시) 지난 회의(5/8)에서 결정된 A/B 테스트 결과 분석 리포트 금일 오전 메일로 공유 완료. 클라이언트 측 확인 요청.\n\n*   **[안건 2. '스타일랩' 디지털 마케팅 캠페인 중간 성과 보고 (5/1 ~ 5/15)]**\n    *   (에이전시) 5월 1일부터 15일까지의 캠페인 성과 공유: 웹사이트 트래픽 핵심 KPI 목표 대비 120% 달성. 특히 인스타그램과 페이스북 광고를 통한 신규 방문자 크게 증가.\n    *   (에이전시) ROAS(광고 수익률) 평균 280% 기록. 패션 커뮤니티 매체 광고가 가장 높은 효율을 보임.\n    *   (클라이언트) 전반적인 성과는 만족하나, 20대 남성 타겟의 전환율이 예상보다 낮은 원인 분석 요청.\n    *   (클라이언트) 패션 커뮤니티 매체의 높은 성과를 고려하여 해당 매체에 추가적으로 적용할 소재나 전략 아이디어 제안 요청.\n\n*   **[안건 3. 차주 광고 소재 및 매체 운영 전략 논의]**\n    *   (에이전시) 20대 남성 타겟 전환율 개선을 위해 캐주얼룩 중심의 신규 광고 소재 3종 제안 (활동성 강조 및 체험단 후기 활용).\n    *   (클라이언트) 제안된 신규 소재 중 1번 시안을 메인으로 진행하되, '자유로운 스타일을 완성하다' 문구를 '나만의 개성을 표현하다'로 변경하여 테스트 요청.\n    *   (클라이언트) 패션 커뮤니티 매체에 봄 신상 아이템을 활용한 타임 세일 프로모션 제안 (한정 수량으로 즉각적인 구매 유도 목표).\n    *   (에이전시) 타임 세일 기간 동안 노출 빈도를 높이고 인플루언서 협찬 후기를 함께 활용하여 시너지 창출 제안.\n\n*   **[안건 4. 신규 캠페인 아이디어 논의]**\n    *   (에이전시) 하반기 시즌을 겨냥한 '지속 가능한 패션' 테마 캠페인 제안 (업사이클링 제품 라인업 강화, 친환경 메시지 전달을 통한 브랜드 이미지 제고).\n    *   (클라이언트) '지속 가능한 패션' 테마는 긍정적이나, MZ세대에게 더욱 어필할 수 있는 차별화된 참여형 콘텐츠 (예: 소비자 참여형 챌린지) 기획의 중요성 강조.\n    *   (클라이언트) 환경 관련 NGO와의 협업을 통해 신뢰도와 사회적 기여 이미지 구축 방안 제안.\n    *   (에이전시) 참여형 챌린지 및 NGO 협업 방안을 포함한 구체적인 기획안을 다음 미팅 시 제안 예정.\n\n*   **[안건 5. 이슈 및 기타 사항 논의]**\n    *   (클라이언트) 경쟁사 '트렌드웨어'에서 다음 주부터 대규모 할인 프로모션 시작 예정. 이에 대한 대응 전략 논의 필요.\n    *   (에이전시) 경쟁사 동향 면밀히 분석 후 '스타일랩'만의 차별화된 대응 방안을 빠르게 검토하여 공유 예정.\n    *   (클라이언트) 이번 주말 중요 프로모션 관련 비상 상황 발생 시 연락할 비상 연락망 재확인 요청.\n    *   (에이전시) 비상 연락망은 회의록과 함께 메일로 재공유 예정.\n\n---\n\n## 4. 결정 사항 및 Action Item\n\n| No. | Action Item (수행 업무) | 담당자 (소속) | 기한 (Due) | 비고 (상태) |\n| :--- | :--- | :--- | :--- | :--- |\n| 1 | 20대 남성 타겟 전환율 저조 원인 분석 리포트 전달 | 김진현 팀장 (유어미디어) | 2024년 5월 24일 (금) | 진행 중 |\n| 2 | 패션 커뮤니티 매체 추가 소재/전략 아이디어 (3종) 기획안 전달 | 김진현 팀장 (유어미디어) | 2024년 5월 22일 (수) | 신규 |\n| 3 | 신규 광고 소재 1번 시안 문구 수정본 (V2) 전달 | 유어미디어 실무담당자 (유어미디어) | 2024년 5월 21일 (화) | 신규 |\n| 4 | 신규 광고 소재 최종 컨펌 | 박선영 팀장 (스타일랩) | 2024년 5월 23일 (목) | 예정 |\n| 5 | 경쟁사 '트렌드웨어' 동향 분석 및 대응 전략 제안 | 김진현 팀장 (유어미디어) | 2024년 5월 24일 (금) | 신규 |\n| 6 | 신규 캠페인 '지속 가능한 패션' 구체적 기획안 제안 (참여형 챌린지/NGO 협업 포함) | 김진현 팀장 (유어미디어) | 2024년 5월 29일 (수) | 신규 |\n| 7 | 비상 연락망 재확인 및 공유 | 유어미디어 실무담당자 (유어미디어) | 2024년 5월 15일 (수) | 완료 예정 |\n\n---\n\n## 5. 차기 회의 일정 (Next Meeting)\n\n*   **일시:** 2024년 05월 29일 (수) 14:00\n*   **주요 안건:** 신규 캠페인 '지속 가능한 패션' 기획안 검토, 경쟁사 대응 전략 논의 및 차주 캠페인 성과 리뷰"
+              }
+            ],
+            "role": "model"
+          },
+          "finishReason": "STOP",
+          "index": 0
+        }
+      }
+    ]
+  },
+  "connections": {
+    "If": {
+      "main": [
+        [
+          {
+            "node": "Copy file",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Send a message",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Copy file": {
+      "main": [
+        [
+          {
+            "node": "Message a model",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Update a document": {
+      "main": [
+        [
+          {
+            "node": "Download file",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Upload file": {
+      "main": [
+        [
+          {
+            "node": "Append or update row in sheet",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Download file": {
+      "main": [
+        [
+          {
+            "node": "Upload file",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Message a model": {
+      "main": [
+        [
+          {
+            "node": "Update a document",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "meetingUrlInput": {
+      "main": [
+        [
+          {
+            "node": "If",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "5288fb79-50d2-4ac3-bde6-b7e13130d4af",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "cd771ab964ea331a17cbcd4c1eb0c63cb4a42a5615d415e137abf584f1e13189"
+  },
+  "id": "RTdWzQPyV3UpJxvg",
+  "tags": []
+}
