@@ -24,11 +24,7 @@
       "type": "n8n-nodes-base.googleDriveTrigger",
       "typeVersion": 1,
       "position": [
-<<<<<<< HEAD
         -64,
-=======
-        0,
->>>>>>> cf75cc3087a35b47d3bb40699750d4d4f0f64b4c
         0
       ],
       "id": "2ea7da9c-3b9e-4952-b2b7-ae9b950f9df3",
@@ -114,11 +110,7 @@
       "type": "@n8n/n8n-nodes-langchain.googleGemini",
       "typeVersion": 1,
       "position": [
-<<<<<<< HEAD
         1232,
-=======
-        624,
->>>>>>> cf75cc3087a35b47d3bb40699750d4d4f0f64b4c
         -96
       ],
       "id": "7c6b9855-9a5f-466e-87b3-57e3fe324579",
@@ -224,11 +216,7 @@
       "type": "n8n-nodes-base.googleSheets",
       "typeVersion": 4.7,
       "position": [
-<<<<<<< HEAD
         1856,
-=======
-        1216,
->>>>>>> cf75cc3087a35b47d3bb40699750d4d4f0f64b4c
         -96
       ],
       "id": "545dc65d-e15e-49e3-8318-08c00cc69df0",
@@ -264,11 +252,7 @@
       "type": "n8n-nodes-base.googleDrive",
       "typeVersion": 3,
       "position": [
-<<<<<<< HEAD
         1616,
-=======
-        976,
->>>>>>> cf75cc3087a35b47d3bb40699750d4d4f0f64b4c
         -96
       ],
       "id": "a9cbf501-325a-4faa-92a1-c3bc3163e7fd",
@@ -299,13 +283,8 @@
       "type": "n8n-nodes-base.googleSheets",
       "typeVersion": 4.7,
       "position": [
-<<<<<<< HEAD
         624,
         128
-=======
-        416,
-        96
->>>>>>> cf75cc3087a35b47d3bb40699750d4d4f0f64b4c
       ],
       "id": "48aef934-9b90-427e-82d5-2a72e9c6a709",
       "name": "Get row(s) in sheet",
@@ -336,13 +315,8 @@
       "type": "n8n-nodes-base.aggregate",
       "typeVersion": 1,
       "position": [
-<<<<<<< HEAD
         832,
         128
-=======
-        624,
-        96
->>>>>>> cf75cc3087a35b47d3bb40699750d4d4f0f64b4c
       ],
       "id": "0f4b92bc-8e13-468c-8bae-a042682baefd",
       "name": "Aggregate"
@@ -367,13 +341,8 @@
       "type": "@n8n/n8n-nodes-langchain.googleGemini",
       "typeVersion": 1,
       "position": [
-<<<<<<< HEAD
         1248,
         128
-=======
-        832,
-        96
->>>>>>> cf75cc3087a35b47d3bb40699750d4d4f0f64b4c
       ],
       "id": "0fde3fbe-5bb7-4ec7-a270-519a321db737",
       "name": "Message a model1",
@@ -408,13 +377,8 @@
       "type": "n8n-nodes-base.googleDrive",
       "typeVersion": 3,
       "position": [
-<<<<<<< HEAD
         1616,
         128
-=======
-        1184,
-        96
->>>>>>> cf75cc3087a35b47d3bb40699750d4d4f0f64b4c
       ],
       "id": "b78f0e74-1e7c-468a-b3e0-157d6db8873a",
       "name": "Move file1",
@@ -518,13 +482,8 @@
       "type": "n8n-nodes-base.googleSheets",
       "typeVersion": 4.7,
       "position": [
-<<<<<<< HEAD
         1824,
         128
-=======
-        1392,
-        96
->>>>>>> cf75cc3087a35b47d3bb40699750d4d4f0f64b4c
       ],
       "id": "be590c3d-fecc-4566-b1c1-6cfb51a83e14",
       "name": "Append or update row in sheet1",
@@ -534,7 +493,6 @@
           "name": "jinh2kakao Google Sheets account"
         }
       }
-<<<<<<< HEAD
     },
     {
       "parameters": {
@@ -781,26 +739,12 @@
           "name": "jinh2kakao Google Sheets account"
         }
       }
-=======
->>>>>>> cf75cc3087a35b47d3bb40699750d4d4f0f64b4c
     }
   ],
   "pinData": {
     "Google Drive Trigger": [
       {
         "json": {
-<<<<<<< HEAD
-=======
-          "exportLinks": {
-            "application/x-vnd.oasis.opendocument.spreadsheet": "https://docs.google.com/spreadsheets/export?id=1J4dddo-xs5zfxAbXljX6HGJp_yB_ycamjdz7ktBCc_8&exportFormat=ods",
-            "text/tab-separated-values": "https://docs.google.com/spreadsheets/export?id=1J4dddo-xs5zfxAbXljX6HGJp_yB_ycamjdz7ktBCc_8&exportFormat=tsv",
-            "application/pdf": "https://docs.google.com/spreadsheets/export?id=1J4dddo-xs5zfxAbXljX6HGJp_yB_ycamjdz7ktBCc_8&exportFormat=pdf",
-            "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet": "https://docs.google.com/spreadsheets/export?id=1J4dddo-xs5zfxAbXljX6HGJp_yB_ycamjdz7ktBCc_8&exportFormat=xlsx",
-            "text/csv": "https://docs.google.com/spreadsheets/export?id=1J4dddo-xs5zfxAbXljX6HGJp_yB_ycamjdz7ktBCc_8&exportFormat=csv",
-            "application/zip": "https://docs.google.com/spreadsheets/export?id=1J4dddo-xs5zfxAbXljX6HGJp_yB_ycamjdz7ktBCc_8&exportFormat=zip",
-            "application/vnd.oasis.opendocument.spreadsheet": "https://docs.google.com/spreadsheets/export?id=1J4dddo-xs5zfxAbXljX6HGJp_yB_ycamjdz7ktBCc_8&exportFormat=ods"
-          },
->>>>>>> cf75cc3087a35b47d3bb40699750d4d4f0f64b4c
           "parents": [
             "101XjojKbnUw6DJBlFcAXiSv5t47HxWmY"
           ],
@@ -899,7 +843,6 @@
             }
           },
           "kind": "drive#file",
-<<<<<<< HEAD
           "id": "1bSeJfkZYz0qQfGLAYM1UfE5FgRfxYpIt",
           "name": "Copy of Sample_지원서의 사본",
           "mimeType": "application/pdf",
@@ -918,32 +861,12 @@
           "createdTime": "2025-10-28T08:41:56.217Z",
           "modifiedTime": "2025-10-28T08:41:56.217Z",
           "modifiedByMeTime": "2025-10-28T08:41:56.217Z",
-=======
-          "id": "1J4dddo-xs5zfxAbXljX6HGJp_yB_ycamjdz7ktBCc_8",
-          "name": "Copy of Sample_고객 만족도",
-          "mimeType": "application/vnd.google-apps.spreadsheet",
-          "starred": false,
-          "trashed": false,
-          "explicitlyTrashed": false,
-          "version": "5",
-          "webViewLink": "https://docs.google.com/spreadsheets/d/1J4dddo-xs5zfxAbXljX6HGJp_yB_ycamjdz7ktBCc_8/edit?usp=drivesdk",
-          "iconLink": "https://drive-thirdparty.googleusercontent.com/16/type/application/vnd.google-apps.spreadsheet",
-          "hasThumbnail": true,
-          "thumbnailLink": "https://lh3.googleusercontent.com/drive-storage/AJQWtBPD6nAMaz5abLFo6MTt2atfbk_NVR57iY1HOkX-UJ_xwVH1EOjruSaaYxXAtVNMWCjeQJpvxUhDu24ABxa7yMfAl90N4hl6SEy7SiMPFAyzygfvjy9yY5bzpX8-kA=s220",
-          "thumbnailVersion": "1",
-          "viewedByMe": true,
-          "viewedByMeTime": "2025-10-28T07:41:37.888Z",
-          "createdTime": "2025-10-28T07:41:37.888Z",
-          "modifiedTime": "2025-10-28T07:41:37.888Z",
-          "modifiedByMeTime": "2025-10-28T07:41:37.888Z",
->>>>>>> cf75cc3087a35b47d3bb40699750d4d4f0f64b4c
           "modifiedByMe": true,
           "shared": true,
           "ownedByMe": true,
           "viewersCanCopyContent": true,
           "copyRequiresWriterPermission": false,
           "writersCanShare": true,
-<<<<<<< HEAD
           "originalFilename": "Copy of Sample_지원서의 사본",
           "fullFileExtension": "",
           "fileExtension": "",
@@ -953,10 +876,6 @@
           "size": "68526",
           "quotaBytesUsed": "68526",
           "headRevisionId": "0B_iu_e6mWlonWTVRdm9UT3dqS2JsajZoOXc2WGhYTE9TRjRBPQ",
-=======
-          "size": "4727",
-          "quotaBytesUsed": "4727",
->>>>>>> cf75cc3087a35b47d3bb40699750d4d4f0f64b4c
           "isAppAuthorized": false,
           "inheritedPermissionsDisabled": false
         }
@@ -986,11 +905,7 @@
         ],
         [
           {
-<<<<<<< HEAD
             "node": "If1",
-=======
-            "node": "Get row(s) in sheet",
->>>>>>> cf75cc3087a35b47d3bb40699750d4d4f0f64b4c
             "type": "main",
             "index": 0
           }
@@ -1073,7 +988,6 @@
           }
         ]
       ]
-<<<<<<< HEAD
     },
     "If1": {
       "main": [
@@ -1136,19 +1050,13 @@
           }
         ]
       ]
-=======
->>>>>>> cf75cc3087a35b47d3bb40699750d4d4f0f64b4c
     }
   },
   "active": false,
   "settings": {
     "executionOrder": "v1"
   },
-<<<<<<< HEAD
   "versionId": "10256146-0b05-4eb1-a6f1-be69a9a9ae38",
-=======
-  "versionId": "f6e5e1d3-3e85-414c-b824-4dc85927ce4e",
->>>>>>> cf75cc3087a35b47d3bb40699750d4d4f0f64b4c
   "meta": {
     "templateCredsSetupCompleted": true,
     "instanceId": "cd771ab964ea331a17cbcd4c1eb0c63cb4a42a5615d415e137abf584f1e13189"
