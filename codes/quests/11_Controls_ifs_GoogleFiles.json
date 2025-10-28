@@ -1,0 +1,759 @@
+{
+  "name": "11_Controls_ifs_GoogleFiles",
+  "nodes": [
+    {
+      "parameters": {
+        "pollTimes": {
+          "item": [
+            {
+              "mode": "everyMinute"
+            }
+          ]
+        },
+        "triggerOn": "specificFolder",
+        "folderToWatch": {
+          "__rl": true,
+          "value": "101XjojKbnUw6DJBlFcAXiSv5t47HxWmY",
+          "mode": "list",
+          "cachedResultName": "triggers",
+          "cachedResultUrl": "https://drive.google.com/drive/folders/101XjojKbnUw6DJBlFcAXiSv5t47HxWmY"
+        },
+        "event": "fileCreated",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleDriveTrigger",
+      "typeVersion": 1,
+      "position": [
+        0,
+        0
+      ],
+      "id": "2ea7da9c-3b9e-4952-b2b7-ae9b950f9df3",
+      "name": "Google Drive Trigger",
+      "credentials": {
+        "googleDriveOAuth2Api": {
+          "id": "3nhYXSjneMsnD9gx",
+          "name": "jinh2kakao Google Drive account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "e730ae67-f8b7-4d30-b440-194058cac467",
+              "leftValue": "={{ $json.mimeType }}",
+              "rightValue": "application/vnd.google-apps.document",
+              "operator": {
+                "type": "string",
+                "operation": "equals",
+                "name": "filter.operator.equals"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        208,
+        0
+      ],
+      "id": "64f35a48-a8c6-4470-bb0c-b749e92f74d5",
+      "name": "If"
+    },
+    {
+      "parameters": {
+        "operation": "get",
+        "documentURL": "={{ $('Google Drive Trigger').item.json.id }}"
+      },
+      "type": "n8n-nodes-base.googleDocs",
+      "typeVersion": 2,
+      "position": [
+        416,
+        -96
+      ],
+      "id": "daf3ef63-4dc3-4f12-9390-9df539c0d6a7",
+      "name": "Get a document",
+      "credentials": {
+        "googleDocsOAuth2Api": {
+          "id": "eyXXvazddgS3aSsh",
+          "name": "jinh2kakao Google Docs account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "modelId": {
+          "__rl": true,
+          "value": "models/gemini-2.5-flash",
+          "mode": "list",
+          "cachedResultName": "models/gemini-2.5-flash"
+        },
+        "messages": {
+          "values": [
+            {
+              "content": "=전달하는 내용을 한줄로 요약 (200자 이내)\n\n {{ $json.content }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.googleGemini",
+      "typeVersion": 1,
+      "position": [
+        624,
+        -96
+      ],
+      "id": "7c6b9855-9a5f-466e-87b3-57e3fe324579",
+      "name": "Message a model",
+      "credentials": {
+        "googlePalmApi": {
+          "id": "4MyCsxNCns2s6sQe",
+          "name": "jinh2kakao Google Gemini(PaLM) Api account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "appendOrUpdate",
+        "documentId": {
+          "__rl": true,
+          "value": "https://docs.google.com/spreadsheets/d/1IT4SIilYopeDYKtPDPkb8n5kdEZ8PPX4EmhxEqgpY_0/edit?usp=sharing",
+          "mode": "url"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "gid=0",
+          "mode": "list",
+          "cachedResultName": "2025-10",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1IT4SIilYopeDYKtPDPkb8n5kdEZ8PPX4EmhxEqgpY_0/edit#gid=0"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "moveFileId": "={{ $json.id }}",
+            "파일명": "={{ $('Google Drive Trigger').item.json.name }}",
+            "생성일시": "={{ $('Google Drive Trigger').item.json.modifiedTime }}",
+            "파일유형": "={{ $('Google Drive Trigger').item.json.mimeType }}",
+            "파일url": "={{ $('Google Drive Trigger').item.json.webViewLink }}",
+            "요약내용": "={{ $('Message a model').item.json.content.parts[0].text }}"
+          },
+          "matchingColumns": [
+            "moveFileId"
+          ],
+          "schema": [
+            {
+              "id": "파일명",
+              "displayName": "파일명",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "생성일시",
+              "displayName": "생성일시",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "파일유형",
+              "displayName": "파일유형",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "파일url",
+              "displayName": "파일url",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "moveFileId",
+              "displayName": "moveFileId",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "요약내용",
+              "displayName": "요약내용",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.7,
+      "position": [
+        1216,
+        -96
+      ],
+      "id": "545dc65d-e15e-49e3-8318-08c00cc69df0",
+      "name": "Append or update row in sheet",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "pEaD2eovnJOnPETT",
+          "name": "jinh2kakao Google Sheets account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "move",
+        "fileId": {
+          "__rl": true,
+          "value": "={{ $('Google Drive Trigger').item.json.id }}",
+          "mode": "id"
+        },
+        "driveId": {
+          "__rl": true,
+          "mode": "list",
+          "value": "My Drive"
+        },
+        "folderId": {
+          "__rl": true,
+          "value": "11rIioIvY8NhBYWBvGcmvA6CjqSR9qzTE",
+          "mode": "list",
+          "cachedResultName": "docs",
+          "cachedResultUrl": "https://drive.google.com/drive/folders/11rIioIvY8NhBYWBvGcmvA6CjqSR9qzTE"
+        }
+      },
+      "type": "n8n-nodes-base.googleDrive",
+      "typeVersion": 3,
+      "position": [
+        976,
+        -96
+      ],
+      "id": "a9cbf501-325a-4faa-92a1-c3bc3163e7fd",
+      "name": "Move file",
+      "credentials": {
+        "googleDriveOAuth2Api": {
+          "id": "3nhYXSjneMsnD9gx",
+          "name": "jinh2kakao Google Drive account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "documentId": {
+          "__rl": true,
+          "value": "={{ $json.id }}",
+          "mode": "id"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "gid=0",
+          "mode": "list",
+          "cachedResultName": "시트1",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1J4dddo-xs5zfxAbXljX6HGJp_yB_ycamjdz7ktBCc_8/edit#gid=0"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.7,
+      "position": [
+        416,
+        96
+      ],
+      "id": "48aef934-9b90-427e-82d5-2a72e9c6a709",
+      "name": "Get row(s) in sheet",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "pEaD2eovnJOnPETT",
+          "name": "jinh2kakao Google Sheets account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "fieldsToAggregate": {
+          "fieldToAggregate": [
+            {
+              "fieldToAggregate": "주요 긍정 피드백"
+            },
+            {
+              "fieldToAggregate": "주요 개선 요청"
+            },
+            {
+              "fieldToAggregate": "대표 고객 응답"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.aggregate",
+      "typeVersion": 1,
+      "position": [
+        624,
+        96
+      ],
+      "id": "0f4b92bc-8e13-468c-8bae-a042682baefd",
+      "name": "Aggregate"
+    },
+    {
+      "parameters": {
+        "modelId": {
+          "__rl": true,
+          "value": "models/gemini-2.5-flash",
+          "mode": "list",
+          "cachedResultName": "models/gemini-2.5-flash"
+        },
+        "messages": {
+          "values": [
+            {
+              "content": "=전달하는 내용을 한줄로 요약 (200자 이내)\n\n- 주요 긍정 피드백: {{ $json['주요 긍정 피드백'] }}\n- 주요 개선 요청: {{ $json['주요 개선 요청'] }}\n- 대표 고객 응답: {{ $json['대표 고객 응답'] }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.googleGemini",
+      "typeVersion": 1,
+      "position": [
+        832,
+        96
+      ],
+      "id": "0fde3fbe-5bb7-4ec7-a270-519a321db737",
+      "name": "Message a model1",
+      "credentials": {
+        "googlePalmApi": {
+          "id": "4MyCsxNCns2s6sQe",
+          "name": "jinh2kakao Google Gemini(PaLM) Api account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "move",
+        "fileId": {
+          "__rl": true,
+          "value": "={{ $('Google Drive Trigger').item.json.id }}",
+          "mode": "id"
+        },
+        "driveId": {
+          "__rl": true,
+          "mode": "list",
+          "value": "My Drive"
+        },
+        "folderId": {
+          "__rl": true,
+          "value": "1ONu_QZDuIUmi9mmPTDD_gg-s5MOawxw5",
+          "mode": "list",
+          "cachedResultName": "sheets",
+          "cachedResultUrl": "https://drive.google.com/drive/folders/1ONu_QZDuIUmi9mmPTDD_gg-s5MOawxw5"
+        }
+      },
+      "type": "n8n-nodes-base.googleDrive",
+      "typeVersion": 3,
+      "position": [
+        1184,
+        96
+      ],
+      "id": "b78f0e74-1e7c-468a-b3e0-157d6db8873a",
+      "name": "Move file1",
+      "credentials": {
+        "googleDriveOAuth2Api": {
+          "id": "3nhYXSjneMsnD9gx",
+          "name": "jinh2kakao Google Drive account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "appendOrUpdate",
+        "documentId": {
+          "__rl": true,
+          "value": "https://docs.google.com/spreadsheets/d/1IT4SIilYopeDYKtPDPkb8n5kdEZ8PPX4EmhxEqgpY_0/edit?usp=sharing",
+          "mode": "url"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "gid=0",
+          "mode": "list",
+          "cachedResultName": "2025-10",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1IT4SIilYopeDYKtPDPkb8n5kdEZ8PPX4EmhxEqgpY_0/edit#gid=0"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "moveFileId": "={{ $json.id }}",
+            "파일명": "={{ $('Google Drive Trigger').item.json.name }}",
+            "생성일시": "={{ $('Google Drive Trigger').item.json.modifiedTime }}",
+            "파일유형": "={{ $('Google Drive Trigger').item.json.mimeType }}",
+            "파일url": "={{ $('Google Drive Trigger').item.json.webViewLink }}",
+            "요약내용": "={{ $('Message a model1').item.json.content.parts[0].text }}"
+          },
+          "matchingColumns": [
+            "moveFileId"
+          ],
+          "schema": [
+            {
+              "id": "파일명",
+              "displayName": "파일명",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "생성일시",
+              "displayName": "생성일시",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "파일유형",
+              "displayName": "파일유형",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "파일url",
+              "displayName": "파일url",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "moveFileId",
+              "displayName": "moveFileId",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "요약내용",
+              "displayName": "요약내용",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.7,
+      "position": [
+        1392,
+        96
+      ],
+      "id": "be590c3d-fecc-4566-b1c1-6cfb51a83e14",
+      "name": "Append or update row in sheet1",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "pEaD2eovnJOnPETT",
+          "name": "jinh2kakao Google Sheets account"
+        }
+      }
+    }
+  ],
+  "pinData": {
+    "Google Drive Trigger": [
+      {
+        "json": {
+          "exportLinks": {
+            "application/x-vnd.oasis.opendocument.spreadsheet": "https://docs.google.com/spreadsheets/export?id=1J4dddo-xs5zfxAbXljX6HGJp_yB_ycamjdz7ktBCc_8&exportFormat=ods",
+            "text/tab-separated-values": "https://docs.google.com/spreadsheets/export?id=1J4dddo-xs5zfxAbXljX6HGJp_yB_ycamjdz7ktBCc_8&exportFormat=tsv",
+            "application/pdf": "https://docs.google.com/spreadsheets/export?id=1J4dddo-xs5zfxAbXljX6HGJp_yB_ycamjdz7ktBCc_8&exportFormat=pdf",
+            "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet": "https://docs.google.com/spreadsheets/export?id=1J4dddo-xs5zfxAbXljX6HGJp_yB_ycamjdz7ktBCc_8&exportFormat=xlsx",
+            "text/csv": "https://docs.google.com/spreadsheets/export?id=1J4dddo-xs5zfxAbXljX6HGJp_yB_ycamjdz7ktBCc_8&exportFormat=csv",
+            "application/zip": "https://docs.google.com/spreadsheets/export?id=1J4dddo-xs5zfxAbXljX6HGJp_yB_ycamjdz7ktBCc_8&exportFormat=zip",
+            "application/vnd.oasis.opendocument.spreadsheet": "https://docs.google.com/spreadsheets/export?id=1J4dddo-xs5zfxAbXljX6HGJp_yB_ycamjdz7ktBCc_8&exportFormat=ods"
+          },
+          "parents": [
+            "101XjojKbnUw6DJBlFcAXiSv5t47HxWmY"
+          ],
+          "lastModifyingUser": {
+            "displayName": "김진현_유튜브",
+            "kind": "drive#user",
+            "me": true,
+            "permissionId": "01354434175690221972",
+            "emailAddress": "jinh2kakao@gmail.com",
+            "photoLink": "https://lh3.googleusercontent.com/a/ACg8ocIYNI3qM0WrwSGjtWeIWvj21aBNVlriOt-FIoBnQqHuEG91Iw=s64"
+          },
+          "owners": [
+            {
+              "displayName": "김진현_유튜브",
+              "kind": "drive#user",
+              "me": true,
+              "permissionId": "01354434175690221972",
+              "emailAddress": "jinh2kakao@gmail.com",
+              "photoLink": "https://lh3.googleusercontent.com/a/ACg8ocIYNI3qM0WrwSGjtWeIWvj21aBNVlriOt-FIoBnQqHuEG91Iw=s64"
+            }
+          ],
+          "permissions": [
+            {
+              "kind": "drive#permission",
+              "id": "anyoneWithLink",
+              "type": "anyone",
+              "role": "reader",
+              "allowFileDiscovery": false
+            },
+            {
+              "kind": "drive#permission",
+              "id": "01354434175690221972",
+              "type": "user",
+              "emailAddress": "jinh2kakao@gmail.com",
+              "role": "owner",
+              "displayName": "김진현_유튜브",
+              "photoLink": "https://lh3.googleusercontent.com/a/ACg8ocIYNI3qM0WrwSGjtWeIWvj21aBNVlriOt-FIoBnQqHuEG91Iw=s64",
+              "deleted": false,
+              "pendingOwner": false
+            }
+          ],
+          "spaces": [
+            "drive"
+          ],
+          "capabilities": {
+            "canAcceptOwnership": false,
+            "canAddChildren": false,
+            "canAddMyDriveParent": false,
+            "canChangeCopyRequiresWriterPermission": true,
+            "canChangeItemDownloadRestriction": true,
+            "canChangeSecurityUpdateEnabled": false,
+            "canChangeViewersCanCopyContent": true,
+            "canComment": true,
+            "canCopy": true,
+            "canDelete": true,
+            "canDisableInheritedPermissions": false,
+            "canDownload": true,
+            "canEdit": true,
+            "canEnableInheritedPermissions": true,
+            "canListChildren": false,
+            "canModifyContent": true,
+            "canModifyContentRestriction": true,
+            "canModifyEditorContentRestriction": true,
+            "canModifyOwnerContentRestriction": true,
+            "canModifyLabels": false,
+            "canMoveChildrenWithinDrive": false,
+            "canMoveItemIntoTeamDrive": true,
+            "canMoveItemOutOfDrive": true,
+            "canMoveItemWithinDrive": true,
+            "canReadLabels": false,
+            "canReadRevisions": true,
+            "canRemoveChildren": false,
+            "canRemoveContentRestriction": false,
+            "canRemoveMyDriveParent": true,
+            "canRename": true,
+            "canShare": true,
+            "canTrash": true,
+            "canUntrash": true
+          },
+          "permissionIds": [
+            "anyoneWithLink",
+            "01354434175690221972"
+          ],
+          "linkShareMetadata": {
+            "securityUpdateEligible": false,
+            "securityUpdateEnabled": true
+          },
+          "downloadRestrictions": {
+            "itemDownloadRestriction": {
+              "restrictedForReaders": false,
+              "restrictedForWriters": false
+            },
+            "effectiveDownloadRestrictionWithContext": {
+              "restrictedForReaders": false,
+              "restrictedForWriters": false
+            }
+          },
+          "kind": "drive#file",
+          "id": "1J4dddo-xs5zfxAbXljX6HGJp_yB_ycamjdz7ktBCc_8",
+          "name": "Copy of Sample_고객 만족도",
+          "mimeType": "application/vnd.google-apps.spreadsheet",
+          "starred": false,
+          "trashed": false,
+          "explicitlyTrashed": false,
+          "version": "5",
+          "webViewLink": "https://docs.google.com/spreadsheets/d/1J4dddo-xs5zfxAbXljX6HGJp_yB_ycamjdz7ktBCc_8/edit?usp=drivesdk",
+          "iconLink": "https://drive-thirdparty.googleusercontent.com/16/type/application/vnd.google-apps.spreadsheet",
+          "hasThumbnail": true,
+          "thumbnailLink": "https://lh3.googleusercontent.com/drive-storage/AJQWtBPD6nAMaz5abLFo6MTt2atfbk_NVR57iY1HOkX-UJ_xwVH1EOjruSaaYxXAtVNMWCjeQJpvxUhDu24ABxa7yMfAl90N4hl6SEy7SiMPFAyzygfvjy9yY5bzpX8-kA=s220",
+          "thumbnailVersion": "1",
+          "viewedByMe": true,
+          "viewedByMeTime": "2025-10-28T07:41:37.888Z",
+          "createdTime": "2025-10-28T07:41:37.888Z",
+          "modifiedTime": "2025-10-28T07:41:37.888Z",
+          "modifiedByMeTime": "2025-10-28T07:41:37.888Z",
+          "modifiedByMe": true,
+          "shared": true,
+          "ownedByMe": true,
+          "viewersCanCopyContent": true,
+          "copyRequiresWriterPermission": false,
+          "writersCanShare": true,
+          "size": "4727",
+          "quotaBytesUsed": "4727",
+          "isAppAuthorized": false,
+          "inheritedPermissionsDisabled": false
+        }
+      }
+    ]
+  },
+  "connections": {
+    "Google Drive Trigger": {
+      "main": [
+        [
+          {
+            "node": "If",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If": {
+      "main": [
+        [
+          {
+            "node": "Get a document",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Get row(s) in sheet",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get a document": {
+      "main": [
+        [
+          {
+            "node": "Message a model",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Message a model": {
+      "main": [
+        [
+          {
+            "node": "Move file",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Move file": {
+      "main": [
+        [
+          {
+            "node": "Append or update row in sheet",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get row(s) in sheet": {
+      "main": [
+        [
+          {
+            "node": "Aggregate",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Aggregate": {
+      "main": [
+        [
+          {
+            "node": "Message a model1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Message a model1": {
+      "main": [
+        [
+          {
+            "node": "Move file1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Move file1": {
+      "main": [
+        [
+          {
+            "node": "Append or update row in sheet1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "f6e5e1d3-3e85-414c-b824-4dc85927ce4e",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "cd771ab964ea331a17cbcd4c1eb0c63cb4a42a5615d415e137abf584f1e13189"
+  },
+  "id": "Da37f7buUn445D1d",
+  "tags": []
+}
