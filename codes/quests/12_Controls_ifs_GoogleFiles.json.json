@@ -1,0 +1,1209 @@
+{
+  "name": "12_Controls_ifs_GoogleFiles.json",
+  "nodes": [
+    {
+      "parameters": {
+        "pollTimes": {
+          "item": [
+            {
+              "mode": "everyMinute"
+            }
+          ]
+        },
+        "triggerOn": "specificFolder",
+        "folderToWatch": {
+          "__rl": true,
+          "value": "101XjojKbnUw6DJBlFcAXiSv5t47HxWmY",
+          "mode": "list",
+          "cachedResultName": "triggers",
+          "cachedResultUrl": "https://drive.google.com/drive/folders/101XjojKbnUw6DJBlFcAXiSv5t47HxWmY"
+        },
+        "event": "fileCreated",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleDriveTrigger",
+      "typeVersion": 1,
+      "position": [
+        -432,
+        -112
+      ],
+      "id": "baedcedc-6bbc-45c8-8791-b776b8f047c4",
+      "name": "Google Drive Trigger",
+      "credentials": {
+        "googleDriveOAuth2Api": {
+          "id": "3nhYXSjneMsnD9gx",
+          "name": "jinh2kakao Google Drive account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "fieldsToAggregate": {
+          "fieldToAggregate": [
+            {
+              "fieldToAggregate": "주요 긍정 피드백",
+              "renameField": true,
+              "outputFieldName": "text"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.aggregate",
+      "typeVersion": 1,
+      "position": [
+        432,
+        48
+      ],
+      "id": "eebf97cd-f667-40d1-a7aa-6ec67289f734",
+      "name": "Aggregate"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "8a07d0fa-2d95-49a7-bdf4-fdc3ee812baa",
+              "name": "whole_text",
+              "value": "={{ JSON.stringify($json) }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        432,
+        256
+      ],
+      "id": "2c16e11c-eeee-4cba-918a-54d7ee1f1a2e",
+      "name": "Edit Fields"
+    },
+    {
+      "parameters": {
+        "fieldsToAggregate": {
+          "fieldToAggregate": [
+            {
+              "fieldToAggregate": "whole_text"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.aggregate",
+      "typeVersion": 1,
+      "position": [
+        720,
+        256
+      ],
+      "id": "d8559fef-95d6-4ec2-bf5c-f7d2c95d9ccc",
+      "name": "Aggregate2"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "00d94b47-2753-459c-8acc-f7bf4f3cfa19",
+              "leftValue": "={{ $json.mimeType }}",
+              "rightValue": "application/vnd.google-apps.document",
+              "operator": {
+                "type": "string",
+                "operation": "equals"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        -256,
+        -112
+      ],
+      "id": "3969e90a-3103-4d98-93bb-9236d1e68a39",
+      "name": "docsYn"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "1d8ba3c0-bdd9-4567-8b5b-b6e662ff87bc",
+              "leftValue": "={{ $('Google Drive Trigger').item.json.mimeType }}",
+              "rightValue": "application/vnd.google-apps.spreadsheet",
+              "operator": {
+                "type": "string",
+                "operation": "equals",
+                "name": "filter.operator.equals"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        -96,
+        192
+      ],
+      "id": "bedc03a7-2700-4c74-9b1c-52b941ccb96f",
+      "name": "sheetYn"
+    },
+    {
+      "parameters": {
+        "operation": "download",
+        "fileId": {
+          "__rl": true,
+          "value": "={{ $json.id }}",
+          "mode": "id"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleDrive",
+      "typeVersion": 3,
+      "position": [
+        224,
+        496
+      ],
+      "id": "a9ef8383-eff6-4f71-b7ab-f34e20babe8e",
+      "name": "pdfDownload",
+      "credentials": {
+        "googleDriveOAuth2Api": {
+          "id": "3nhYXSjneMsnD9gx",
+          "name": "jinh2kakao Google Drive account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "pdf",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.extractFromFile",
+      "typeVersion": 1,
+      "position": [
+        432,
+        496
+      ],
+      "id": "94bf2372-a44d-48ab-98b6-70a704580759",
+      "name": "pdfContentLoad"
+    },
+    {
+      "parameters": {
+        "documentId": {
+          "__rl": true,
+          "value": "={{ $json.id }}",
+          "mode": "id"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "gid=0",
+          "mode": "list",
+          "cachedResultName": "시트1",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1Fw6B7GyeO48M_Si6UpFhicKXcF4iE9Qd614GIb-ig2A/edit#gid=0"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.7,
+      "position": [
+        224,
+        48
+      ],
+      "id": "86372b95-65cb-4d1f-8c10-8e24f3579fe8",
+      "name": "sheetContentLoad",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "pEaD2eovnJOnPETT",
+          "name": "jinh2kakao Google Sheets account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "get",
+        "documentURL": "={{ $json.id }}"
+      },
+      "type": "n8n-nodes-base.googleDocs",
+      "typeVersion": 2,
+      "position": [
+        224,
+        -224
+      ],
+      "id": "edd2bd47-03dc-45b8-86d4-217b43be9494",
+      "name": "docsContentsLoad",
+      "notesInFlow": true,
+      "credentials": {
+        "googleDocsOAuth2Api": {
+          "id": "eyXXvazddgS3aSsh",
+          "name": "jinh2kakao Google Docs account"
+        }
+      },
+      "notes": "google drive에서 dcos 파일 가져오기"
+    },
+    {
+      "parameters": {
+        "content": "## Contents Text Load",
+        "height": 1344,
+        "width": 880
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        -288,
+        -320
+      ],
+      "typeVersion": 1,
+      "id": "7c2f327a-15a2-4360-bb0c-599d7635d3c2",
+      "name": "Sticky Note"
+    },
+    {
+      "parameters": {
+        "content": "## Contents Summary",
+        "height": 1072,
+        "width": 560
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        672,
+        -48
+      ],
+      "typeVersion": 1,
+      "id": "f7ab0ecf-67b7-4229-966b-a5a3304ed51a",
+      "name": "Sticky Note1"
+    },
+    {
+      "parameters": {
+        "content": "## File Move",
+        "height": 1312,
+        "width": 672
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        1296,
+        -112
+      ],
+      "typeVersion": 1,
+      "id": "4f57a893-6fa4-44d6-be80-88d5dce2d1c6",
+      "name": "Sticky Note2"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "7de2a00f-ea8d-4607-9c8d-414af09d3cb2",
+              "leftValue": "={{ $('historyUpdate').item.json['파일종류'] }}",
+              "rightValue": "application/vnd.google-apps.spreadsheet",
+              "operator": {
+                "type": "string",
+                "operation": "equals",
+                "name": "filter.operator.equals"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        1520,
+        256
+      ],
+      "id": "853f9347-c868-4d3d-9ad9-452282567999",
+      "name": "sheetYnMoveFile"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "7df8460b-597c-4b50-bf16-d65283e76c5b",
+              "leftValue": "={{ $json['파일종류'] }}",
+              "rightValue": "=application/vnd.google-apps.document",
+              "operator": {
+                "type": "string",
+                "operation": "equals",
+                "name": "filter.operator.equals"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        1328,
+        48
+      ],
+      "id": "3fb1de9e-b8c9-49ef-9eea-8bc643cb8f8b",
+      "name": "docsYnMoveFile"
+    },
+    {
+      "parameters": {
+        "operation": "appendOrUpdate",
+        "documentId": {
+          "__rl": true,
+          "value": "=https://docs.google.com/spreadsheets/d/1O806SbS_GMhUxn62p0W9tkiZq7qd1hyCgGG3wbhu-dQ/edit?usp=sharing",
+          "mode": "url"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "gid=0",
+          "mode": "list",
+          "cachedResultName": "2025-10",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1O806SbS_GMhUxn62p0W9tkiZq7qd1hyCgGG3wbhu-dQ/edit#gid=0"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "입력날짜": "={{ $('Google Drive Trigger').item.json.modifiedTime }}",
+            "파일종류": "={{ $('Google Drive Trigger').item.json.mimeType }}",
+            "파일명": "={{ $('Google Drive Trigger').item.json.name }}",
+            "링크": "={{ $('Google Drive Trigger').item.json.webViewLink }}",
+            "한 줄 정리": "={{ $json.content.parts[0].text }}"
+          },
+          "matchingColumns": [
+            "링크"
+          ],
+          "schema": [
+            {
+              "id": "입력날짜",
+              "displayName": "입력날짜",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "파일종류",
+              "displayName": "파일종류",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "파일명",
+              "displayName": "파일명",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "한 줄 정리",
+              "displayName": "한 줄 정리",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "링크",
+              "displayName": "링크",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.7,
+      "position": [
+        1056,
+        48
+      ],
+      "id": "7a00f09f-07c6-4eb9-833d-c02370b1a65d",
+      "name": "historyUpdate",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "pEaD2eovnJOnPETT",
+          "name": "jinh2kakao Google Sheets account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "modelId": {
+          "__rl": true,
+          "value": "models/gemini-2.5-flash",
+          "mode": "list",
+          "cachedResultName": "models/gemini-2.5-flash"
+        },
+        "messages": {
+          "values": [
+            {
+              "content": "=분석 내용 한 줄로 정리\n\n {{ $json.text }}"
+            }
+          ]
+        },
+        "jsonOutput": "={{ false }}",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.googleGemini",
+      "typeVersion": 1,
+      "position": [
+        720,
+        48
+      ],
+      "id": "04f663b9-0d06-4fa3-b746-dabd919cafd6",
+      "name": "geminiSummary",
+      "credentials": {
+        "googlePalmApi": {
+          "id": "4MyCsxNCns2s6sQe",
+          "name": "jinh2kakao Google Gemini(PaLM) Api account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "move",
+        "fileId": {
+          "__rl": true,
+          "value": "={{ $('Google Drive Trigger').item.json.id }}",
+          "mode": "id"
+        },
+        "driveId": {
+          "__rl": true,
+          "mode": "list",
+          "value": "My Drive"
+        },
+        "folderId": {
+          "__rl": true,
+          "value": "11rIioIvY8NhBYWBvGcmvA6CjqSR9qzTE",
+          "mode": "list",
+          "cachedResultName": "docs",
+          "cachedResultUrl": "https://drive.google.com/drive/folders/11rIioIvY8NhBYWBvGcmvA6CjqSR9qzTE"
+        }
+      },
+      "type": "n8n-nodes-base.googleDrive",
+      "typeVersion": 3,
+      "position": [
+        1760,
+        -48
+      ],
+      "id": "b1c2ae4b-4571-422f-9851-69564b513b1c",
+      "name": "docsMoveFile",
+      "credentials": {
+        "googleDriveOAuth2Api": {
+          "id": "3nhYXSjneMsnD9gx",
+          "name": "jinh2kakao Google Drive account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "move",
+        "fileId": {
+          "__rl": true,
+          "value": "={{ $('Google Drive Trigger').item.json.id }}",
+          "mode": "id"
+        },
+        "driveId": {
+          "__rl": true,
+          "mode": "list",
+          "value": "My Drive"
+        },
+        "folderId": {
+          "__rl": true,
+          "value": "1ONu_QZDuIUmi9mmPTDD_gg-s5MOawxw5",
+          "mode": "list",
+          "cachedResultName": "sheets",
+          "cachedResultUrl": "https://drive.google.com/drive/folders/1ONu_QZDuIUmi9mmPTDD_gg-s5MOawxw5"
+        }
+      },
+      "type": "n8n-nodes-base.googleDrive",
+      "typeVersion": 3,
+      "position": [
+        1760,
+        192
+      ],
+      "id": "823ffbe5-0664-441c-a16d-344155aec300",
+      "name": "sheetMoveFile",
+      "credentials": {
+        "googleDriveOAuth2Api": {
+          "id": "3nhYXSjneMsnD9gx",
+          "name": "jinh2kakao Google Drive account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "move",
+        "fileId": {
+          "__rl": true,
+          "value": "={{ $('Google Drive Trigger').item.json.id }}",
+          "mode": "id"
+        },
+        "driveId": {
+          "__rl": true,
+          "mode": "list",
+          "value": "My Drive"
+        },
+        "folderId": {
+          "__rl": true,
+          "value": "1_D9fqvq0wfvigXmL-Zb89jAsJ34Bo6VO",
+          "mode": "list",
+          "cachedResultName": "pdfs",
+          "cachedResultUrl": "https://drive.google.com/drive/folders/1_D9fqvq0wfvigXmL-Zb89jAsJ34Bo6VO"
+        }
+      },
+      "type": "n8n-nodes-base.googleDrive",
+      "typeVersion": 3,
+      "position": [
+        1760,
+        496
+      ],
+      "id": "42e31bcf-77d3-4218-8be3-b7f512074efe",
+      "name": "pdfMoveFile",
+      "credentials": {
+        "googleDriveOAuth2Api": {
+          "id": "3nhYXSjneMsnD9gx",
+          "name": "jinh2kakao Google Drive account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "download",
+        "fileId": {
+          "__rl": true,
+          "value": "={{ $('Google Drive Trigger').item.json.id }}",
+          "mode": "id"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleDrive",
+      "typeVersion": 3,
+      "position": [
+        224,
+        768
+      ],
+      "id": "66d09712-e978-4cbb-88ad-39097cb740d3",
+      "name": "Download file",
+      "credentials": {
+        "googleDriveOAuth2Api": {
+          "id": "3nhYXSjneMsnD9gx",
+          "name": "jinh2kakao Google Drive account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "n8n-nodes-base.extractFromFile",
+      "typeVersion": 1,
+      "position": [
+        432,
+        768
+      ],
+      "id": "47605563-7ad0-4b45-bcce-b6da15d1eb71",
+      "name": "Extract from File"
+    },
+    {
+      "parameters": {
+        "operation": "move",
+        "fileId": {
+          "__rl": true,
+          "value": "={{ $('Google Drive Trigger').item.json.id }}",
+          "mode": "id"
+        },
+        "driveId": {
+          "__rl": true,
+          "mode": "list",
+          "value": "My Drive"
+        },
+        "folderId": {
+          "__rl": true,
+          "value": "1v7X3sAp8ovjm1AfVVWZzEqbvaz9suiS-",
+          "mode": "list",
+          "cachedResultName": "csvs",
+          "cachedResultUrl": "https://drive.google.com/drive/folders/1v7X3sAp8ovjm1AfVVWZzEqbvaz9suiS-"
+        }
+      },
+      "type": "n8n-nodes-base.googleDrive",
+      "typeVersion": 3,
+      "position": [
+        1760,
+        992
+      ],
+      "id": "b2edecd0-5626-4441-bc2b-ddf6c6a6d1b1",
+      "name": "Move file",
+      "credentials": {
+        "googleDriveOAuth2Api": {
+          "id": "3nhYXSjneMsnD9gx",
+          "name": "jinh2kakao Google Drive account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "move",
+        "fileId": {
+          "__rl": true,
+          "value": "={{ $('Google Drive Trigger').item.json.id }}",
+          "mode": "id"
+        },
+        "driveId": {
+          "__rl": true,
+          "mode": "list",
+          "value": "My Drive"
+        },
+        "folderId": {
+          "__rl": true,
+          "value": "1v7X3sAp8ovjm1AfVVWZzEqbvaz9suiS-",
+          "mode": "list",
+          "cachedResultName": "csvs",
+          "cachedResultUrl": "https://drive.google.com/drive/folders/1v7X3sAp8ovjm1AfVVWZzEqbvaz9suiS-"
+        }
+      },
+      "type": "n8n-nodes-base.googleDrive",
+      "typeVersion": 3,
+      "position": [
+        1760,
+        704
+      ],
+      "id": "ad23df9c-6101-44b5-9d43-fcd916023d81",
+      "name": "pdfMoveFile1",
+      "credentials": {
+        "googleDriveOAuth2Api": {
+          "id": "3nhYXSjneMsnD9gx",
+          "name": "jinh2kakao Google Drive account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "chatId": "8297276244",
+        "text": "=다음 파일이 미분류되어 etcs 폴더로 이동하였습니다.\n제목: {{ $('Google Drive Trigger').item.json.name }}",
+        "additionalFields": {}
+      },
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [
+        1968,
+        992
+      ],
+      "id": "39946d61-25de-4034-ba7a-985006de4492",
+      "name": "Send a text message",
+      "webhookId": "1afeb625-3504-42af-ad16-336a16dfac06",
+      "credentials": {
+        "telegramApi": {
+          "id": "r4BuoZIgH6DNZ0GA",
+          "name": "Telegram account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "fieldsToAggregate": {
+          "fieldToAggregate": [
+            {
+              "fieldToAggregate": "주요 긍정 피드백",
+              "renameField": true,
+              "outputFieldName": "text"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.aggregate",
+      "typeVersion": 1,
+      "position": [
+        736,
+        768
+      ],
+      "id": "f2487e7e-aa05-4c04-a15b-a77b34c94554",
+      "name": "Aggregate1"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "a061d3e0-63f7-4b13-99a2-830de646063e",
+              "leftValue": "={{ $json.mimeType }}",
+              "rightValue": "application/pdf",
+              "operator": {
+                "type": "string",
+                "operation": "equals",
+                "name": "filter.operator.equals"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        -96,
+        512
+      ],
+      "id": "c61dc1ac-d4a5-49e5-a25a-b8fd0f36495b",
+      "name": "pdfYn"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "e1db8e4b-1447-46e6-a16a-08e994bae6a2",
+              "leftValue": "={{ $('Google Drive Trigger').item.json.mimeType }}",
+              "rightValue": "text/csv",
+              "operator": {
+                "type": "string",
+                "operation": "equals",
+                "name": "filter.operator.equals"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        -96,
+        784
+      ],
+      "id": "1c38bc5f-beeb-40fa-bbc4-c0d09786d394",
+      "name": "csvYn"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "a061d3e0-63f7-4b13-99a2-830de646063e",
+              "leftValue": "={{ $json.mimeType }}",
+              "rightValue": "application/pdf",
+              "operator": {
+                "type": "string",
+                "operation": "equals",
+                "name": "filter.operator.equals"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        1520,
+        512
+      ],
+      "id": "280160fc-a66d-4404-bc53-4a09c98d7e8e",
+      "name": "pdfYnMoveFile"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "e1db8e4b-1447-46e6-a16a-08e994bae6a2",
+              "leftValue": "={{ $('Google Drive Trigger').item.json.mimeType }}",
+              "rightValue": "text/csv",
+              "operator": {
+                "type": "string",
+                "operation": "equals",
+                "name": "filter.operator.equals"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        1520,
+        720
+      ],
+      "id": "b3042e77-f527-4edc-aa2b-e99fc10d1aa1",
+      "name": "csvYnMoveFile"
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Google Drive Trigger": {
+      "main": [
+        [
+          {
+            "node": "docsYn",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Aggregate": {
+      "main": [
+        [
+          {
+            "node": "geminiSummary",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Edit Fields": {
+      "main": [
+        [
+          {
+            "node": "Aggregate2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "docsYn": {
+      "main": [
+        [
+          {
+            "node": "docsContentsLoad",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "sheetYn",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "sheetYn": {
+      "main": [
+        [
+          {
+            "node": "sheetContentLoad",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "pdfYn",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "pdfDownload": {
+      "main": [
+        [
+          {
+            "node": "pdfContentLoad",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "pdfContentLoad": {
+      "main": [
+        [
+          {
+            "node": "geminiSummary",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "sheetContentLoad": {
+      "main": [
+        [
+          {
+            "node": "Aggregate",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Edit Fields",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "docsContentsLoad": {
+      "main": [
+        [
+          {
+            "node": "geminiSummary",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "sheetYnMoveFile": {
+      "main": [
+        [
+          {
+            "node": "sheetMoveFile",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "pdfYnMoveFile",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "docsYnMoveFile": {
+      "main": [
+        [
+          {
+            "node": "docsMoveFile",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "sheetYnMoveFile",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "historyUpdate": {
+      "main": [
+        [
+          {
+            "node": "docsYnMoveFile",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "geminiSummary": {
+      "main": [
+        [
+          {
+            "node": "historyUpdate",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Download file": {
+      "main": [
+        [
+          {
+            "node": "Extract from File",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Extract from File": {
+      "main": [
+        [
+          {
+            "node": "Aggregate1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Move file": {
+      "main": [
+        [
+          {
+            "node": "Send a text message",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Aggregate1": {
+      "main": [
+        [
+          {
+            "node": "geminiSummary",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "pdfYn": {
+      "main": [
+        [
+          {
+            "node": "pdfDownload",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "csvYn",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "csvYn": {
+      "main": [
+        [
+          {
+            "node": "Download file",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "historyUpdate",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "pdfYnMoveFile": {
+      "main": [
+        [
+          {
+            "node": "pdfMoveFile",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "csvYnMoveFile",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "csvYnMoveFile": {
+      "main": [
+        [
+          {
+            "node": "pdfMoveFile1",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Move file",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "154a6800-b4b7-4678-825c-596e0e5e1d20",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "cd771ab964ea331a17cbcd4c1eb0c63cb4a42a5615d415e137abf584f1e13189"
+  },
+  "id": "JDGaOTR6r5cuQlvb",
+  "tags": []
+}
