@@ -317,7 +317,7 @@
           "conditions": [
             {
               "id": "7de2a00f-ea8d-4607-9c8d-414af09d3cb2",
-              "leftValue": "={{ $('historyUpdate').item.json['파일종류'] }}",
+              "leftValue": "={{ $json['파일유형'] }}",
               "rightValue": "application/vnd.google-apps.spreadsheet",
               "operator": {
                 "type": "string",
@@ -351,7 +351,7 @@
           "conditions": [
             {
               "id": "7df8460b-597c-4b50-bf16-d65283e76c5b",
-              "leftValue": "={{ $json['파일종류'] }}",
+              "leftValue": "={{ $json['파일유형'] }}",
               "rightValue": "=application/vnd.google-apps.document",
               "operator": {
                 "type": "string",
@@ -856,7 +856,7 @@
           "conditions": [
             {
               "id": "a061d3e0-63f7-4b13-99a2-830de646063e",
-              "leftValue": "={{ $json.mimeType }}",
+              "leftValue": "={{ $json['파일유형'] }}",
               "rightValue": "application/pdf",
               "operator": {
                 "type": "string",
@@ -890,7 +890,7 @@
           "conditions": [
             {
               "id": "e1db8e4b-1447-46e6-a16a-08e994bae6a2",
-              "leftValue": "={{ $('Google Drive Trigger').item.json.mimeType }}",
+              "leftValue": "={{ $json['파일유형'] }}",
               "rightValue": "text/csv",
               "operator": {
                 "type": "string",
@@ -1212,7 +1212,7 @@
   "settings": {
     "executionOrder": "v1"
   },
-  "versionId": "8bcf2776-c470-4766-9a34-c958b3a1c106",
+  "versionId": "0139a34f-e4fc-4ab9-9baa-8d4c86323765",
   "meta": {
     "templateCredsSetupCompleted": true,
     "instanceId": "cd771ab964ea331a17cbcd4c1eb0c63cb4a42a5615d415e137abf584f1e13189"
