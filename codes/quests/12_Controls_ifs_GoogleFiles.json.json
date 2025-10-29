@@ -378,7 +378,7 @@
         "operation": "appendOrUpdate",
         "documentId": {
           "__rl": true,
-          "value": "=https://docs.google.com/spreadsheets/d/1O806SbS_GMhUxn62p0W9tkiZq7qd1hyCgGG3wbhu-dQ/edit?usp=sharing",
+          "value": "=https://docs.google.com/spreadsheets/d/1IT4SIilYopeDYKtPDPkb8n5kdEZ8PPX4EmhxEqgpY_0/edit?usp=sharing",
           "mode": "url"
         },
         "sheetName": {
@@ -391,34 +391,16 @@
         "columns": {
           "mappingMode": "defineBelow",
           "value": {
-            "입력날짜": "={{ $('Google Drive Trigger').item.json.modifiedTime }}",
-            "파일종류": "={{ $('Google Drive Trigger').item.json.mimeType }}",
             "파일명": "={{ $('Google Drive Trigger').item.json.name }}",
-            "링크": "={{ $('Google Drive Trigger').item.json.webViewLink }}",
-            "한 줄 정리": "={{ $json.content.parts[0].text }}"
+            "파일url": "={{ $('Google Drive Trigger').item.json.webViewLink }}",
+            "생성일시": "={{ $('Google Drive Trigger').item.json.modifiedTime }}",
+            "파일유형": "={{ $('Google Drive Trigger').item.json.mimeType }}",
+            "요약내용": "={{ $json.content.parts[0].text }}"
           },
           "matchingColumns": [
-            "링크"
+            "파일url"
           ],
           "schema": [
-            {
-              "id": "입력날짜",
-              "displayName": "입력날짜",
-              "required": false,
-              "defaultMatch": false,
-              "display": true,
-              "type": "string",
-              "canBeUsedToMatch": true
-            },
-            {
-              "id": "파일종류",
-              "displayName": "파일종류",
-              "required": false,
-              "defaultMatch": false,
-              "display": true,
-              "type": "string",
-              "canBeUsedToMatch": true
-            },
             {
               "id": "파일명",
               "displayName": "파일명",
@@ -429,17 +411,48 @@
               "canBeUsedToMatch": true
             },
             {
-              "id": "한 줄 정리",
-              "displayName": "한 줄 정리",
+              "id": "생성일시",
+              "displayName": "생성일시",
               "required": false,
               "defaultMatch": false,
               "display": true,
               "type": "string",
-              "canBeUsedToMatch": true
+              "canBeUsedToMatch": true,
+              "removed": false
             },
             {
-              "id": "링크",
-              "displayName": "링크",
+              "id": "파일유형",
+              "displayName": "파일유형",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "파일url",
+              "displayName": "파일url",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "moveFileId",
+              "displayName": "moveFileId",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "요약내용",
+              "displayName": "요약내용",
               "required": false,
               "defaultMatch": false,
               "display": true,
@@ -1199,7 +1212,7 @@
   "settings": {
     "executionOrder": "v1"
   },
-  "versionId": "362949d0-f970-4d5c-b10f-ff121fa6fd9e",
+  "versionId": "8bcf2776-c470-4766-9a34-c958b3a1c106",
   "meta": {
     "templateCredsSetupCompleted": true,
     "instanceId": "cd771ab964ea331a17cbcd4c1eb0c63cb4a42a5615d415e137abf584f1e13189"
