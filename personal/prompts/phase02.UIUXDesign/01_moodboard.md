@@ -17,11 +17,11 @@
 
 ![moodboard03](./images/mid_moodboard_03.png)
 
-### Midjourney
+### Lovart
 
-![moodboard01](./images/mid_moodboard_01.png)
+![moodboard01](./images/lovart_moodboard_01.png)
 
-![moodboard02](./images/mid_moodboard_02.png)
+![moodboard02](./images/lovart_moodboard_02.png)
 
-![moodboard03](./images/mid_moodboard_03.png)
+![moodboard03](./images/lovart_moodboard_03.png)
 
