@@ -1328,6 +1328,28 @@
           "name": "jinh2kakao Google Drive account"
         }
       }
+    },
+    {
+      "parameters": {
+        "chatId": "8297276244",
+        "text": "=다음 파일이 미분류되어 etcs 폴더로 이동하였습니다. 제목: {{ $('Google Drive Trigger').item.json.name }}",
+        "additionalFields": {}
+      },
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [
+        2864,
+        512
+      ],
+      "id": "47edd4f9-5c38-420c-9e87-9bfb40a6fe0f",
+      "name": "Send a text message",
+      "webhookId": "6575bb72-07c4-4f17-91ac-ffca60aa44da",
+      "credentials": {
+        "telegramApi": {
+          "id": "r4BuoZIgH6DNZ0GA",
+          "name": "Telegram account"
+        }
+      }
     }
   ],
   "pinData": {},
@@ -1658,13 +1680,24 @@
           }
         ]
       ]
+    },
+    "Move file4": {
+      "main": [
+        [
+          {
+            "node": "Send a text message",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
     }
   },
   "active": false,
   "settings": {
     "executionOrder": "v1"
   },
-  "versionId": "03ea5cc6-4c33-45f1-8b96-1ad78d508d14",
+  "versionId": "8aeea3a3-ad47-4464-880e-6c474e46c124",
   "meta": {
     "instanceId": "cd771ab964ea331a17cbcd4c1eb0c63cb4a42a5615d415e137abf584f1e13189"
   },
