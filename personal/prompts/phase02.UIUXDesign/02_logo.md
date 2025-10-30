@@ -9,4 +9,4 @@
 
 ## Output
 
-! [Dall-E](./images/logo_01.png)
+![Dall-E](./images/logo_01.png)
