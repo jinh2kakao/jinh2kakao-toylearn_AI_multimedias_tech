@@ -111,79 +111,30 @@
 
 ## Output 01
 
-Canvas URL: https://gemini.google.com/share/0bf10e3cfef4
+Task 03. Canvas URL: https://gemini.google.com/share/0bf10e3cfef4
+Task 04. Canvas URL: https://gemini.google.com/share/49280ce0eb53
 
-# Phase 1, Task 3: MVP 우선순위 매트릭스
+# Phase 1, Task 3 & 4: MVP 우선순위 매트릭스 및 범위 확정
 
-MVP(Minimum Viable Product) 범위를 정의하기 위해 핵심 사용자 스토리를 기반으로 Impact(영향도)와 Effort(개발 공수)를 평가합니다.
+MVP(Minimum Viable Product) 범위를 정의하기 위해 핵심 사용자 스토리를 기반으로 Impact(영향도)와 Effort(개발 공수)를 평가하고 우선순위를 확정합니다.
 
-| ID | 사용자 스토리 (I want to...) | 페르소나 | Impact (영향도) | Effort (개발 공수) |
-| :--- | :--- | :--- | :--- | :--- |
-| 1 | '마케팅 > SNS 광고' 카테고리 및 'Midjourney' 모델로 필터링 | 김미소 | **High** | **Medium** |
-| 2 | '✅ 전문가 검증' 배지와 실제 결과 예시 확인 | 김미소 | **High** | **Medium** |
-| 3 | 간단한 양식(Form) 입력으로 No-Code 커스터마이징 | 김미소 | **High** | **High** |
-| 4 | 'GPT-4o'와 'Claude 3.5 Sonnet'용 프롬프트 구분 검색 | 이선우 | **Medium** | **Medium** |
-| 5 | 상세 페이지에서 '토큰 사용량' 및 '응답 속도' 데이터 확인 | 이선우 | **Medium** | **High** |
-| 6 | 유용한 프롬프트를 '내 라이브러리'에 저장 | 이선우 | **High** | **Low** |
-| 7 | 저장한 프롬프트의 변경 이력(Version History) 관리 | 이선우 | **Medium** | **High** |
-| 8 | '팀 스페이스'를 생성하고 동료 초대 | 이선우 | **High** | **High** |
-| 9 | Google/GitHub 계정으로 10초 만에 가입 (간편 가입) | 공통 | **High** | **Medium** |
-| 10 | 'Pro 프롬프트'나 '팀 라이브러리' 사용 시 쉬운 결제 (구독/결제) | 공통 | **High** | **High** |
+| ID | 사용자 스토리 (I want to...) | 페르소나 | Impact (영향도) | Effort (개발 공수) | 우선순위 (Priority) |
+| :--- | :--- | :--- | :--- | :--- | :--- |
+| 1 | '마케팅 > SNS 광고' 카테고리 및 'Midjourney' 모델로 필터링 | 김미소 | **High** | **Medium** | Core (3순위) |
+| 2 | '✅ 전문가 검증' 배지와 실제 결과 예시 확인 | 김미소 | **High** | **Medium** | Core (3순위) |
+| 3 | 간단한 양식(Form) 입력으로 No-Code 커스터마이징 | 김미소 | **High** | **High** | **Major Project (2순위)** |
+| 4 | 'GPT-4o'와 'Claude 3.5 Sonnet'용 프롬프트 구분 검색 | 이선우 | **Medium** | **Medium** | Future (4순위) |
+| 5 | 상세 페이지에서 '토큰 사용량' 및 '응답 속도' 데이터 확인 | 이선우 | **Medium** | **High** | Future (4순위) |
+| 6 | 유용한 프롬프트를 '내 라이브러리'에 저장 | 이선우 | **High** | **Low** | **MVP (1순위)** |
+| 7 | 저장한 프롬프트의 변경 이력(Version History) 관리 | 이선우 | **Medium** | **High** | Future (4순위) |
+| 8 | '팀 스페이스'를 생성하고 동료 초대 | 이선우 | **High** | **High** | **Major Project (2순위)** |
+| 9 | Google/GitHub 계정으로 10초 만에 가입 (간편 가입) | 공통 | **High** | **Medium** | Core (3순위) |
+| 10 | 'Pro 프롬프트'나 '팀 라이브러리' 사용 시 쉬운 결제 (구독/결제) | 공통 | **High** | **High** | **Major Project (2순위)** |
 
 ---
 
-## 1. 우선순위 매트릭스 분석 (4분면)
+## PRD: MVP 기능 명세
 
+Task 4 분석 결과, 'Impact (High)'이면서 'Effort (Low)'인 핵심 1순위 기능(Quick Win)은 다음과 같습니다. 이 기능을 중심으로 초기 MVP 릴리즈를 구성합니다.
 
-
-[Image of 4-quadrant priority matrix]
-
-
-위의 평가를 바탕으로 4분면 매트릭스 분석을 진행합니다.
-
-* **Quadrant 1: Quick Wins (High Impact / Low Effort)**
-    * **ID #6 (개인 라이브러리):** 사용자가 가치를 발견했을 때(유용한 프롬프트) 즉시 저장할 수 있게 하는 핵심 기능입니다. 개발 공수 대비 임팩트가 매우 높아 P0(MVP)에 반드시 포함해야 합니다.
-
-* **Quadrant 2: Big Bets / Core Features (High Impact / High Effort)**
-    * **ID #1, #2 (필터링, 품질 증명):** 두 페르소나(특히 김미소)가 원하는 프롬프트를 '신뢰'하며 '발견'하는 핵심 여정(User Journey)입니다. Effort가 Medium이지만 MVP에 필수적입니다.
-    * **ID #9 (간편 가입):** 서비스의 첫인상(Onboarding)이며, 이탈률(Bounce Rate)을 막는 핵심 장치입니다.
-    * **ID #3, #8, #10 (No-Code, 팀, 결제):** 제품의 핵심 'Magic Moment'이자 'B2B/수익화'의 근간입니다. Effort가 높아 MVP에서 전략적 선택이 필요합니다.
-
-* **Quadrant 3: Nice-to-Haves (Low Impact / Low Effort)**
-    * *(현재 매트릭스에는 명확히 분류된 항목이 없습니다.)*
-
-* **Quadrant 4: Post-MVP / Re-evaluate (Low-Medium Impact / High Effort)**
-    * **ID #5, #7 (성능 데이터, 버전 관리):** 개발자(이선우)에게 유용하지만, '검증'과 '관리'의 영역입니다. 이는 '발견'과 '사용'이라는 MVP의 핵심 가치(Core Value) 이후에 제공되어도 무방합니다.
-    * **ID #4 (특화 검색):** ID #1(필터링)이 구현되면 상당 부분 해소되며, 추후 고도화(Optimization) 영역에서 다룹니다.
-
-## 2. MVP 범위 선정 제안
-
-위의 분석을 바탕으로, MVP의 범위를 'P0(Core MVP)'와 'P1(Fast Follow)'으로 나누어 제안합니다.
-
-### P0: Core MVP (핵심 단일 사용자 경험)
-
-"가입한 사용자가 원하는 프롬프트를 신뢰하며 발견하고, 개인 라이브러리에 저장하여 재사용한다."
-
-* **P0 포함 기능 (총 4개):**
-    * **ID #9 (간편 가입):** 사용자가 서비스를 만나는 첫 관문.
-    * **ID #1 (필터링):** 원하는 프롬프트를 찾는 핵심 '발견' 기능.
-    * **ID #2 (품질 증명):** 프롬프트를 '신뢰'하고 선택하게 만드는 장치.
-    * **ID #6 (개인 라이브러리):** 가치를 '저장'하고 재방문하게 만드는 핵심 '유틸리티' (Quick Win).
-
-### P1: Fast Follow (수익화 및 마법의 순간)
-
-"MVP 핵심 경험에 만족한 사용자가 1) 동료와 협업(B2B)하거나, 2) '마법 같은' No-Code 경험을 위해 기꺼이 비용을 지불한다."
-
-* **P1 포함 기능 (총 4개):**
-    * **ID #8 (팀 라이브러리):** B2B 확장 및 협업의 시작.
-    * **ID #10 (구독/결제):** ID #8 또는 ID #3 사용을 위한 수익화(Monetization) 핵심.
-    * **ID #3 (No-Code 커스터마이징):** 마케터(김미소) 페르소나의 'Magic Moment'를 완성하고, Pro 플랜으로 유도하는 핵심 기능.
-    * **ID #4 (AI 모델별 특화 검색):** P0에서 확보된 사용자 데이터를 바탕으로 검색/필터링 고도화.
-
-### P2: Future (전문가/파워 유저)
-
-"플랫폼에 정착한 개발자(이선우)가 프롬프트를 전문적으로 관리하고 최적화한다."
-
-* **P2 포함 기능 (총 3개):**
-    * **ID #5 (성능 데이터 검증)**
-    * **ID #7 (프롬프트 버전 관리)**
+* **[MVP (1순위)] ID #6 (개인 라이브러리):** 사용자가 마음에 드는 유용한 프롬프트를 '내 라이브러리'에 저장(Save/Bookmark)할 수 있는 기능.
