@@ -7,4 +7,21 @@
  This should look like a high-tech dashboard. --ar 16:9"
 ```
 
-## Midjourney
+## Output
+
+### Midjourney
+
+![moodboard01](./images/mid_moodboard_01.png)
+
+![moodboard02](./images/mid_moodboard_02.png)
+
+![moodboard03](./images/mid_moodboard_03.png)
+
+### Midjourney
+
+![moodboard01](./images/mid_moodboard_01.png)
+
+![moodboard02](./images/mid_moodboard_02.png)
+
+![moodboard03](./images/mid_moodboard_03.png)
+
