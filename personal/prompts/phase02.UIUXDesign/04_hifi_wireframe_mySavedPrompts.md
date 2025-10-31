@@ -45,6 +45,45 @@ All other LNB icons (like <BookOpen>) are 'idle' (text-gray-400).
 ```
 
 ## Output
+
+I'll check the current state of the files you've edited and then update them to match your specifications.
+
+Perfect! I've created the complete "My Saved Prompts" page that follows all your specifications:
+
+
+
+✅ Design System - Exactly matches the Explore page:
+
+Background: Deep charcoal (#1E1E24)
+Primary accent: Intelligent blue (#007AFF)
+Text colors: text-white (primary), text-gray-400 (secondary)
+
+
+✅ Layout:
+
+LNB: 60px width with glassmorphism (bg-white/5, backdrop-blur-xl)
+Top Bar: 64px height with bg-[#1E1E24]/80 and search bar (bg-[#2A2A32])
+Main Content: flex-1 overflow-y-auto with px-8 py-8
+
+
+✅ Elements:
+
+Page Header: "My Saved Prompts" (text-white text-3xl) and subtitle
+3-column grid (not Masonry) for saved prompts
+Empty State with:
+Large faded Star icon (w-16 h-16, text-gray-600)
+"You haven't saved any prompts yet." (text-white)
+"Click the save icon on a prompt to add it here." (text-gray-400)
+
+
+✅ Active State:
+
+Star icon in LNB has bg-[#007AFF]/20 background and text-[#007AFF] color
+BookOpen and other icons are idle (text-gray-400)
+
+
+The app now has both implementations: a standalone /mySavedPrompts.tsx page and the integrated version in /App.tsx that switches between Explore and Saved views.
+
 ```
 import { Search, Sparkles, BookOpen, Star, Zap, TrendingUp, User, Settings } from 'lucide-react';
 import { PromptCard } from './components/PromptCard';

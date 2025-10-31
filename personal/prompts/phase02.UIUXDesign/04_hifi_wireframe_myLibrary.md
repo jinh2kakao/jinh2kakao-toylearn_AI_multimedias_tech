@@ -36,6 +36,55 @@ All other LNB icons are 'idle' (text-gray-400).
 ```
 
 ## Output
+
+I'll create the "My Prompt Library" page with the user-created prompts functionality, edit/delete controls, and proper empty state.
+
+Perfect! I've created the complete "My Prompt Library" page with all the requested features:
+
+
+
+✅ Design System - Matches the Explore page:
+
+Background: Deep charcoal (#1E1E24)
+Primary accent: Intelligent blue (#007AFF)
+Consistent glassmorphism LNB and top bar styling
+
+
+✅ Page Header with flex row layout:
+
+Left side: "My Prompt Library" (text-white text-3xl) with subtitle "Create, edit, and manage your custom prompts"
+Right side: "Create New Prompt" primary CTA button (bg-[#007AFF], hover:bg-[#007AFF]/90)
+
+
+✅ Content Grid:
+
+Standard 3-column grid layout
+Custom `LibraryPromptCard` component with Edit and Delete icons that appear on hover (text-gray-400)
+
+
+✅ Empty State:
+
+Large faded Zap icon (w-16 h-16, text-gray-600)
+h3 "Your library is empty."
+"Create New Prompt" primary CTA button
+
+
+✅ Navigation State:
+
+Zap icon in LNB is active (bg-[#007AFF]/20, text-[#007AFF]) when on the Library page
+All other icons are idle (text-gray-400)
+
+
+The implementation includes:
+
+`/myLibrary.tsx` - Standalone page with full layout
+`/components/MyLibrary.tsx` - Reusable component for App.tsx integration
+`/components/LibraryPromptCard.tsx` - Card variant with Edit/Delete functionality
+Updated `/App.tsx` - Now supports three pages: Explore, Saved, and Library
+
+
+Click the Zap icon in the navigation to view the My Prompt Library page!
+
 ```
 import { Search, Sparkles, BookOpen, Star, Zap, TrendingUp, User, Settings } from 'lucide-react';
 import { LibraryPromptCard } from './components/LibraryPromptCard';

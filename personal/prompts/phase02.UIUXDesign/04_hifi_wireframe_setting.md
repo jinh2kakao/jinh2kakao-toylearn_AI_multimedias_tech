@@ -1,42 +1,58 @@
 
 ## Prompts
 ```
-[SCENE] A high-resolution UI mockup for the 'Trending Prompts' page. Dark mode.
+[SCENE] A high-resolution UI mockup for the 'Settings' page. Dark mode.
 
-[DESIGN SYSTEM CONTEXT] Must strictly adhere to the established design system (Dark mode #1E1E24, Accent #007AFF, LNB Glassmorphism, Top Bar blur, Card styles).
+[DESIGN SYSTEM CONTEXT] Must strictly adhere to the established design system (Dark mode #1E1E24, Accent #007AFF, LNB Glassmorphism, Top Bar blur).
 
-[LAYOUT] Identical LNB, Top Bar, and Main Content padding (px-8 py-8) as the 'Explore' page. The content area must use the Masonry Grid just like the 'Explore' page.
+[LAYOUT]
+
+Identical LNB and Top Bar.
+
+Main Content: px-8 py-8.
+
+Page Layout: A two-column layout.
+
+Left Column (Sub-navigation): w-1/4. A vertical list of navigation items.
+
+Right Column (Content Area): w-3/4. Displays the content for the selected sub-nav item.
 
 [ELEMENTS]
 
-Page Header: h1 "Trending Now" (text-white text-3xl) and p "The most popular and fastest-growing prompts" (text-gray-400).
+Page Header: h1 "Settings" (text-white text-3xl).
 
-Filter Tabs: Below the header, show a row of filter pills:
+Sub-navigation (Left Column):
 
-Options: "Today", "This Week", "This Month", "All Time".
+Items: "Appearance", "API Keys", "Notifications".
 
-'Idle' Style: bg-[#2A2A32], text-gray-400, rounded-full, py-1 px-3.
+'Idle' Style: text-gray-400, hover:text-white, py-2 px-3 rounded-lg.
 
-'Active' Style (e.g., 'This Week'): bg-[#007AFF]/20, text-[#007AFF].
+'Active' Style (e.g., 'Appearance'): text-white, bg-[#2A2A32].
 
-Content Grid: A 3-column Masonry Grid (identical to 'Explore') filled with PromptCard components. The cards should prominently display stats (likes, saves).
+Content Area (Right Column - for 'Appearance'):
+
+Section Title: h3 "Appearance" (text-white).
+
+Option: "Theme".
+
+Option Controls: Show two cards for 'Light Mode' (disabled) and 'Dark Mode' (active). The active card has a blue border border-[#007AFF].
 
 [STATE]
 
-In the LNB, the <TrendingUp> icon is 'active': bg-[#007AFF]/20 background and text-[#007AFF] color.
+In the LNB, the <Settings> icon is 'active': bg-[#007AFF]/20 background and text-[#007AFF] color.
 
 All other LNB icons are 'idle' (text-gray-400).
 ```
 
 ## Output
 
-I'll create the "Trending Prompts" page with the masonry grid layout and filter tabs as specified.
+I'll create the "Settings" page with a two-column layout, sub-navigation, and appearance settings with theme cards.
 
-Perfect! I've successfully created the "Trending Prompts" page with all the requested features:
+Perfect! I've successfully created the "Settings" page with all the requested features:
 
 
 
-✅ Design System - Matches the Explore page:
+✅ Design System - Matches existing pages:
 
 Background: Deep charcoal (#1E1E24)
 Primary accent: Intelligent blue (#007AFF)
@@ -44,41 +60,41 @@ Consistent glassmorphism LNB and top bar styling
 Identical padding (px-8 py-8)
 
 
-✅ Page Header:
+✅ Two-Column Layout:
 
-h1 "Trending Now" (text-white text-3xl)
-Subtitle: "The most popular and fastest-growing prompts" (text-gray-400)
-
-
-✅ Filter Tabs:
-
-Four options: "Today", "This Week", "This Month", "All Time"
-Idle style: bg-[#2A2A32], text-gray-400, rounded-full
-Active style: bg-[#007AFF]/20, text-[#007AFF] (defaulted to "This Week")
-Smooth transitions on hover and click
+Left column (w-1/4): Sub-navigation menu
+Right column (w-3/4): Content area
 
 
-✅ Masonry Grid:
+✅ Sub-navigation (Left Column):
 
-3-column layout identical to the Explore page
-Uses react-responsive-masonry with 24px gutter
-Populated with trending prompts sorted by engagement stats (likes/saves)
+Three items: "Appearance", "API Keys", "Notifications"
+Idle style: text-gray-400, hover:text-white
+Active style: text-white, bg-[#2A2A32] (defaulted to "Appearance")
+
+
+✅ Content Area - Appearance Section:
+
+Section title: "Appearance" (h3, text-white)
+Theme option with two cards:
+Light Mode: Disabled/grayed out with "Coming soon" label
+Dark Mode: Active with blue border (border-[#007AFF]) and check icon
 
 
 ✅ Navigation State:
 
-TrendingUp icon in LNB is active (bg-[#007AFF]/20, text-[#007AFF]) when on the Trending page
+Settings icon in LNB is active (bg-[#007AFF]/20, text-[#007AFF]) when on Settings page
 All other icons are idle (text-gray-400)
 
 
 The implementation includes:
 
-`/trending.tsx` - Standalone page with full layout
-`/components/Trending.tsx` - Reusable component for App.tsx integration
-Updated `/App.tsx` - Now supports four pages: Explore, Saved, Library, and Trending
+`/setting.tsx` - Standalone page with full layout
+`/components/Settings.tsx` - Reusable component for App.tsx integration
+Updated `/App.tsx` - Now supports five pages: Explore, Saved, Library, Trending, and Settings
 
 
-Click the TrendingUp icon in the navigation to view the Trending page with interactive filter tabs!
+Click the Settings icon (gear) in the bottom navigation to view the Settings page with the appearance controls and sub-navigation tabs!
 
 ```
 import {
@@ -95,11 +111,12 @@ import { ExplorePage } from "./components/ExplorePage";
 import { SavedPrompts } from "./components/SavedPrompts";
 import { MyLibrary } from "./components/MyLibrary";
 import { Trending } from "./components/Trending";
+import { Settings as SettingsPage } from "./components/Settings";
 import { useState } from "react";
 
 export default function App() {
   const [currentPage, setCurrentPage] = useState<
-    "explore" | "saved" | "library" | "trending"
+    "explore" | "saved" | "library" | "trending" | "settings"
   >("explore");
   const [savedPrompts] = useState<any[]>([]); // Empty for demo - can add prompts here
   const [userPrompts] = useState<any[]>([]); // Empty for demo - user created prompts
@@ -180,9 +197,16 @@ export default function App() {
 
         {/* Bottom Icons */}
         <div className="relative z-10 mt-auto flex flex-col items-center gap-4 w-full">
-          <button className="w-10 h-10 rounded-xl flex items-center justify-center hover:bg-white/10 transition-all">
+          <button
+            onClick={() => setCurrentPage("settings")}
+            className={`w-10 h-10 rounded-xl flex items-center justify-center transition-all ${
+              currentPage === "settings"
+                ? "bg-[#007AFF]/20"
+                : "hover:bg-white/10"
+            }`}
+          >
             <Settings
-              className="w-5 h-5 text-gray-400"
+              className={`w-5 h-5 ${currentPage === "settings" ? "text-[#007AFF]" : "text-gray-400"}`}
               strokeWidth={2}
             />
           </button>
@@ -223,6 +247,8 @@ export default function App() {
             <SavedPrompts savedPrompts={savedPrompts} />
           ) : currentPage === "trending" ? (
             <Trending />
+          ) : currentPage === "settings" ? (
+            <SettingsPage />
           ) : (
             <MyLibrary userPrompts={userPrompts} />
           )}
