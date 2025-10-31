@@ -1,0 +1,585 @@
+{
+  "name": "13_RPA_multimedias",
+  "nodes": [
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {}
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.2,
+      "position": [
+        0,
+        0
+      ],
+      "id": "c57a1d87-4a5b-497b-9794-9c430a35d3c7",
+      "name": "Schedule Trigger"
+    },
+    {
+      "parameters": {
+        "resource": "fileFolder",
+        "filter": {
+          "folderId": {
+            "__rl": true,
+            "value": "1qnx0nbXY7RRQXVdkI5_glKeaTWlgowNV",
+            "mode": "list",
+            "cachedResultName": "00.triggers",
+            "cachedResultUrl": "https://drive.google.com/drive/folders/1qnx0nbXY7RRQXVdkI5_glKeaTWlgowNV"
+          }
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleDrive",
+      "typeVersion": 3,
+      "position": [
+        208,
+        0
+      ],
+      "id": "88c2d4cd-6452-46d9-824f-c35c303b3c3a",
+      "name": "Search files and folders",
+      "credentials": {
+        "googleDriveOAuth2Api": {
+          "id": "IdmD8fT7ebqaTxqy",
+          "name": "Google Drive account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "get",
+        "documentURL": "={{ $json.id }}"
+      },
+      "type": "n8n-nodes-base.googleDocs",
+      "typeVersion": 2,
+      "position": [
+        1072,
+        208
+      ],
+      "id": "4fd1304b-ce9b-43b1-b78e-c1b1b1dbff40",
+      "name": "Get a document",
+      "credentials": {
+        "googleDocsOAuth2Api": {
+          "id": "9qNXnCSRN7RcRLiR",
+          "name": "Google Docs account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "modelId": {
+          "__rl": true,
+          "value": "models/gemini-2.5-flash",
+          "mode": "list",
+          "cachedResultName": "models/gemini-2.5-flash"
+        },
+        "messages": {
+          "values": [
+            {
+              "content": "=[Role]\n당신은 20년 경력의 광고 대행사 시니어 팀장이자, 노련한 마케터 겸 경영 전문가입니다.당신은 클라이언트의 요청을 단순히 수동적으로 분석하는 것을 넘어, 그들의 비즈니스 목표, KPI, 그리고 예산의 한계를 명확히 파악합니다. 당신의 강점은 이 모든 요소를 고려하여 가장 효과적이고 전략적인 솔루션을 '역제안'하는 데 있습니다.당신의 모든 제안은 감이 아닌 데이터와 경험에 기반하며, 항상 클라이언트의 비즈니스 성공을 최우선 목표로 합니다. 당신은 단순한 실행자가 아닌, 신뢰할 수 있는 파트너이자 전문가입니다.\n\n[Task] \n1. 아래 Context 섹션에 제공된 [담당자 정보], [가격 정책], 그리고 2개의 **[요청 메일]**을 면밀히 분석하십시오.\n2. 두 개의 [요청 메일](요청 01: 더 어반 십, 요청 02: 초록숲 재단) 각각에 대해 개별적인 답신 메일 초안을 작성해야 합니다. (총 2개의 답신 메일 생성)\n3. 각 답신 메일에는 [가격 정책] 1을 기반으로, 클라이언트의 예산과 목표에 맞춘 **세 가지 맞춤형 솔루션(제안 A, B, C)**을 [출력 형식]의 표에 맞춰 제시해야 합니다.이 세 가지 제안은 단순히 업무의 양이나 가격을 조절한 것이 아니라, 목표 달성 수준과 전략의 깊이에 따라 설계된 전문적인 솔루션이어야 합니다.예시: (A: 최소 예산, 핵심 매체 집중 / B: 권장 예산, 통합 미디어 믹스 / C: 목표 초과 달성, 프리미엄 제작 및 확장)\n4. [전문가 추천 내용] 부분에는 20년차 전문가로서의 통찰력을 담아, 클라이언트가 왜 특정 제안(예: 제안 B)을 선택해야 하는지, 그것이 비즈니스 목표 달성에 어떤 의미가 있는지 설득력 있게 조언하십시오.\n5. 모든 정보(회사명, 프로젝트명, 목표, 예산 등)는 각 [요청 메일]의 내용을 정확히 반영해야 합니다.\n6. 답신 메일의 발신자 정보는 제공된 [담당자 정보]를 사용하십시오.\n7. 최종 결과물은 4. Output Format을 완벽하게 준수하는 Markdown 형식이어야 합니다.\n\n[Context]\n1. 담당자 정보 (발신자 정보)이름: 김진현\n2. 직책: 마케팅 전략팀장\n3. 연락처: 010-6300-0305\n4. 이메일: jinh1203@gmail.com\n5. 웹사이트: https://jinhyun.framer.website/\n6. 가격 정책: {{ $json.text_price[0] }}\n7. 요청 메일: {{ $json.text[0] }}\n\n4. Output Format (출력 형식)[주의] 아래 형식은 각 메일 초안마다 개별적으로 적용되어야 합니다.[ ] 괄호 안의 내용은 분석한 컨텍스트에 맞게 채워 넣으십시오.[출력 형식: MD 파일 형식]안녕하십니까, [내 이름]입니다. 지난번 논의(또는 보내주신 문의)를 바탕으로, [귀사명]의 성공적인 [프로젝트명] 캠페인을 위한 맞춤형 전략 제안 및 견적서를 준비하여 보내드립니다.저희는 귀사의 비즈니스 목표인 '[클라이언트의 핵심 목표, 예: 신규 고객 확보 및 브랜드 인지도 상승]'을 달성하기 위한 최적의 실행 방안을 깊이 고민했습니다. 그 결과, 예산과 목표 범위에 따라 선택하실 수 있도록 다음과 같이 세 가지 솔루션을 제안 드립니다.각 제안은 단순히 업무의 양을 조절한 것이 아니라, 목표 달성 수준과 전략의 깊이에 따라 설계된 전문적인 솔루션임을 먼저 말씀드립니다.[프로젝트명] 광고 캠페인 제안 및 견적구분제안 A: [패키지명]제안 B: [패키지명]제안 C: [패키지명]핵심 목표[A안의 핵심 목표][B안의 핵심 목표][C안의 핵심 목표]월 대행 수수료[A안의 금액 또는 \"포함\"][B안의 금액 또는 \"포함\"][C안의 금액 또는 \"포함\"]광고 매체비[A안의 매체비][B안의 매체비][C안의 매체비]포함 내역[A안의 상세 내역, 예: 라디오 제작, TV 10회][B안의 상세 내역, 예: TV CF(Std) 제작, 미디어 믹스][C안의 상세 내역, 예: TV CF(Prem) 제작, 통합 컨설팅]기대 효과[A안의 기대 효과][B안의 기대 효과][C안의 기대 효과][전문가 추천 내용](예: 20년차 전문가로서의 조언. \"귀사의 KPI와 예산을 고려할 때, 제안 B가 가장 균형 잡힌 선택입니다. 이유는...\")물론, 제안 내용은 귀사의 구체적인 상황과 예산에 맞춰 유연하게 조율 가능합니다.첨부해 드리는 상세 제안서를 함께 검토해 주시면 감사하겠습니다. 제안서의 구체적인 내용에 대해 설명드리고, 궁금하신 점에 답변을 드리는 시간을 갖고자 합니다.다음 주 중 편하신 시간을 2~3개 회신 주시면, 상세한 설명을 위한 미팅(온/오프라인)을 준비하도록 하겠습니다.귀사와의 성공적인 파트너십을 만들어가길 기대하겠습니다.[내 이름] 드림[내 직책][연락처] | [이메일][웹사이트 주소]"
+            }
+          ]
+        },
+        "options": {
+          "maxToolsIterations": 1
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.googleGemini",
+      "typeVersion": 1,
+      "position": [
+        1024,
+        -16
+      ],
+      "id": "0e55e7fc-24c1-4eb7-a689-5ed935a564b5",
+      "name": "Message a model",
+      "credentials": {
+        "googlePalmApi": {
+          "id": "BABxN9heyr0zZZs8",
+          "name": "Google Gemini(PaLM) Api account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "get",
+        "documentURL": "=1oFWs6XJ49t-N29twbkjHiDGjGs7EHz1zyqUNp1e1oec"
+      },
+      "type": "n8n-nodes-base.googleDocs",
+      "typeVersion": 2,
+      "position": [
+        1072,
+        400
+      ],
+      "id": "0dac6f39-0dae-40a6-9a23-2706ccdc42df",
+      "name": "Get a document1",
+      "credentials": {
+        "googleDocsOAuth2Api": {
+          "id": "9qNXnCSRN7RcRLiR",
+          "name": "Google Docs account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "b3f8ad34-72f5-41cf-b9db-1974ed7a0c54",
+              "leftValue": "={{ $json.id }}",
+              "rightValue": "1oFWs6XJ49t-N29twbkjHiDGjGs7EHz1zyqUNp1e1oec",
+              "operator": {
+                "type": "string",
+                "operation": "notEquals"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        864,
+        224
+      ],
+      "id": "007f8015-fc2f-4a5e-8fb7-392731313011",
+      "name": "If"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "d62e2874-ad82-4a5b-9377-fff8284b5d77",
+              "name": "text_price",
+              "value": "={{ $json.content }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        1280,
+        400
+      ],
+      "id": "3d62d6a4-1155-40fe-8cda-4a638a1719a3",
+      "name": "Edit Fields"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "c14ac8b5-d1c6-4e0f-b121-8df64856ecda",
+              "name": "text",
+              "value": "={{ $json.content }}",
+              "type": "string"
+            },
+            {
+              "id": "079a0246-711a-4a11-b30b-a3f3f550f3db",
+              "name": "docId",
+              "value": "={{ $('If').item.json.id }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        1280,
+        208
+      ],
+      "id": "fdd5b16d-5883-4f3f-97ee-f250a123a9f5",
+      "name": "Edit Fields1"
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "n8n-nodes-base.splitInBatches",
+      "typeVersion": 3,
+      "position": [
+        416,
+        0
+      ],
+      "id": "0cd1dcda-a98d-425d-a36d-1383d8b3e3d7",
+      "name": "Loop Over Items"
+    },
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.noOp",
+      "name": "Replace Me",
+      "typeVersion": 1,
+      "position": [
+        1552,
+        448
+      ],
+      "id": "bcc918e6-a243-476a-9bcf-32381057920a"
+    },
+    {
+      "parameters": {
+        "operation": "update",
+        "documentURL": "={{ $json.id }}",
+        "actionsUi": {
+          "actionFields": [
+            {
+              "action": "insert",
+              "text": "={{ $('Message a model').item.json.content.parts[0].text }}"
+            }
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.googleDocs",
+      "typeVersion": 2,
+      "position": [
+        1824,
+        -16
+      ],
+      "id": "60270672-4307-4660-b96a-f95370140810",
+      "name": "Update a document",
+      "credentials": {
+        "googleDocsOAuth2Api": {
+          "id": "9qNXnCSRN7RcRLiR",
+          "name": "Google Docs account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "move",
+        "fileId": {
+          "__rl": true,
+          "value": "={{ $('Edit Fields1').item.json.docId }}",
+          "mode": "id"
+        },
+        "driveId": {
+          "__rl": true,
+          "mode": "list",
+          "value": "My Drive"
+        },
+        "folderId": {
+          "__rl": true,
+          "value": "1PQ97H27l10zAKjnSSUtHJ8a7UKjeGC8f",
+          "mode": "list",
+          "cachedResultName": "01.mailRespons",
+          "cachedResultUrl": "https://drive.google.com/drive/folders/1PQ97H27l10zAKjnSSUtHJ8a7UKjeGC8f"
+        }
+      },
+      "type": "n8n-nodes-base.googleDrive",
+      "typeVersion": 3,
+      "position": [
+        2032,
+        -16
+      ],
+      "id": "94c72e85-c108-4eb1-9bac-01a8b073963b",
+      "name": "Move file",
+      "credentials": {
+        "googleDriveOAuth2Api": {
+          "id": "IdmD8fT7ebqaTxqy",
+          "name": "Google Drive account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "fieldsToAggregate": {
+          "fieldToAggregate": [
+            {
+              "fieldToAggregate": "text_price"
+            },
+            {
+              "fieldToAggregate": "text"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.aggregate",
+      "typeVersion": 1,
+      "position": [
+        624,
+        -16
+      ],
+      "id": "ec056418-4870-4f9f-8cdb-7124ecef0ce0",
+      "name": "Aggregate"
+    },
+    {
+      "parameters": {
+        "folderId": "={{ $json.id }}",
+        "title": "=메일답변 {{ $('Schedule Trigger').item.json.timestamp }}"
+      },
+      "type": "n8n-nodes-base.googleDocs",
+      "typeVersion": 2,
+      "position": [
+        1616,
+        -16
+      ],
+      "id": "1f70cf86-8ed1-42b9-ac1b-ffb398d57451",
+      "name": "Create a document",
+      "credentials": {
+        "googleDocsOAuth2Api": {
+          "id": "9qNXnCSRN7RcRLiR",
+          "name": "Google Docs account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "resource": "fileFolder",
+        "queryString": "01.mail",
+        "filter": {},
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleDrive",
+      "typeVersion": 3,
+      "position": [
+        1376,
+        -16
+      ],
+      "id": "767db156-2c7e-4257-9168-510cba91d5e0",
+      "name": "Search files and folders1",
+      "credentials": {
+        "googleDriveOAuth2Api": {
+          "id": "IdmD8fT7ebqaTxqy",
+          "name": "Google Drive account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "resource": "fileFolder",
+        "filter": {
+          "folderId": {
+            "__rl": true,
+            "value": "1qnx0nbXY7RRQXVdkI5_glKeaTWlgowNV",
+            "mode": "list",
+            "cachedResultName": "00.triggers",
+            "cachedResultUrl": "https://drive.google.com/drive/folders/1qnx0nbXY7RRQXVdkI5_glKeaTWlgowNV"
+          }
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleDrive",
+      "typeVersion": 3,
+      "position": [
+        192,
+        752
+      ],
+      "id": "5b41debb-4e3b-43ae-9342-311a3f409925",
+      "name": "Search files and folders2",
+      "credentials": {
+        "googleDriveOAuth2Api": {
+          "id": "IdmD8fT7ebqaTxqy",
+          "name": "Google Drive account"
+        }
+      }
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Schedule Trigger": {
+      "main": [
+        [
+          {
+            "node": "Search files and folders",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Search files and folders": {
+      "main": [
+        [
+          {
+            "node": "Loop Over Items",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get a document": {
+      "main": [
+        [
+          {
+            "node": "Edit Fields1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get a document1": {
+      "main": [
+        [
+          {
+            "node": "Edit Fields",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If": {
+      "main": [
+        [
+          {
+            "node": "Get a document",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Get a document1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Edit Fields": {
+      "main": [
+        [
+          {
+            "node": "Replace Me",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Loop Over Items": {
+      "main": [
+        [
+          {
+            "node": "Aggregate",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "If",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Edit Fields1": {
+      "main": [
+        [
+          {
+            "node": "Replace Me",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Replace Me": {
+      "main": [
+        [
+          {
+            "node": "Loop Over Items",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Message a model": {
+      "main": [
+        [
+          {
+            "node": "Search files and folders1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Update a document": {
+      "main": [
+        [
+          {
+            "node": "Move file",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Aggregate": {
+      "main": [
+        [
+          {
+            "node": "Message a model",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Create a document": {
+      "main": [
+        [
+          {
+            "node": "Update a document",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Search files and folders1": {
+      "main": [
+        [
+          {
+            "node": "Create a document",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Move file": {
+      "main": [
+        [
+          {
+            "node": "Search files and folders2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "8c962dd8-0ff6-4097-836d-85e4e7ba3b82",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "43fb3a16ecf763f60a35b4d4d998a7ecbe9d399cf0ac7e6a70a07e9db19b12c5"
+  },
+  "id": "NAsUfTC0cr8Bckgy",
+  "tags": []
+}
