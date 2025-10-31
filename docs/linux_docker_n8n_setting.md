@@ -28,8 +28,10 @@ AMD CPU: AMD-V, SVM (Secure Virtual Machine) Mode
 ```
 docker run -d -p 8080:80 nginx
 ```
-4. docker에 n8n 설치 명령어 입력
+4. docker에 n8n 설치 명령어 입력.
 ```
 docker run -it --rm --name n8n -p 5678:5678 -e TZ=Asia/Seoul  n8nio/n8n
 ```
-5. 
+5. docker의 container에서 브라우저 실행.
+
+6. n8n 실행확인.
