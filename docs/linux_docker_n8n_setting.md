@@ -24,7 +24,12 @@ AMD CPU: AMD-V, SVM (Secure Virtual Machine) Mode
 ## 03. Docker 실행
 1. Docker 실행
 2. Powershell 관리자 권한 실행
-3. 명령어 입력
+3. docker 실행 명령어 입력
 ```
 docker run -d -p 8080:80 nginx
 ```
+4. docker에 n8n 설치 명령어 입력
+```
+docker run -it --rm --name n8n -p 5678:5678 -e TZ=Asia/Seoul  n8nio/n8n
+```
+5. 
