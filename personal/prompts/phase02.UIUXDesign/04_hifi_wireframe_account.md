@@ -48,5 +48,179 @@ All other LNB icons are 'idle' (text-gray-400).
 
 
 ```
+import {
+  Search,
+  Sparkles,
+  BookOpen,
+  Star,
+  Zap,
+  TrendingUp,
+  User,
+  Settings,
+} from "lucide-react";
+import { ExplorePage } from "./components/ExplorePage";
+import { SavedPrompts } from "./components/SavedPrompts";
+import { MyLibrary } from "./components/MyLibrary";
+import { Trending } from "./components/Trending";
+import { Settings as SettingsPage } from "./components/Settings";
+import { Account } from "./components/Account";
+import { Toaster } from "./components/ui/sonner";
+import { useState } from "react";
+
+export default function App() {
+  const [currentPage, setCurrentPage] = useState<
+    "explore" | "saved" | "library" | "trending" | "settings" | "account"
+  >("explore");
+  const [savedPrompts] = useState<any[]>([]); // Empty for demo - can add prompts here
+  const [userPrompts] = useState<any[]>([]); // Empty for demo - user created prompts
+
+  return (
+    <>
+      <Toaster />
+      <div className="flex h-screen bg-[#1E1E24] overflow-hidden">
+      {/* Glassmorphism Sidebar */}
+      <nav className="w-[60px] relative flex flex-col items-center py-6 gap-6 backdrop-blur-xl bg-white/5 border-r border-white/10">
+        {/* Glass effect overlay */}
+        <div className="absolute inset-0 bg-gradient-to-br from-white/10 to-transparent pointer-events-none"></div>
+
+        <div className="relative z-10 flex flex-col items-center gap-6 w-full">
+          {/* Logo */}
+          <div className="w-10 h-10 rounded-xl bg-[#007AFF] flex items-center justify-center">
+            <Sparkles
+              className="w-5 h-5 text-white"
+              strokeWidth={2}
+            />
+          </div>
+
+          {/* Navigation Icons */}
+          <button
+            onClick={() => setCurrentPage("explore")}
+            className={`w-10 h-10 rounded-xl flex items-center justify-center transition-all ${
+              currentPage === "explore"
+                ? "bg-[#007AFF]/20"
+                : "hover:bg-white/10"
+            }`}
+          >
+            <BookOpen
+              className={`w-5 h-5 ${currentPage === "explore" ? "text-[#007AFF]" : "text-gray-400"}`}
+              strokeWidth={2}
+            />
+          </button>
+
+          <button
+            onClick={() => setCurrentPage("saved")}
+            className={`w-10 h-10 rounded-xl flex items-center justify-center transition-all ${
+              currentPage === "saved"
+                ? "bg-[#007AFF]/20"
+                : "hover:bg-white/10"
+            }`}
+          >
+            <Star
+              className={`w-5 h-5 ${currentPage === "saved" ? "text-[#007AFF]" : "text-gray-400"}`}
+              strokeWidth={2}
+            />
+          </button>
+
+          <button
+            onClick={() => setCurrentPage("library")}
+            className={`w-10 h-10 rounded-xl flex items-center justify-center transition-all ${
+              currentPage === "library"
+                ? "bg-[#007AFF]/20"
+                : "hover:bg-white/10"
+            }`}
+          >
+            <Zap
+              className={`w-5 h-5 ${currentPage === "library" ? "text-[#007AFF]" : "text-gray-400"}`}
+              strokeWidth={2}
+            />
+          </button>
+
+          <button
+            onClick={() => setCurrentPage("trending")}
+            className={`w-10 h-10 rounded-xl flex items-center justify-center transition-all ${
+              currentPage === "trending"
+                ? "bg-[#007AFF]/20"
+                : "hover:bg-white/10"
+            }`}
+          >
+            <TrendingUp
+              className={`w-5 h-5 ${currentPage === "trending" ? "text-[#007AFF]" : "text-gray-400"}`}
+              strokeWidth={2}
+            />
+          </button>
+        </div>
+
+        {/* Bottom Icons */}
+        <div className="relative z-10 mt-auto flex flex-col items-center gap-4 w-full">
+          <button
+            onClick={() => setCurrentPage("settings")}
+            className={`w-10 h-10 rounded-xl flex items-center justify-center transition-all ${
+              currentPage === "settings"
+                ? "bg-[#007AFF]/20"
+                : "hover:bg-white/10"
+            }`}
+          >
+            <Settings
+              className={`w-5 h-5 ${currentPage === "settings" ? "text-[#007AFF]" : "text-gray-400"}`}
+              strokeWidth={2}
+            />
+          </button>
+
+          <button
+            onClick={() => setCurrentPage("account")}
+            className={`w-10 h-10 rounded-xl flex items-center justify-center transition-all ${
+              currentPage === "account"
+                ? "bg-[#007AFF]/20"
+                : "hover:bg-white/10"
+            }`}
+          >
+            <User
+              className={`w-5 h-5 ${currentPage === "account" ? "text-[#007AFF]" : "text-gray-400"}`}
+              strokeWidth={2}
+            />
+          </button>
+        </div>
+      </nav>
+
+      {/* Main Content */}
+      <div className="flex-1 flex flex-col overflow-hidden">
+        {/* Top Bar */}
+        <header className="h-16 flex items-center px-8 border-b border-gray-800 backdrop-blur-sm bg-[#1E1E24]/80">
+          <div className="flex-1 max-w-2xl">
+            <div className="relative">
+              <Search
+                className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-500"
+                strokeWidth={2}
+              />
+              <input
+                type="text"
+                placeholder="Search prompts..."
+                className="w-full h-11 pl-12 pr-4 bg-[#2A2A32] border border-gray-800 rounded-xl text-white placeholder-gray-500 focus:outline-none focus:border-[#007AFF] transition-colors"
+              />
+            </div>
+          </div>
+        </header>
+
+        {/* Main Content Area */}
+        <main className="flex-1 overflow-y-auto px-8 py-8">
+          {currentPage === "explore" ? (
+            <ExplorePage />
+          ) : currentPage === "saved" ? (
+            <SavedPrompts savedPrompts={savedPrompts} />
+          ) : currentPage === "trending" ? (
+            <Trending />
+          ) : currentPage === "settings" ? (
+            <SettingsPage />
+          ) : currentPage === "account" ? (
+            <Account />
+          ) : (
+            <MyLibrary userPrompts={userPrompts} />
+          )}
+        </main>
+      </div>
+    </div>
+    </>
+  );
+}
 
 ```
