@@ -31,8 +31,8 @@
       "type": "n8n-nodes-base.googleSheets",
       "typeVersion": 4.7,
       "position": [
-        1920,
-        496
+        336,
+        0
       ],
       "id": "714e8fd2-6450-44fd-86f3-a2b47661468e",
       "name": "Get row(s) in sheet",
@@ -45,16 +45,16 @@
     },
     {
       "parameters": {
-        "sendTo": "={{ $json['option gmail'] }}",
-        "subject": "={{ $('Edit Fields').item.json.title }}",
-        "message": "={{ $('Edit Fields').item.json.content }}",
+        "sendTo": "={{ $('Edit Fields1').item.json.gmails }}",
+        "subject": "=테스트] {{ $('Download file').item.json.name }}",
+        "message": "={{ $json.data }}",
         "options": {}
       },
       "type": "n8n-nodes-base.gmail",
       "typeVersion": 2.1,
       "position": [
-        2224,
-        496
+        2064,
+        -16
       ],
       "id": "84c7bbd2-3d2d-4adc-9f45-a4ecf066f66e",
       "name": "Send a message",
@@ -65,30 +65,6 @@
           "name": "Gmail account"
         }
       }
-    },
-    {
-      "parameters": {
-        "options": {}
-      },
-      "type": "n8n-nodes-base.splitInBatches",
-      "typeVersion": 3,
-      "position": [
-        448,
-        0
-      ],
-      "id": "c742b3aa-392b-4950-a86e-b66570d10959",
-      "name": "Loop Over Items"
-    },
-    {
-      "parameters": {},
-      "type": "n8n-nodes-base.noOp",
-      "name": "Replace Me",
-      "typeVersion": 1,
-      "position": [
-        2448,
-        496
-      ],
-      "id": "0a70892a-07ff-4e5f-b07b-dacf3fd0fc24"
     },
     {
       "parameters": {
@@ -112,7 +88,7 @@
       "type": "n8n-nodes-base.googleDrive",
       "typeVersion": 3,
       "position": [
-        208,
+        1232,
         0
       ],
       "id": "1d57edc6-1c24-42bc-b874-3527c79c7adb",
@@ -126,76 +102,14 @@
     },
     {
       "parameters": {
-        "rules": {
-          "values": [
-            {
-              "conditions": {
-                "options": {
-                  "caseSensitive": true,
-                  "leftValue": "",
-                  "typeValidation": "strict",
-                  "version": 2
-                },
-                "conditions": [
-                  {
-                    "leftValue": "={{ $json.mimeType }}",
-                    "rightValue": "text/markdown",
-                    "operator": {
-                      "type": "string",
-                      "operation": "equals"
-                    },
-                    "id": "92a23398-0683-4485-9e05-22f8346e225d"
-                  }
-                ],
-                "combinator": "and"
-              }
-            },
-            {
-              "conditions": {
-                "options": {
-                  "caseSensitive": true,
-                  "leftValue": "",
-                  "typeValidation": "strict",
-                  "version": 2
-                },
-                "conditions": [
-                  {
-                    "id": "bd1a86d8-22df-4931-9910-4651ea9a346e",
-                    "leftValue": "={{ $json.mimeType }}",
-                    "rightValue": "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
-                    "operator": {
-                      "type": "string",
-                      "operation": "equals",
-                      "name": "filter.operator.equals"
-                    }
-                  }
-                ],
-                "combinator": "and"
-              }
-            }
-          ]
-        },
-        "options": {}
-      },
-      "type": "n8n-nodes-base.switch",
-      "typeVersion": 3.3,
-      "position": [
-        640,
-        240
-      ],
-      "id": "21b75d8e-914c-4d05-a27c-545baf883d89",
-      "name": "Switch"
-    },
-    {
-      "parameters": {
         "operation": "text",
         "options": {}
       },
       "type": "n8n-nodes-base.extractFromFile",
       "typeVersion": 1,
       "position": [
-        1296,
-        224
+        1776,
+        0
       ],
       "id": "9e1fe08c-b953-4104-8c7f-d3eb706ce0a0",
       "name": "Extract from File"
@@ -213,8 +127,8 @@
       "type": "n8n-nodes-base.googleDrive",
       "typeVersion": 3,
       "position": [
-        992,
-        224
+        1472,
+        0
       ],
       "id": "23ccb3dd-e53d-437c-92d5-f5ebd585a0f2",
       "name": "Download file",
@@ -227,74 +141,6 @@
     },
     {
       "parameters": {
-        "operation": "download",
-        "fileId": {
-          "__rl": true,
-          "value": "={{ $json.id }}",
-          "mode": "id"
-        },
-        "options": {}
-      },
-      "type": "n8n-nodes-base.googleDrive",
-      "typeVersion": 3,
-      "position": [
-        992,
-        496
-      ],
-      "id": "545b68fb-4443-4fb9-af8b-b810b55580a7",
-      "name": "Download file1",
-      "credentials": {
-        "googleDriveOAuth2Api": {
-          "id": "QauWxsPIyy4loLPC",
-          "name": "Google Drive account"
-        }
-      }
-    },
-    {
-      "parameters": {
-        "operation": "text",
-        "options": {}
-      },
-      "type": "n8n-nodes-base.extractFromFile",
-      "typeVersion": 1,
-      "position": [
-        1296,
-        496
-      ],
-      "id": "990cffaf-3e1a-4e32-b053-e36b88ef0136",
-      "name": "Extract from File1"
-    },
-    {
-      "parameters": {
-        "assignments": {
-          "assignments": [
-            {
-              "id": "3e8f7ae9-63ca-4e54-b8fb-c5982c1d9ae9",
-              "name": "title",
-              "value": "={{ $('Download file').item.json.name }}",
-              "type": "string"
-            },
-            {
-              "id": "e329da61-4caf-408a-a91e-a3d9f72ed95c",
-              "name": "content",
-              "value": "={{ $json.data }}",
-              "type": "string"
-            }
-          ]
-        },
-        "options": {}
-      },
-      "type": "n8n-nodes-base.set",
-      "typeVersion": 3.4,
-      "position": [
-        1600,
-        496
-      ],
-      "id": "d6ed9a51-44e5-4de9-9282-61ea6d1fb4fa",
-      "name": "Edit Fields"
-    },
-    {
-      "parameters": {
         "chatId": "8297276244",
         "text": "메일 발송이 완료되었습니다.",
         "additionalFields": {}
@@ -302,7 +148,7 @@
       "type": "n8n-nodes-base.telegram",
       "typeVersion": 1.2,
       "position": [
-        1296,
+        2656,
         -16
       ],
       "id": "fdc846d9-0e17-4c34-a428-80d7f3977976",
@@ -314,6 +160,76 @@
           "name": "Telegram account"
         }
       }
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "b3e73242-82a9-4bad-8455-0afe11ccf92f",
+              "name": "gmails",
+              "value": "={{ $json['gmails'].join(\",\") }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        912,
+        0
+      ],
+      "id": "47cabb6b-5bce-4645-82a8-09d04bd5923d",
+      "name": "Edit Fields1"
+    },
+    {
+      "parameters": {
+        "fieldsToAggregate": {
+          "fieldToAggregate": [
+            {
+              "fieldToAggregate": "option gmail",
+              "renameField": true,
+              "outputFieldName": "gmails"
+            },
+            {
+              "fieldToAggregate": "이름",
+              "renameField": true,
+              "outputFieldName": "names"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.aggregate",
+      "typeVersion": 1,
+      "position": [
+        624,
+        0
+      ],
+      "id": "0f86cfb7-b353-43f7-b1a3-31f99a262f75",
+      "name": "Aggregate"
+    },
+    {
+      "parameters": {
+        "fieldsToAggregate": {
+          "fieldToAggregate": [
+            {
+              "fieldToAggregate": "id"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.aggregate",
+      "typeVersion": 1,
+      "position": [
+        2336,
+        -16
+      ],
+      "id": "68adcbea-e534-4208-9098-646439fdcc13",
+      "name": "Aggregate1"
     }
   ],
   "pinData": {},
@@ -322,7 +238,7 @@
       "main": [
         [
           {
-            "node": "Search files and folders",
+            "node": "Get row(s) in sheet",
             "type": "main",
             "index": 0
           }
@@ -333,36 +249,7 @@
       "main": [
         [
           {
-            "node": "Send a message",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
-    "Loop Over Items": {
-      "main": [
-        [
-          {
-            "node": "Send a text message",
-            "type": "main",
-            "index": 0
-          }
-        ],
-        [
-          {
-            "node": "Switch",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
-    "Replace Me": {
-      "main": [
-        [
-          {
-            "node": "Loop Over Items",
+            "node": "Aggregate",
             "type": "main",
             "index": 0
           }
@@ -373,25 +260,7 @@
       "main": [
         [
           {
-            "node": "Loop Over Items",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
-    "Switch": {
-      "main": [
-        [
-          {
             "node": "Download file",
-            "type": "main",
-            "index": 0
-          }
-        ],
-        [
-          {
-            "node": "Download file1",
             "type": "main",
             "index": 0
           }
@@ -402,7 +271,7 @@
       "main": [
         [
           {
-            "node": "Edit Fields",
+            "node": "Send a message",
             "type": "main",
             "index": 0
           }
@@ -420,44 +289,44 @@
         ]
       ]
     },
-    "Download file1": {
-      "main": [
-        [
-          {
-            "node": "Extract from File1",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
-    "Extract from File1": {
-      "main": [
-        [
-          {
-            "node": "Edit Fields",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
-    "Edit Fields": {
-      "main": [
-        [
-          {
-            "node": "Get row(s) in sheet",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
     "Send a message": {
       "main": [
         [
           {
-            "node": "Replace Me",
+            "node": "Aggregate1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Edit Fields1": {
+      "main": [
+        [
+          {
+            "node": "Search files and folders",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Aggregate": {
+      "main": [
+        [
+          {
+            "node": "Edit Fields1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Aggregate1": {
+      "main": [
+        [
+          {
+            "node": "Send a text message",
             "type": "main",
             "index": 0
           }
@@ -469,7 +338,7 @@
   "settings": {
     "executionOrder": "v1"
   },
-  "versionId": "76682547-adf6-4197-8432-f4f2bd2ccd13",
+  "versionId": "0ddf4c2a-0e9e-4dd8-8d08-b3ec61e6cd5f",
   "meta": {
     "templateCredsSetupCompleted": true,
     "instanceId": "e9fc5d682107eefaee11b603cd26a60b2ec2161a2d6b6e98644158546b12814e"

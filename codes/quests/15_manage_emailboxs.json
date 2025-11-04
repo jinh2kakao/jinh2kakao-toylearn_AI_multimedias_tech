@@ -1,0 +1,733 @@
+{
+  "name": "15_manage_emailboxs",
+  "nodes": [
+    {
+      "parameters": {
+        "operation": "addLabels",
+        "messageId": "={{ $json.id }}",
+        "labelIds": [
+          "Label_2897812830002781079"
+        ]
+      },
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 2.1,
+      "position": [
+        -64,
+        -272
+      ],
+      "id": "723231ed-39eb-4f26-8977-8af855a770e2",
+      "name": "Add label to message",
+      "webhookId": "3eef98f1-4dd8-4fb0-90be-be5007b3e561",
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "w5Qpn1QWg3NktaHe",
+          "name": "Gmail account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "removeLabels",
+        "messageId": "={{ $json.id }}",
+        "labelIds": [
+          "INBOX"
+        ]
+      },
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 2.1,
+      "position": [
+        976,
+        32
+      ],
+      "id": "6c58c900-54ea-494c-80e8-8401e728a3c3",
+      "name": "Remove label from message",
+      "webhookId": "66297f2d-2c7d-49b9-b49e-8b0cc41e13a4",
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "w5Qpn1QWg3NktaHe",
+          "name": "Gmail account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "inputText": "={{ $json.snippet }}",
+        "categories": {
+          "categories": [
+            {
+              "category": "Social",
+              "description": "소셜 미디어, 뉴스레터, 마케팅 메일 등 정보성 메시지"
+            },
+            {
+              "category": "Personal",
+              "description": "개인적인 연락, 친구/가족 관련 메일"
+            },
+            {
+              "category": "Sales",
+              "description": "영업 문의, 고객 상담, 제안서 요청 등"
+            },
+            {
+              "category": "Recruitment",
+              "description": "채용 관련, 이력서, 입사 지원, 헤드헌터 연락"
+            },
+            {
+              "category": "Receipts",
+              "description": "구매 영수증, 결제 확인서, 송장, 청구서"
+            },
+            {
+              "category": "Misc",
+              "description": "기타 분류되지 않은 모든 메일"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.textClassifier",
+      "typeVersion": 1.1,
+      "position": [
+        -592,
+        160
+      ],
+      "id": "a2eb4186-bfee-4b11-aea8-d46d3833082c",
+      "name": "Text Classifier"
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatGoogleGemini",
+      "typeVersion": 1,
+      "position": [
+        -592,
+        480
+      ],
+      "id": "8e569a3b-e54a-4870-a2fb-ca2c43ae96e8",
+      "name": "Google Gemini Chat Model",
+      "credentials": {
+        "googlePalmApi": {
+          "id": "qcn8xNbgXs2MWLGF",
+          "name": "Google Gemini(PaLM) Api account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "addLabels",
+        "messageId": "={{ $json.id }}",
+        "labelIds": [
+          "Label_8082112946849060915"
+        ]
+      },
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 2.1,
+      "position": [
+        -64,
+        32
+      ],
+      "id": "a77fcb0d-7296-4df5-9c43-6bfd9ca653fb",
+      "name": "Add label to message1",
+      "webhookId": "c64f6295-9c97-4e0a-b5fd-d872ee1701ae",
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "w5Qpn1QWg3NktaHe",
+          "name": "Gmail account"
+        }
+      }
+    },
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.manualTrigger",
+      "typeVersion": 1,
+      "position": [
+        -1104,
+        224
+      ],
+      "id": "ddcfee07-a146-43a1-ac32-f657d79b4327",
+      "name": "When clicking ‘Execute workflow’"
+    },
+    {
+      "parameters": {
+        "operation": "getAll",
+        "filters": {}
+      },
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 2.1,
+      "position": [
+        -832,
+        224
+      ],
+      "id": "9bd2a3d5-428b-42d4-b467-b988d3fe903f",
+      "name": "Get many messages",
+      "webhookId": "7e7c5002-d124-4fd4-a23f-fb6a2818166b",
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "w5Qpn1QWg3NktaHe",
+          "name": "Gmail account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "inputText": "={{ $('Get many messages').item.json.snippet }}",
+        "categories": {
+          "categories": [
+            {
+              "category": "starred",
+              "description": "긴급을 요하거나 중요하다고 판단되는 메일"
+            },
+            {
+              "category": "notStarred"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.textClassifier",
+      "typeVersion": 1.1,
+      "position": [
+        144,
+        -272
+      ],
+      "id": "76013b64-6655-400b-88ec-5f1abf7084fe",
+      "name": "Text Classifier1"
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatGoogleGemini",
+      "typeVersion": 1,
+      "position": [
+        144,
+        -128
+      ],
+      "id": "45e922a5-fa3b-4d74-a971-36e7df2f83de",
+      "name": "Google Gemini Chat Model1",
+      "credentials": {
+        "googlePalmApi": {
+          "id": "qcn8xNbgXs2MWLGF",
+          "name": "Google Gemini(PaLM) Api account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "addLabels",
+        "messageId": "={{ $json.id }}",
+        "labelIds": [
+          "STARRED"
+        ]
+      },
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 2.1,
+      "position": [
+        512,
+        -432
+      ],
+      "id": "5df69006-40b2-4eba-8b7f-678f11cc2f1c",
+      "name": "Add label to message2",
+      "webhookId": "0cba83c6-e6ac-4df6-916b-0f400f8d3656",
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "w5Qpn1QWg3NktaHe",
+          "name": "Gmail account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "modelId": {
+          "__rl": true,
+          "value": "models/gemini-2.5-flash",
+          "mode": "list",
+          "cachedResultName": "models/gemini-2.5-flash"
+        },
+        "messages": {
+          "values": [
+            {
+              "content": "=중요 요청 받은 메일의 답변을 작성해주세요.\n\n[메일 요청 내용]\n{{ $('Get many messages').item.json.snippet }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.googleGemini",
+      "typeVersion": 1,
+      "position": [
+        720,
+        -432
+      ],
+      "id": "6a63dd02-bf53-4565-9fb5-6194550c1d65",
+      "name": "Message a model",
+      "credentials": {
+        "googlePalmApi": {
+          "id": "qcn8xNbgXs2MWLGF",
+          "name": "Google Gemini(PaLM) Api account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "sendTo": "={{ $('Get many messages').item.json.From }}",
+        "subject": "=회신: {{ $('Get many messages').item.json.Subject }}",
+        "message": "={{ $json.content.parts[0].text }}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 2.1,
+      "position": [
+        1088,
+        -432
+      ],
+      "id": "da8ea327-2e00-44cb-92a1-24a057779899",
+      "name": "Send a message",
+      "webhookId": "ecc225dc-066d-4aa5-934e-2642a88378c8",
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "w5Qpn1QWg3NktaHe",
+          "name": "Gmail account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "addLabels",
+        "messageId": "={{ $json.id }}",
+        "labelIds": [
+          "Label_4974757260718839392"
+        ]
+      },
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 2.1,
+      "position": [
+        -64,
+        224
+      ],
+      "id": "b527fe01-911c-4737-ae4f-f470bb5af992",
+      "name": "Add label to message3",
+      "webhookId": "c64f6295-9c97-4e0a-b5fd-d872ee1701ae",
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "w5Qpn1QWg3NktaHe",
+          "name": "Gmail account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "addLabels",
+        "messageId": "={{ $json.id }}",
+        "labelIds": [
+          "Label_3664026434140610245"
+        ]
+      },
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 2.1,
+      "position": [
+        -64,
+        432
+      ],
+      "id": "f69ae779-35ea-4051-9d06-cc6c1dffcf98",
+      "name": "Add label to message4",
+      "webhookId": "c64f6295-9c97-4e0a-b5fd-d872ee1701ae",
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "w5Qpn1QWg3NktaHe",
+          "name": "Gmail account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "addLabels",
+        "messageId": "={{ $json.id }}",
+        "labelIds": [
+          "Label_2195149772113822609"
+        ]
+      },
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 2.1,
+      "position": [
+        -64,
+        640
+      ],
+      "id": "65651883-e6aa-47fb-9773-80cbe01fb625",
+      "name": "Add label to message5",
+      "webhookId": "c64f6295-9c97-4e0a-b5fd-d872ee1701ae",
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "w5Qpn1QWg3NktaHe",
+          "name": "Gmail account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "addLabels",
+        "messageId": "={{ $json.id }}",
+        "labelIds": [
+          "Label_4712786709201557775"
+        ]
+      },
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 2.1,
+      "position": [
+        -64,
+        880
+      ],
+      "id": "a5ed4223-b1d1-4f81-b5c0-56d8b975b9f7",
+      "name": "Add label to message6",
+      "webhookId": "c64f6295-9c97-4e0a-b5fd-d872ee1701ae",
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "w5Qpn1QWg3NktaHe",
+          "name": "Gmail account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "inputText": "={{ $('Get many messages').item.json.snippet }}",
+        "categories": {
+          "categories": [
+            {
+              "category": "starred",
+              "description": "notice mail"
+            },
+            {
+              "category": "notStarred"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.textClassifier",
+      "typeVersion": 1.1,
+      "position": [
+        144,
+        640
+      ],
+      "id": "22b49455-c4d1-4d53-b4b8-5f0891b9019f",
+      "name": "Text Classifier2"
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatGoogleGemini",
+      "typeVersion": 1,
+      "position": [
+        304,
+        800
+      ],
+      "id": "b72c7a53-9787-4323-a4aa-547303c990ef",
+      "name": "Google Gemini Chat Model2",
+      "credentials": {
+        "googlePalmApi": {
+          "id": "qcn8xNbgXs2MWLGF",
+          "name": "Google Gemini(PaLM) Api account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "addLabels",
+        "messageId": "={{ $('Get many messages').item.json.id }}",
+        "labelIds": [
+          "STARRED"
+        ]
+      },
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 2.1,
+      "position": [
+        624,
+        624
+      ],
+      "id": "c7492062-d9ab-47f7-8df1-955f208cd4d3",
+      "name": "Add label to message7",
+      "webhookId": "586e5e11-c101-4e0f-9896-93e7a1cbac2e",
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "w5Qpn1QWg3NktaHe",
+          "name": "Gmail account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "delete",
+        "messageId": "={{ $('Get many messages').item.json.id }}"
+      },
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 2.1,
+      "position": [
+        624,
+        816
+      ],
+      "id": "26c3ccb6-fb2c-4a7c-b359-8d244f59b031",
+      "name": "Delete a message",
+      "webhookId": "5b2f3a67-2248-46f1-868e-29f59d16dc2f",
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "w5Qpn1QWg3NktaHe",
+          "name": "Gmail account"
+        }
+      }
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Add label to message": {
+      "main": [
+        [
+          {
+            "node": "Text Classifier1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Google Gemini Chat Model": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "Text Classifier",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Text Classifier": {
+      "main": [
+        [
+          {
+            "node": "Add label to message",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Add label to message1",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Add label to message3",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Add label to message4",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Add label to message5",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Add label to message6",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Add label to message1": {
+      "main": [
+        [
+          {
+            "node": "Remove label from message",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "When clicking ‘Execute workflow’": {
+      "main": [
+        [
+          {
+            "node": "Get many messages",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get many messages": {
+      "main": [
+        [
+          {
+            "node": "Text Classifier",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Google Gemini Chat Model1": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "Text Classifier1",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Text Classifier1": {
+      "main": [
+        [
+          {
+            "node": "Add label to message2",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Remove label from message",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Add label to message2": {
+      "main": [
+        [
+          {
+            "node": "Message a model",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Message a model": {
+      "main": [
+        [
+          {
+            "node": "Send a message",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Send a message": {
+      "main": [
+        []
+      ]
+    },
+    "Add label to message3": {
+      "main": [
+        [
+          {
+            "node": "Remove label from message",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Add label to message4": {
+      "main": [
+        [
+          {
+            "node": "Remove label from message",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Add label to message5": {
+      "main": [
+        [
+          {
+            "node": "Text Classifier2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Add label to message6": {
+      "main": [
+        [
+          {
+            "node": "Remove label from message",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Google Gemini Chat Model2": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "Text Classifier2",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Text Classifier2": {
+      "main": [
+        [
+          {
+            "node": "Add label to message7",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Delete a message",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Add label to message7": {
+      "main": [
+        [
+          {
+            "node": "Remove label from message",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "6e8626e2-9313-4eac-8e02-a7244a28fd7b",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "e9fc5d682107eefaee11b603cd26a60b2ec2161a2d6b6e98644158546b12814e"
+  },
+  "id": "ve4kUgwYE0VnVXdv",
+  "tags": []
+}
