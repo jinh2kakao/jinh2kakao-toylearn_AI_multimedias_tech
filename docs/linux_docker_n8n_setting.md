@@ -108,3 +108,22 @@ Windows와 macOS는 운영체제 아키텍처가 근본적으로 다르기 때�
 
 ```bash
 docker ps
+```
+
+# VS CODE에서 remote 접속 방법
+1. VS CODE에서 확장팩 설치
+```
+ms-vscode-remote.vscode-remote-extensionpack
+```
+
+2. Open a Remote Window (좌측 하단) 버튼 클릭하여 명령 팔레트 오픈
+
+3. Attach to Running Contatainer 클릭하여 실행중인 컨테이너 확인
+
+4. open folder하여 레포지토리 오픈
+
+https://api.openweathermap.org/data/3.0/onecall?
+lat=33.44
+lon=94.04
+exclude=current
+appid=204bbbc59af1d590c7232c26565be2d6
