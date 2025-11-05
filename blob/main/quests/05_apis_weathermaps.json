@@ -139,7 +139,7 @@
             "확인 일시": "={{ $('On form submission').item.json.submittedAt }}",
             "도시명": "={{ $('On form submission').item.json.cityName }}",
             "좌표": "={{ $('HTTP Request1').item.json.lat }}, {{ $('HTTP Request1').item.json.lon }}",
-            "Current": "={{ $('HTTP Request1').item.json }}",
+            "Current": "={{ $('HTTP Request').item.json }}",
             "Daily": "={{ $('HTTP Request2').item.json }}"
           },
           "matchingColumns": [
@@ -266,7 +266,7 @@
   "settings": {
     "executionOrder": "v1"
   },
-  "versionId": "dbf1e5ff-0f0f-41f7-ba14-beff493a88fd",
+  "versionId": "f9af2971-cf1c-471e-a785-e0b753572fb2",
   "meta": {
     "templateCredsSetupCompleted": true,
     "instanceId": "ed051297fb93ef1be53ee5134d673f832884e317f8cb1f95cbe80d14221b7000"
