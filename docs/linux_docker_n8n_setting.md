@@ -107,3 +107,4 @@ Windows와 macOS는 운영체제 아키텍처가 근본적으로 다르기 때�
 터미널에서 다음 명령어를 입력하면 현재 실행 중인 Docker 컨테이너 목록(nginx, n8n)을 확인할 수 있습니다.
 
 ```bash
+docker ps
