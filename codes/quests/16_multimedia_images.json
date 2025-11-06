@@ -1,0 +1,227 @@
+{
+  "name": "16_multimedia_images",
+  "nodes": [
+    {
+      "parameters": {
+        "formTitle": "이미지 변환기 생성기",
+        "formDescription": "이미지와 요청사항을 입력하여주시면 AI로 이미지를 수정해드려요.",
+        "formFields": {
+          "values": [
+            {
+              "fieldLabel": "inputImage",
+              "fieldType": "file",
+              "acceptFileTypes": ".jpg, .jpeg, .png",
+              "requiredField": true
+            },
+            {
+              "fieldLabel": "request",
+              "placeholder": "예) 애니메이션스타일로 변경해주세요. A powerful symbolic minimalist illustration. ",
+              "requiredField": true
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.formTrigger",
+      "typeVersion": 2.3,
+      "position": [
+        0,
+        0
+      ],
+      "id": "4367f8c7-b73c-41d8-9eb8-27eb8f552af8",
+      "name": "On form submission",
+      "webhookId": "c2cb4927-2bc4-40d7-8090-550934171da3"
+    },
+    {
+      "parameters": {
+        "operation": "binaryToPropery",
+        "binaryPropertyName": "=inputImage",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.extractFromFile",
+      "typeVersion": 1,
+      "position": [
+        208,
+        0
+      ],
+      "id": "8b593763-bbe8-438a-8ec9-d64dcdf0b307",
+      "name": "Extract from File"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "94fbfe30-6104-4168-b979-2081f6cbc676",
+              "name": "inputImage",
+              "value": "={{ $json.data }}",
+              "type": "string"
+            },
+            {
+              "id": "e4b9d0ea-ea7f-419f-8b64-f779b5a70659",
+              "name": "request",
+              "value": "=다음 요청사항에 맞게 이미지를 변경해주세요. [지침] 요청에 대한 응답은 이미지로만 제공해 줘. 텍스트는 일절 포함하지 마. {{ $('On form submission').item.json.request }} --ar 9:16 --v 6.0 --style raw --s 250",
+              "type": "string"
+            },
+            {
+              "id": "5638f16d-f4a1-47dc-9694-7efb92a4d0b7",
+              "name": "mimetype",
+              "value": "={{ $('On form submission').item.json.inputImage[0].mimetype }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        416,
+        0
+      ],
+      "id": "bc244312-3f81-4b8e-8b38-81de1efb08d5",
+      "name": "Edit Fields"
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-image:generateContent",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "x-goog-api-key",
+              "value": "AIzaSyCc7mvyaVCh9gFOfHkupgxbrUawhSSzqBg"
+            }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={\n  \"contents\": [\n    {\n      \"parts\": [\n        {\n          \"text\": \"{{ $json.request }}\"\n        },\n        {\n          \"inline_data\": {\n            \"mime_type\": \"{{ $json.mimetype }}\",\n            \"data\": \"{{ $json.inputImage }}\"\n          }\n        }\n      ]\n    }\n  ]\n} ",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.3,
+      "position": [
+        624,
+        0
+      ],
+      "id": "7da0a964-58d5-4f17-b678-648ca2d250cf",
+      "name": "HTTP Request"
+    },
+    {
+      "parameters": {
+        "operation": "toBinary",
+        "sourceProperty": "candidates[0].content.parts[1].inlineData.data",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.convertToFile",
+      "typeVersion": 1.1,
+      "position": [
+        832,
+        0
+      ],
+      "id": "c9d72119-b5ef-4b6e-8929-ebb3d33b3a22",
+      "name": "Convert to File"
+    },
+    {
+      "parameters": {
+        "name": "={{ $('On form submission').item.json.inputImage[0].mimetype }}-{{ $('On form submission').item.json.submittedAt }}",
+        "driveId": {
+          "__rl": true,
+          "mode": "list",
+          "value": "My Drive"
+        },
+        "folderId": {
+          "__rl": true,
+          "value": "1VDnu29DDORKUUfCT-fxfCumZgXr412kT",
+          "mode": "id"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleDrive",
+      "typeVersion": 3,
+      "position": [
+        1040,
+        0
+      ],
+      "id": "989b4d65-ee3f-4f24-b36d-4a8542a3b853",
+      "name": "Upload file",
+      "credentials": {
+        "googleDriveOAuth2Api": {
+          "id": "tA5o1edDGsTomwzW",
+          "name": "Google Drive account"
+        }
+      }
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "On form submission": {
+      "main": [
+        [
+          {
+            "node": "Extract from File",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Extract from File": {
+      "main": [
+        [
+          {
+            "node": "Edit Fields",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Edit Fields": {
+      "main": [
+        [
+          {
+            "node": "HTTP Request",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "HTTP Request": {
+      "main": [
+        [
+          {
+            "node": "Convert to File",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Convert to File": {
+      "main": [
+        [
+          {
+            "node": "Upload file",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "fed85bac-c40e-40ae-a352-0c9021812d40",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "ed051297fb93ef1be53ee5134d673f832884e317f8cb1f95cbe80d14221b7000"
+  },
+  "id": "synOqfLCTwHLcuqI",
+  "tags": []
+}
