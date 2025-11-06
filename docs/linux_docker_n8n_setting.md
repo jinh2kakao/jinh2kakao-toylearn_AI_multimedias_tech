@@ -122,8 +122,3 @@ ms-vscode-remote.vscode-remote-extensionpack
 
 4. open folder하여 레포지토리 오픈
 
-https://api.openweathermap.org/data/3.0/onecall?
-lat=33.44
-lon=94.04
-exclude=current
-appid=204bbbc59af1d590c7232c26565be2d6
