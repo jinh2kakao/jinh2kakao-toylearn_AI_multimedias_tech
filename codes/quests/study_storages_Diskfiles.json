@@ -1,0 +1,255 @@
+{
+  "name": "study_storages_Diskfiles",
+  "nodes": [
+    {
+      "parameters": {
+        "formTitle": "음성 파일 생성",
+        "formDescription": "음성 파일 생성 (텍스트 입력 -> 음성파일 생성)",
+        "formFields": {
+          "values": [
+            {
+              "fieldLabel": "voice_text",
+              "fieldType": "textarea"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.formTrigger",
+      "typeVersion": 2.3,
+      "position": [
+        0,
+        0
+      ],
+      "id": "ed300ef8-1d8c-4787-a93f-0f52207c185e",
+      "name": "On form submission",
+      "webhookId": "897c7326-3228-4eaa-9b39-d506b862bd48"
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-tts:generateContent",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "x-goog-api-key",
+              "value": "AIzaSyA8r6HianI_sbKmTJUsQC6O3eMwJqfxC4o"
+            },
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={\n        \"contents\": [{\n          \"parts\":[{\n            \"text\": \"{{ $('On form submission').item.json.voice_text }}\"\n          }]\n        }],\n        \"generationConfig\": {\n          \"responseModalities\": [\"AUDIO\"],\n          \"speechConfig\": {\n            \"voiceConfig\": {\n              \"prebuiltVoiceConfig\": {\n                \"voiceName\": \"Kore\"\n              }\n            }\n          }\n        }\n    }",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.3,
+      "position": [
+        624,
+        0
+      ],
+      "id": "646a0764-2c69-42f5-a4a0-10987f95f60b",
+      "name": "HTTP Request"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "c6a5259a-8188-4bf0-b82b-2d92a7c4c428",
+              "name": "resource_dir",
+              "value": "/home/node/outputs/",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        208,
+        0
+      ],
+      "id": "d0a161a2-76d6-40b1-9000-bc11b1f944a3",
+      "name": "Edit Fields"
+    },
+    {
+      "parameters": {
+        "command": "=mkdir -p  {{ $json.resource_dir }} &&\ncd {{ $json.resource_dir }} &&\nrm -f *"
+      },
+      "type": "n8n-nodes-base.executeCommand",
+      "typeVersion": 1,
+      "position": [
+        416,
+        0
+      ],
+      "id": "313d38de-d937-4724-bdbd-3c8776de5821",
+      "name": "Execute Command1"
+    },
+    {
+      "parameters": {
+        "operation": "toBinary",
+        "sourceProperty": "candidates[0].content.parts[0].inlineData.data",
+        "options": {
+          "fileName": "={{ $('Edit Fields').item.json.resource_dir }}out.pcm"
+        }
+      },
+      "type": "n8n-nodes-base.convertToFile",
+      "typeVersion": 1.1,
+      "position": [
+        832,
+        0
+      ],
+      "id": "a8204673-1b6d-4f72-8ab4-d1c634f0c5cd",
+      "name": "Convert to File"
+    },
+    {
+      "parameters": {
+        "operation": "write",
+        "fileName": "={{ $('Edit Fields').item.json.resource_dir }}out.pcm",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.readWriteFile",
+      "typeVersion": 1,
+      "position": [
+        1040,
+        0
+      ],
+      "id": "32aab8e5-46bb-45e8-bf1b-64b5f64b059a",
+      "name": "Read/Write Files from Disk"
+    },
+    {
+      "parameters": {
+        "command": "=cd {{ $('Edit Fields').item.json.resource_dir }} &&\nffmpeg -f s16le -ar 24000 -ac 1 -i out.pcm out.wav"
+      },
+      "type": "n8n-nodes-base.executeCommand",
+      "typeVersion": 1,
+      "position": [
+        1248,
+        0
+      ],
+      "id": "fcdb44e7-8933-4e4c-9692-ef0137ae0c06",
+      "name": "Execute Command"
+    },
+    {
+      "parameters": {
+        "fileSelector": "{{ $('Edit Fields').item.json.resource_dir }}out.wav",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.readWriteFile",
+      "typeVersion": 1,
+      "position": [
+        1456,
+        0
+      ],
+      "id": "c4d5f189-869c-4c99-90ae-74fa7b214ced",
+      "name": "Read/Write Files from Disk1"
+    }
+  ],
+  "pinData": {
+    "On form submission": [
+      {
+        "json": {
+          "voice_text": "고대 그리스 철학에서 '테세우스의 배'는 부품을 하나씩 교체한 배가 여전히 같은 배인가 묻는 사고실험입니다. 시간이 흐르며 모든 부품이 바뀌더면 정체성은 무엇에 기반하는가라는 질문은 존재론적 딜레마를 제시합니다. 이 이야기는 개인과 집단, 사물의 본질과 연속성에 대한 깊은 성찰을 유도합니다.",
+          "submittedAt": "2025-11-07T15:20:13.874+09:00",
+          "formMode": "test"
+        }
+      }
+    ]
+  },
+  "connections": {
+    "On form submission": {
+      "main": [
+        [
+          {
+            "node": "Edit Fields",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "HTTP Request": {
+      "main": [
+        [
+          {
+            "node": "Convert to File",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Edit Fields": {
+      "main": [
+        [
+          {
+            "node": "Execute Command1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Execute Command1": {
+      "main": [
+        [
+          {
+            "node": "HTTP Request",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Convert to File": {
+      "main": [
+        [
+          {
+            "node": "Read/Write Files from Disk",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Read/Write Files from Disk": {
+      "main": [
+        [
+          {
+            "node": "Execute Command",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Execute Command": {
+      "main": [
+        [
+          {
+            "node": "Read/Write Files from Disk1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "29504b27-5bd0-43c4-a8df-9b8b25b4c825",
+  "meta": {
+    "instanceId": "47ab0f10a2151ade24856bc52ef863bc946722ba7a231ec42577168a8ac6cd33"
+  },
+  "id": "OGV9WyryO7KV58Ae",
+  "tags": []
+}
