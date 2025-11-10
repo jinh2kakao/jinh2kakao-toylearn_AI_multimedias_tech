@@ -21,7 +21,7 @@
         0,
         0
       ],
-      "id": "ed300ef8-1d8c-4787-a93f-0f52207c185e",
+      "id": "f926d49e-d4ce-441e-a699-236175af5796",
       "name": "On form submission",
       "webhookId": "897c7326-3228-4eaa-9b39-d506b862bd48"
     },
@@ -34,7 +34,7 @@
           "parameters": [
             {
               "name": "x-goog-api-key",
-              "value": "AIzaSyA8r6HianI_sbKmTJUsQC6O3eMwJqfxC4o"
+              "value": "AIzaSyAlSQXM1KKNfVnwojyCH_hO4BLrbKV7Bx0"
             },
             {
               "name": "Content-Type",
@@ -53,7 +53,7 @@
         624,
         0
       ],
-      "id": "646a0764-2c69-42f5-a4a0-10987f95f60b",
+      "id": "295adece-3a59-4cc6-8911-49f30f3d86d6",
       "name": "HTTP Request"
     },
     {
@@ -76,7 +76,7 @@
         208,
         0
       ],
-      "id": "d0a161a2-76d6-40b1-9000-bc11b1f944a3",
+      "id": "78329c69-f263-4698-9ffa-c0dd772fbd15",
       "name": "Edit Fields"
     },
     {
@@ -89,7 +89,7 @@
         416,
         0
       ],
-      "id": "313d38de-d937-4724-bdbd-3c8776de5821",
+      "id": "21b20fd7-90d2-45bf-85f0-6fc6612a8776",
       "name": "Execute Command1"
     },
     {
@@ -106,7 +106,7 @@
         832,
         0
       ],
-      "id": "a8204673-1b6d-4f72-8ab4-d1c634f0c5cd",
+      "id": "8fdba1a2-9b0f-43ae-9709-a684b2305049",
       "name": "Convert to File"
     },
     {
@@ -121,35 +121,104 @@
         1040,
         0
       ],
-      "id": "32aab8e5-46bb-45e8-bf1b-64b5f64b059a",
+      "id": "a2b1d59f-9cb1-4c0e-8088-9e0122e4b280",
       "name": "Read/Write Files from Disk"
     },
     {
       "parameters": {
-        "command": "=cd {{ $('Edit Fields').item.json.resource_dir }} &&\nffmpeg -f s16le -ar 24000 -ac 1 -i out.pcm out.wav"
+        "method": "POST",
+        "url": "https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-image:generateContent",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "x-goog-api-key",
+              "value": "AIzaSyAlSQXM1KKNfVnwojyCH_hO4BLrbKV7Bx0"
+            }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={\n  \"contents\": [\n    {\n      \"parts\": [\n        {\n          \"text\": \"반드시 이미지 데이터 생성. {{ $('On form submission').item.json.voice_text }}\"\n        }\n      ]\n    }\n  ]\n} ",
+        "options": {}
       },
-      "type": "n8n-nodes-base.executeCommand",
-      "typeVersion": 1,
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.3,
       "position": [
-        1248,
-        0
+        624,
+        320
       ],
-      "id": "fcdb44e7-8933-4e4c-9692-ef0137ae0c06",
-      "name": "Execute Command"
+      "id": "ab0a93ae-81d1-4ed5-a005-aa4c74191340",
+      "name": "HTTP Request1",
+      "retryOnFail": false,
+      "maxTries": 2
     },
     {
       "parameters": {
-        "fileSelector": "{{ $('Edit Fields').item.json.resource_dir }}out.wav",
+        "operation": "toBinary",
+        "sourceProperty": "candidates[0].content.parts[1].inlineData.data",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.convertToFile",
+      "typeVersion": 1.1,
+      "position": [
+        832,
+        320
+      ],
+      "id": "f03c14c3-2065-42cb-945a-dd5f53491820",
+      "name": "Convert to File1"
+    },
+    {
+      "parameters": {
+        "operation": "write",
+        "fileName": "={{ $('Edit Fields').item.json.resource_dir }}out.png",
         "options": {}
       },
       "type": "n8n-nodes-base.readWriteFile",
       "typeVersion": 1,
       "position": [
-        1456,
+        1040,
+        320
+      ],
+      "id": "112b3a69-3052-441b-977c-3a46ef2cceba",
+      "name": "Read/Write Files from Disk3"
+    },
+    {
+      "parameters": {
+        "command": "=cd {{ $('Edit Fields').item.json.resource_dir }} &&\nffmpeg -loop 1 -i out.png -f s16le -ar 24000 -ac 1 -i out.pcm -c:v libx264 -c:a aac -pix_fmt yuv420p -shortest out.mp4"
+      },
+      "type": "n8n-nodes-base.executeCommand",
+      "typeVersion": 1,
+      "position": [
+        1744,
         0
       ],
-      "id": "c4d5f189-869c-4c99-90ae-74fa7b214ced",
-      "name": "Read/Write Files from Disk1"
+      "id": "d780a412-d1e1-4708-89a6-027eae704c11",
+      "name": "Execute Command"
+    },
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.merge",
+      "typeVersion": 3.2,
+      "position": [
+        1296,
+        0
+      ],
+      "id": "4f9b583c-dca1-4610-9041-51322a4454d3",
+      "name": "Merge"
+    },
+    {
+      "parameters": {
+        "maxItems": "={{ $items().length }}"
+      },
+      "type": "n8n-nodes-base.limit",
+      "typeVersion": 1,
+      "position": [
+        1504,
+        0
+      ],
+      "id": "6dad6801-4f84-43b6-a3d3-02af648f20d5",
+      "name": "Limit"
     }
   ],
   "pinData": {
@@ -157,7 +226,7 @@
       {
         "json": {
           "voice_text": "고대 그리스 철학에서 '테세우스의 배'는 부품을 하나씩 교체한 배가 여전히 같은 배인가 묻는 사고실험입니다. 시간이 흐르며 모든 부품이 바뀌더면 정체성은 무엇에 기반하는가라는 질문은 존재론적 딜레마를 제시합니다. 이 이야기는 개인과 집단, 사물의 본질과 연속성에 대한 깊은 성찰을 유도합니다.",
-          "submittedAt": "2025-11-07T15:20:13.874+09:00",
+          "submittedAt": "2025-11-10T11:12:44.269+09:00",
           "formMode": "test"
         }
       }
@@ -204,6 +273,11 @@
             "node": "HTTP Request",
             "type": "main",
             "index": 0
+          },
+          {
+            "node": "HTTP Request1",
+            "type": "main",
+            "index": 0
           }
         ]
       ]
@@ -223,18 +297,62 @@
       "main": [
         [
           {
-            "node": "Execute Command",
+            "node": "Merge",
             "type": "main",
             "index": 0
           }
         ]
       ]
     },
-    "Execute Command": {
+    "HTTP Request1": {
       "main": [
         [
           {
-            "node": "Read/Write Files from Disk1",
+            "node": "Convert to File1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Convert to File1": {
+      "main": [
+        [
+          {
+            "node": "Read/Write Files from Disk3",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Read/Write Files from Disk3": {
+      "main": [
+        [
+          {
+            "node": "Merge",
+            "type": "main",
+            "index": 1
+          }
+        ]
+      ]
+    },
+    "Merge": {
+      "main": [
+        [
+          {
+            "node": "Limit",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Limit": {
+      "main": [
+        [
+          {
+            "node": "Execute Command",
             "type": "main",
             "index": 0
           }
@@ -246,10 +364,10 @@
   "settings": {
     "executionOrder": "v1"
   },
-  "versionId": "29504b27-5bd0-43c4-a8df-9b8b25b4c825",
+  "versionId": "cb512db8-f830-4960-a136-51b1a5ef931a",
   "meta": {
-    "instanceId": "47ab0f10a2151ade24856bc52ef863bc946722ba7a231ec42577168a8ac6cd33"
+    "instanceId": "ed051297fb93ef1be53ee5134d673f832884e317f8cb1f95cbe80d14221b7000"
   },
-  "id": "OGV9WyryO7KV58Ae",
+  "id": "JXh1Ecqf4Dx204md",
   "tags": []
 }
