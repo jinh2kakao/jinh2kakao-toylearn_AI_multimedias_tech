@@ -19,3 +19,10 @@ rm -f *
 ```
 ffmpeg -loop 1 -i out.png -f s16le -ar 24000 -ac 1 -i out.pcm -c:v libx264 -c:a aac -pix_fmt yuv420p -shortest out.mp4
 ```
+```
+//n8n에서 실행할때는 해당 폴더위치 지정
+
+cd {{ $('Edit Fields').item.json.resource_dir }} &&
+ffmpeg -loop 1 -i out.png -f s16le -ar 24000 -ac 1 -i out.pcm -c:v libx264 -c:a aac -pix_fmt yuv420p -shortest out.mp4
+
+```
