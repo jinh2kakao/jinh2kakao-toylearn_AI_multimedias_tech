@@ -122,3 +122,5 @@ ms-vscode-remote.vscode-remote-extensionpack
 
 4. open folder하여 레포지토리 오픈
 
+# VS code에서 live server 운영
+ritwickdey.liveserver 확장팩 설치

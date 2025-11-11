@@ -9,3 +9,4 @@ root로 이동: cd ../..
 * 파일 생성: touch videos_list.txt
 * 파일에 데이터 삽입: echo "output_11.mp4" >> videos_list.txt
 
+* 폴더만들기(-p 무슨옵션?): mkdir -p /apps
