@@ -124,3 +124,24 @@ ms-vscode-remote.vscode-remote-extensionpack
 
 # VS code에서 live server 운영
 ritwickdey.liveserver 확장팩 설치
+
+# fast api 및 n8n, 포스트그릴 전체 설치 방법
+
+1. [코인도커](https://codeindocker.com/)사이트에서 압축 파일 다운로드
+ 파일명: Learn n8n with FastAPI and PostgreSql with Vector
+
+2. 다운받은 파일 압축해제
+
+3. Powershell 관리자 권한 실행
+
+4. 압축파일 경로로 이동
+```
+cd [압축파일 경로]
+```
+
+5. 명령어 넣고 실행
+```
+명령어
+
+docker-compose --project-name yojulab_learn_n8ns up -d --build
+```
