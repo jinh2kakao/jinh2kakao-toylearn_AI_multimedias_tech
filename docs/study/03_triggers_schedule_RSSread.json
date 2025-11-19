@@ -1,0 +1,317 @@
+{
+  "name": "study_03_triggers_schedule_RSSread",
+  "nodes": [
+    {
+      "parameters": {
+        "chatId": "8297276244",
+        "text": "=N8M에서 보냅니다.\n**연합뉴스**\n제목: {{ $json.title }}, \n링크: {{ $json.link }},\n발행일: {{ $json.pubDate }}",
+        "additionalFields": {}
+      },
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [
+        496,
+        368
+      ],
+      "id": "37f27306-3e14-4760-bf4a-dfc5c5830769",
+      "name": "Send a text message",
+      "webhookId": "b17c7103-1304-43f9-814c-8a31eb246676",
+      "credentials": {
+        "telegramApi": {
+          "id": "KIKzWEpf2iG9EOKg",
+          "name": "Telegram account 2"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "content": "## telegram 연동\n1. botfather 친구추가\n2. botfather 채팅창에 /newbot 입력\n3. 채팅방 이름 입력\n4. API 키 획득\n5. 내 채팅창 시작\n6. n8n에 credential 인증 입력\n7. n8n node 추가\n8. n8n node에 전송할 telegram의 채팅 ID 입력\n\n또는 아래 Url로 진행\nhttps://api.telegram.org/bot<bot tokken>/getUpdates",
+        "height": 288,
+        "width": 560
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        656,
+        -128
+      ],
+      "id": "46012e8a-49b2-473f-954b-66cb880fe430",
+      "name": "Sticky Note"
+    },
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "triggerAtHour": 4
+            }
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.2,
+      "position": [
+        -304,
+        288
+      ],
+      "id": "27e25e70-9dea-4fb5-8c1a-66df5b1b5e52",
+      "name": "Schedule Trigger",
+      "disabled": true
+    },
+    {
+      "parameters": {
+        "url": "https://www.chosun.com/arc/outboundfeeds/rss/",
+        "sendQuery": true,
+        "queryParameters": {
+          "parameters": [
+            {
+              "name": "outputType",
+              "value": "xml"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        32,
+        -16
+      ],
+      "id": "9bfe2892-9877-4e32-a953-b713df48d12a",
+      "name": "HTTP Request"
+    },
+    {
+      "parameters": {
+        "url": "https://www.yna.co.kr/rss/industry.xml",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.rssFeedRead",
+      "typeVersion": 1.2,
+      "position": [
+        32,
+        368
+      ],
+      "id": "c5880851-bffd-48ca-8c3f-c649d846c7e5",
+      "name": "RSS Read"
+    },
+    {
+      "parameters": {
+        "maxItems": 3,
+        "keep": "lastItems"
+      },
+      "type": "n8n-nodes-base.limit",
+      "typeVersion": 1,
+      "position": [
+        256,
+        368
+      ],
+      "id": "b1c62917-51f6-4435-b847-a29f8e95f8c2",
+      "name": "Limit"
+    },
+    {
+      "parameters": {
+        "chatId": "8297276244",
+        "text": "=N8N 에서 보냅니다.\nXML형식입니다.",
+        "additionalFields": {}
+      },
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [
+        256,
+        -16
+      ],
+      "id": "c077ff2b-136d-46b0-b0be-90b442b20f0c",
+      "name": "Send a text message1",
+      "webhookId": "c2c7c046-c316-43ab-bb83-68f86b0fc9af",
+      "credentials": {
+        "telegramApi": {
+          "id": "KIKzWEpf2iG9EOKg",
+          "name": "Telegram account 2"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "url": "https://www.aitimes.com/rss/allArticle.xml",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.rssFeedRead",
+      "typeVersion": 1.2,
+      "position": [
+        32,
+        736
+      ],
+      "id": "71a48aae-73c1-42b2-b135-849fd90d0042",
+      "name": "RSS Read1"
+    },
+    {
+      "parameters": {
+        "maxItems": 5,
+        "keep": "lastItems"
+      },
+      "type": "n8n-nodes-base.limit",
+      "typeVersion": 1,
+      "position": [
+        256,
+        736
+      ],
+      "id": "e89b722b-3b2d-4ebd-9768-3603e595f88d",
+      "name": "Limit1"
+    },
+    {
+      "parameters": {
+        "chatId": "8297276244",
+        "text": "=N8M에서 보냅니다.\n**AI타임스**\n제목: {{ $json.title }}, \n링크: {{ $json.link }},\n발행일: {{ $json.pubDate }}",
+        "additionalFields": {}
+      },
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [
+        496,
+        736
+      ],
+      "id": "78f106ca-cd96-4fb0-bab4-5ea1874ef12b",
+      "name": "Send a text message2",
+      "webhookId": "b17c7103-1304-43f9-814c-8a31eb246676",
+      "credentials": {
+        "telegramApi": {
+          "id": "KIKzWEpf2iG9EOKg",
+          "name": "Telegram account 2"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "content": "## 고정문구 발송",
+        "height": 288,
+        "width": 528
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        0,
+        -128
+      ],
+      "id": "b764c59b-ac24-405a-8480-0a95aec829a3",
+      "name": "Sticky Note1"
+    },
+    {
+      "parameters": {
+        "content": "## 연합뉴스",
+        "height": 288,
+        "width": 704
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        0,
+        256
+      ],
+      "id": "3e29d229-0037-47a2-a0bb-d4c28de23a31",
+      "name": "Sticky Note2"
+    },
+    {
+      "parameters": {
+        "content": "## AI타임스",
+        "height": 288,
+        "width": 704
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        0,
+        640
+      ],
+      "id": "411fadd2-ab43-446c-bf4d-acdedc612453",
+      "name": "Sticky Note3"
+    }
+  ],
+  "connections": {
+    "Schedule Trigger": {
+      "main": [
+        [
+          {
+            "node": "HTTP Request",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "RSS Read",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "RSS Read1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "HTTP Request": {
+      "main": [
+        [
+          {
+            "node": "Send a text message1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "RSS Read": {
+      "main": [
+        [
+          {
+            "node": "Limit",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Limit": {
+      "main": [
+        [
+          {
+            "node": "Send a text message",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "RSS Read1": {
+      "main": [
+        [
+          {
+            "node": "Limit1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Limit1": {
+      "main": [
+        [
+          {
+            "node": "Send a text message2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "staticData": null,
+  "pinData": {},
+  "triggerCount": 0,
+  "meta": {
+    "templateCredsSetupCompleted": true
+  }
+}

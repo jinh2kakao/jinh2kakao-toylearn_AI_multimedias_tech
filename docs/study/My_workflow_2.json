@@ -1,0 +1,462 @@
+{
+  "name": "My workflow 2",
+  "nodes": [
+    {
+      "parameters": {
+        "formTitle": "지원 이력서",
+        "formDescription": "입사 지원서",
+        "formFields": {
+          "values": [
+            {
+              "fieldLabel": "name",
+              "placeholder": "이름",
+              "requiredField": true
+            },
+            {
+              "fieldLabel": "email",
+              "placeholder": "이메일",
+              "requiredField": true
+            },
+            {
+              "fieldLabel": "phoneNumber",
+              "placeholder": "전화번호",
+              "requiredField": true
+            },
+            {
+              "fieldLabel": "aboutMe",
+              "fieldType": "textarea",
+              "placeholder": "간략한 본인의 소개 내용을 입력 해주세요."
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.formTrigger",
+      "typeVersion": 2.3,
+      "position": [
+        0,
+        0
+      ],
+      "id": "560b31c1-c3c2-4012-91b5-fd7bc7d8e321",
+      "name": "On form submission",
+      "webhookId": "001e2424-4981-4b9d-a077-9ff50b3e584f"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "fd8aa648-3075-44c5-85fe-e616703d242d",
+              "leftValue": "={{ $json.aboutMe }}",
+              "rightValue": "",
+              "operator": {
+                "type": "string",
+                "operation": "notEmpty",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        208,
+        0
+      ],
+      "id": "854bd6d7-30dc-48cf-9298-2bc02a91d9ad",
+      "name": "If"
+    },
+    {
+      "parameters": {
+        "operation": "copy",
+        "fileId": {
+          "__rl": true,
+          "value": "1xfeyL8FxO_-Fq2gi4QGyhbSnWnzlM-PDALcwUovvqSk",
+          "mode": "id"
+        },
+        "name": "=예비 지원서_{{ $('On form submission').item.json.name }}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleDrive",
+      "typeVersion": 3,
+      "position": [
+        416,
+        -96
+      ],
+      "id": "1fbf960c-58a9-49a5-98d6-f129d7c9f4f9",
+      "name": "Copy file",
+      "credentials": {
+        "googleDriveOAuth2Api": {
+          "id": "jP79rQftxtJvLYaG",
+          "name": "jinh2kakao Study-AI-Multimedia Google Drive account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "update",
+        "documentURL": "={{ $json.id }}",
+        "actionsUi": {
+          "actionFields": [
+            {
+              "action": "replaceAll",
+              "text": "[name]",
+              "replaceText": "=[ {{ $('On form submission').item.json.name }} ]",
+              "matchCase": true
+            },
+            {
+              "action": "replaceAll",
+              "text": "[email]",
+              "replaceText": "=[ {{ $('On form submission').item.json.email }} ]",
+              "matchCase": true
+            },
+            {
+              "action": "replaceAll",
+              "text": "[phone_number]",
+              "replaceText": "=[ {{ $('On form submission').item.json.phoneNumber }} ]",
+              "matchCase": true
+            }
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.googleDocs",
+      "typeVersion": 2,
+      "position": [
+        976,
+        -112
+      ],
+      "id": "76b2b7fe-5bc5-49e1-b9aa-fd290fe2fcda",
+      "name": "Update a document",
+      "credentials": {
+        "googleDocsOAuth2Api": {
+          "id": "srCt5cpHxIJZES0l",
+          "name": "jinh2kakao Google Docs account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "name": "={{ $('Copy file').item.json.name }}",
+        "driveId": {
+          "__rl": true,
+          "mode": "list",
+          "value": "My Drive"
+        },
+        "folderId": {
+          "__rl": true,
+          "value": "1jALTjyzNWKiGKWNBrruHnCE2lSDHjS4G",
+          "mode": "list",
+          "cachedResultName": "n8ns",
+          "cachedResultUrl": "https://drive.google.com/drive/folders/1jALTjyzNWKiGKWNBrruHnCE2lSDHjS4G"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleDrive",
+      "typeVersion": 3,
+      "position": [
+        1392,
+        -112
+      ],
+      "id": "05681696-1aa2-4923-841a-6a08d043213d",
+      "name": "Upload file",
+      "credentials": {
+        "googleDriveOAuth2Api": {
+          "id": "jP79rQftxtJvLYaG",
+          "name": "jinh2kakao Study-AI-Multimedia Google Drive account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "download",
+        "fileId": {
+          "__rl": true,
+          "value": "={{ $json.documentId }}",
+          "mode": "id"
+        },
+        "options": {
+          "googleFileConversion": {
+            "conversion": {
+              "docsToFormat": "application/pdf",
+              "drawingsToFormat": "application/pdf",
+              "sheetsToFormat": "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+            }
+          }
+        }
+      },
+      "type": "n8n-nodes-base.googleDrive",
+      "typeVersion": 3,
+      "position": [
+        1184,
+        -112
+      ],
+      "id": "076d7c39-dc30-4d19-968f-395194c4c9d5",
+      "name": "Download file",
+      "credentials": {
+        "googleDriveOAuth2Api": {
+          "id": "jP79rQftxtJvLYaG",
+          "name": "jinh2kakao Study-AI-Multimedia Google Drive account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "appendOrUpdate",
+        "documentId": {
+          "__rl": true,
+          "value": "https://docs.google.com/spreadsheets/d/1PE7AKfryAwsfOiuDE1okIQUXqYeD1KkaNStOZkqE-nQ/edit?usp=sharing",
+          "mode": "url"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "gid=0",
+          "mode": "list",
+          "cachedResultName": "지원자_리스트",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1PE7AKfryAwsfOiuDE1okIQUXqYeD1KkaNStOZkqE-nQ/edit#gid=0"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "이름": "={{ $('On form submission').item.json.name }}",
+            "이메일": "={{ $('On form submission').item.json.email }}",
+            "전화번호": "={{ $('On form submission').item.json.phoneNumber }}",
+            "파일링크": "={{ $json.webViewLink }}"
+          },
+          "matchingColumns": [
+            "이메일"
+          ],
+          "schema": [
+            {
+              "id": "이름",
+              "displayName": "이름",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "이메일",
+              "displayName": "이메일",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "전화번호",
+              "displayName": "전화번호",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "파일링크",
+              "displayName": "파일링크",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.7,
+      "position": [
+        1600,
+        -112
+      ],
+      "id": "1b479e36-0e9d-423e-a35d-f16327c4822c",
+      "name": "Append or update row in sheet",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "VCPdMeFhC2V9diqs",
+          "name": "jinh2kakao Google Sheets account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "sendTo": "={{ $json.email }}",
+        "subject": "=공지] 예비지원서 누락 정보",
+        "message": "={{ $json.name }} 님 소개 내용이 누락되어 전달드립니다.",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 2.1,
+      "position": [
+        416,
+        96
+      ],
+      "id": "3b584adb-8d5a-4520-bc58-8d09433cbd9b",
+      "name": "Send a message",
+      "webhookId": "0fde7ff1-7b90-4aeb-8d03-5e2da99efe93",
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "DIOGucUK4lqfvmQR",
+          "name": "jinh2kakao Gmail account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "modelId": {
+          "__rl": true,
+          "value": "models/gemini-2.5-flash",
+          "mode": "list",
+          "cachedResultName": "models/gemini-2.5-flash"
+        },
+        "messages": {
+          "values": [
+            {
+              "content": "나의 자랑 한국어"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.googleGemini",
+      "typeVersion": 1,
+      "position": [
+        624,
+        -96
+      ],
+      "id": "7e53fa3d-a66b-444f-86d5-a5a02a943267",
+      "name": "Message a model",
+      "credentials": {
+        "googlePalmApi": {
+          "id": "EXc8HVtldy9X0z9R",
+          "name": "n8njinh2kakao_aistudio_apiKey_1017"
+        }
+      }
+    }
+  ],
+  "connections": {
+    "On form submission": {
+      "main": [
+        [
+          {
+            "node": "If",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If": {
+      "main": [
+        [
+          {
+            "node": "Copy file",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Send a message",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Copy file": {
+      "main": [
+        [
+          {
+            "node": "Message a model",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Update a document": {
+      "main": [
+        [
+          {
+            "node": "Download file",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Download file": {
+      "main": [
+        [
+          {
+            "node": "Upload file",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Upload file": {
+      "main": [
+        [
+          {
+            "node": "Append or update row in sheet",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Message a model": {
+      "main": [
+        [
+          {
+            "node": "Update a document",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "staticData": null,
+  "pinData": {
+    "On form submission": [
+      {
+        "json": {
+          "name": "김진현",
+          "email": "jinh1203@gmail.com",
+          "phoneNumber": "010-6300-0305",
+          "aboutMe": "성장과정\r\n\r\n\r\n저는 사람들과 어울리는 것이 가장 즐겁습니다. 부모님께서는 항상 다른 사람과의 만남, 소통의 중요성을 강조하셨습니다. \"사람은 사람들 속에서 자라나는 것이다\"라고 말씀하시면서 다양한 활동을 하도록 장려하셨습니다. 이러한 가르침 아래 저는 학창시절 보이스카웃, RCY, 사진연합동아리 등을 통해 다양한 사람들을 만나 함께 하는 즐거움, 봉사의 기쁨 등 많은 경험을 쌓아갈 수 있었습니다.\r\n저는 어디서나 밝은 모습으로 사람들과 어울리는 것을 좋아합니다. 또한, 다른 사람의 말을 듣고, 들은 내용에 대한 제 생각을 정확하게 표현할 줄 압니다. 제가 생각한 것에 대해 정확히 말하고, 또 누군가 제 잘못을 짚어준다면 겸허히 받아들일 줄 아는 긍정적인 사람입니다.\r\n그리고 여행을 좋아합니다. 청소년기부터 청년기까지 국내의 명소와 숨겨진 여행지를 찾아 여행을 다녔습니다. 기억에 남는 여행으로는 입대 전 동해안 일주를 테마로 다녀온 여행으로 아르바이트를 통해 경비부터 일정까지 자력으로 계획하여 더욱 많은 경험을 남겼습니다. 최근에는 21일간의 터키여행을 통해 다른 문화와 소통하는 법과 다양한 시각으로 문제에 접근하는 법을 배웠습니다.\r\n성격과 강점\r\n어디서나 잘 어울리며, 제 생각을 당당하게 말합니다. 먼저 앞서서 듣고, 들은 내용에 대한 제 생각을 정확하게 표현할 줄 압니다. 그리고 항상 많은 사람들과 어울리는 것을 좋아합니다. 또한 주관이 뚜렷하여 본인이 생각한 바에 대해 명확히 말하고, 또 누군가 제 잘못을 짚어준다면 겸허히 받아들일 줄 압니다.\r\n예로, 고등학교부터 대학교, 군대까지 다양한 경험을 통해 커뮤니케이션과 리더십을 배웠습니다. 고등학교에서는 사진연합동아리와 RCY봉사활동, 대학교에서는 졸업전시회 팀장, 군대에서는 부사관으로 복무하여 구성원으로서 만의 참여가 아닌 리더로서의 커뮤니케이션을 보다 다양하게 경험하였습니다.\r\n특기사항\r\n- 서비스 주도적 마인드\r\n지금까지 업무를 진행하면서 단 한번도 내 서비스라는 마인드 없이 업무를 진행한 적이 없습니다. 항상 책임감 있는 모습으로 내 서비스를 내가 키운다는 생각으로 업무에 집중해 왔습니다. 업무 진행 시 기획 초기 단계인 요건분석부터 기획진행 후 디자인 및 개발 진행도 체크 및 테스트, 오픈 후 성과 관리까지 항상 내 서비스에 관심을 가지고 일해왔습니다.\r\n\r\n- 팀워크\r\n저는 기획자로써 팀워크에 강합니다. 업무진행에 있어 참여인원 전체와 사용자까지의 경험을 중요시합니다. 고객부터 서비스 이용자까지 만족할 수 있는 프로젝트 리딩 및 UI/UX설계를 합니다.\r\n어떤 업무 진행 시 나 혼자만 잘하면 된다는 생각 보다는 전체적인 팀이 함께 완성도를 높일 수 있도록 노력하는 것이 바람직하다고 생각합니다.\r\n지원동기 및\r\n입사 포부\r\n이직을 결심하게 된 이유는 현실에 안주하기 보다는 변화하는 사회와 더불어 제 자신의 가치를 높이며 성장할 수 있는 곳에서 일하고 싶었기 때문입니다. 짧다면 짧은 사회생활을 하면서 무엇보다 직장은 안정되고 성장가능성이 있는 회사에 다녀야 한다고 생각하였습니다. 이런 관점에서 볼 때 귀사는 제 미래를 함께 할 훌륭한 동반자가 될 것입니다.\r\n제가 경험한 구축 및 운영경험들을 토대로 하나의 서비스에 집중하여 기획을 하여 사용자들과 보다 전면에서 소통하고자 합니다. 서비스, 시스템, 디자인, 퍼블리싱, 컨설팅등 다양한 시각에서 접근하고 리딩할 수 있는 역량을 통해 귀사에 어느 누구보다 큰 수익을 가져다 줄 수 있다고 자부합니다.\r\n\r\n",
+          "submittedAt": "2025-10-27T15:54:05.886+09:00",
+          "formMode": "test"
+        }
+      }
+    ]
+  },
+  "triggerCount": 0,
+  "meta": {
+    "templateCredsSetupCompleted": true
+  }
+}

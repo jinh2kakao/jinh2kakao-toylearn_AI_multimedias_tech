@@ -1,0 +1,1514 @@
+{
+  "name": "07_Storage_GoogleSheets_loop",
+  "nodes": [
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {}
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.2,
+      "position": [
+        -32,
+        -64
+      ],
+      "id": "18d34bb7-cab5-4869-b25a-756d70fcc3ec",
+      "name": "Schedule Trigger"
+    },
+    {
+      "parameters": {
+        "documentId": {
+          "__rl": true,
+          "value": "https://docs.google.com/spreadsheets/d/12koNqkwvIY437IauGvQu5DeOIchPbECqVQIcm9c2iR0/edit?usp=sharing",
+          "mode": "url"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "gid=0",
+          "mode": "list",
+          "cachedResultName": "newsURL",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/12koNqkwvIY437IauGvQu5DeOIchPbECqVQIcm9c2iR0/edit#gid=0"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.7,
+      "position": [
+        176,
+        -64
+      ],
+      "id": "c202ecdc-96b6-4023-a4a7-04808307ab50",
+      "name": "Get row(s) in sheet",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "VCPdMeFhC2V9diqs",
+          "name": "jinh2kakao Google Sheets account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "n8n-nodes-base.splitInBatches",
+      "typeVersion": 3,
+      "position": [
+        400,
+        368
+      ],
+      "id": "8368a52c-222c-41cf-884d-d06cd8d3f53b",
+      "name": "Loop Over Items"
+    },
+    {
+      "parameters": {
+        "url": "={{ $json.newsUrl }}",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "User-Agent",
+              "value": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        656,
+        368
+      ],
+      "id": "b117e087-3dde-4d58-a368-ae4bbf7bb553",
+      "name": "HTTP Request"
+    },
+    {
+      "parameters": {
+        "operation": "appendOrUpdate",
+        "documentId": {
+          "__rl": true,
+          "value": "https://docs.google.com/spreadsheets/d/1oqnwLXHfSwU9BsxEji-2AMBox96xPvJEkDGz8U3FhDk/edit?usp=sharing",
+          "mode": "url"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": 1171067483,
+          "mode": "list",
+          "cachedResultName": "study_input_output_loop",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1oqnwLXHfSwU9BsxEji-2AMBox96xPvJEkDGz8U3FhDk/edit#gid=1171067483"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "keyValue": "={{ $json.keyValue }}",
+            "date": "={{ $json.date }}",
+            "URL": "={{ $json.newsUrl }}"
+          },
+          "matchingColumns": [
+            "keyValue"
+          ],
+          "schema": [
+            {
+              "id": "date",
+              "displayName": "date",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "URL",
+              "displayName": "URL",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "keyValue",
+              "displayName": "keyValue",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "title",
+              "displayName": "title",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "keyPoints",
+              "displayName": "keyPoints",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "oneLineReview",
+              "displayName": "oneLineReview",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "emailSendYn",
+              "displayName": "emailSendYn",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "emailList",
+              "displayName": "emailList",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "telegramSendYn",
+              "displayName": "telegramSendYn",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.7,
+      "position": [
+        1072,
+        368
+      ],
+      "id": "036c97f3-6632-45e1-a464-18caa89ac993",
+      "name": "Append or update row in sheet",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "VCPdMeFhC2V9diqs",
+          "name": "jinh2kakao Google Sheets account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "fieldsToAggregate": {
+          "fieldToAggregate": [
+            {
+              "fieldToAggregate": "newsUrl"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.aggregate",
+      "typeVersion": 1,
+      "position": [
+        368,
+        -64
+      ],
+      "id": "04051a6b-2e5d-4771-bfd8-adc780346da7",
+      "name": "Aggregate"
+    },
+    {
+      "parameters": {
+        "fieldToSplitOut": "newsUrl",
+        "include": "={{ $json.newsUrl }}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.splitOut",
+      "typeVersion": 1,
+      "position": [
+        192,
+        368
+      ],
+      "id": "660efeba-19dc-47e0-a86c-e91cf9d298d7",
+      "name": "Split Out"
+    },
+    {
+      "parameters": {
+        "chatId": "8297276244",
+        "text": "=제목:  {{ $json.title }},\n한줄평: {{ $json.oneLineReview }},\n핵심요약: {{ $json.keyPoints }}",
+        "additionalFields": {}
+      },
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [
+        2256,
+        368
+      ],
+      "id": "4f1fc41d-4114-4d39-8509-78483e2578a8",
+      "name": "Send a text message",
+      "webhookId": "e61c51a3-ea62-4d4e-9e88-9f5444f737fb",
+      "credentials": {
+        "telegramApi": {
+          "id": "KIKzWEpf2iG9EOKg",
+          "name": "n8n_jinh2kakao_bot"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "documentId": {
+          "__rl": true,
+          "value": "https://docs.google.com/spreadsheets/d/1oqnwLXHfSwU9BsxEji-2AMBox96xPvJEkDGz8U3FhDk/edit?usp=sharing",
+          "mode": "url"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": 1171067483,
+          "mode": "list",
+          "cachedResultName": "study_input_output_loop",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1oqnwLXHfSwU9BsxEji-2AMBox96xPvJEkDGz8U3FhDk/edit#gid=1171067483"
+        },
+        "filtersUI": {
+          "values": [
+            {
+              "lookupColumn": "emailSendYn",
+              "lookupValue": "=N"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.7,
+      "position": [
+        192,
+        784
+      ],
+      "id": "8346c18a-4081-473f-bfeb-100fb4c15b63",
+      "name": "Get row(s) in sheet2",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "VCPdMeFhC2V9diqs",
+          "name": "jinh2kakao Google Sheets account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "sendTo": "={{ $json['google Email'].join(',') }}",
+        "subject": "테스트] news summary",
+        "message": "={{ $('newsAggregate').item.json.text.join('\\n\\n') }}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 2.1,
+      "position": [
+        1824,
+        784
+      ],
+      "id": "607ba28b-6e7f-4926-b046-2a8888cab88a",
+      "name": "Send a message",
+      "webhookId": "2f464289-17a1-4865-bd95-957e20ecb6d7",
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "DIOGucUK4lqfvmQR",
+          "name": "jinh2kakao Gmail account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "appendOrUpdate",
+        "documentId": {
+          "__rl": true,
+          "value": "https://docs.google.com/spreadsheets/d/1oqnwLXHfSwU9BsxEji-2AMBox96xPvJEkDGz8U3FhDk/edit?usp=sharing",
+          "mode": "url"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": 1171067483,
+          "mode": "list",
+          "cachedResultName": "study_input_output_loop",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1oqnwLXHfSwU9BsxEji-2AMBox96xPvJEkDGz8U3FhDk/edit#gid=1171067483"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "telegramSendYn": "Y",
+            "keyValue": "={{ $('geminiNewsEditField').item.json.keyValue }}"
+          },
+          "matchingColumns": [
+            "keyValue"
+          ],
+          "schema": [
+            {
+              "id": "date",
+              "displayName": "date",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "URL",
+              "displayName": "URL",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "keyValue",
+              "displayName": "keyValue",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "title",
+              "displayName": "title",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "keyPoints",
+              "displayName": "keyPoints",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "oneLineReview",
+              "displayName": "oneLineReview",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "emailSendYn",
+              "displayName": "emailSendYn",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "emailList",
+              "displayName": "emailList",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "telegramSendYn",
+              "displayName": "telegramSendYn",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.7,
+      "position": [
+        2496,
+        368
+      ],
+      "id": "1a37404c-6147-49d9-8322-282ebd6ce3d0",
+      "name": "telegramSendYn",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "VCPdMeFhC2V9diqs",
+          "name": "jinh2kakao Google Sheets account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "a36ba5bf-28c2-4fb9-bbc2-6af6ec2501a2",
+              "name": "keyValue",
+              "value": "={{ $now.toFormat('yyyyMMddhhmm') + '-' +  $('Loop Over Items').item.json.newsUrl }}",
+              "type": "string"
+            },
+            {
+              "id": "65866fe8-c6e9-4cb7-92e8-c37ca12bdbed",
+              "name": "date",
+              "value": "={{ $now.toFormat('yyyyMMddhhmm') }}",
+              "type": "string"
+            },
+            {
+              "id": "27cc02f9-acb4-47ef-a0a6-9ded856cc649",
+              "name": "newsUrl",
+              "value": "={{ $('Loop Over Items').item.json.newsUrl }}",
+              "type": "string"
+            },
+            {
+              "id": "6773ab50-19a1-477b-8e11-480018de3b08",
+              "name": "data",
+              "value": "={{ $json.data }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        864,
+        368
+      ],
+      "id": "470eab3d-4f23-42b3-9f2d-63c5a5b8133e",
+      "name": "htmlDataEditField"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "75e9403b-2667-492d-a952-b0174f17fc64",
+              "name": "candidates[0].content.parts[0].text",
+              "value": "={{ $json.candidates[0].content.parts[0].text }}",
+              "type": "object"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        1632,
+        368
+      ],
+      "id": "3ccdb9d0-02e9-458e-a579-532326438a3e",
+      "name": "geminiNewsObject"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "937fec32-29a1-44a7-b79f-7d55410738af",
+              "name": "title",
+              "value": "={{ $json.candidates[0].content.parts[0].text[\"기사 제목\"] }}",
+              "type": "string"
+            },
+            {
+              "id": "91048338-92b2-46c8-8dce-9c9b8e657604",
+              "name": "source",
+              "value": "={{ $json.candidates[0].content.parts[0].text[\"출처/언론사\"] }}",
+              "type": "string"
+            },
+            {
+              "id": "9b759613-7426-4f63-97c6-03c36295e0ea",
+              "name": "reporter",
+              "value": "={{ $json.candidates[0].content.parts[0].text[\"기자 이름\"] }}",
+              "type": "string"
+            },
+            {
+              "id": "ed55ea6e-0b1a-48b1-90ab-c18a1a8136a8",
+              "name": "keyPoints",
+              "value": "={{ $json.candidates[0].content.parts[0].text[\"핵심 요약\"] }}",
+              "type": "string"
+            },
+            {
+              "id": "aba705d6-dbc0-48b2-b348-60238a87266b",
+              "name": "category",
+              "value": "={{ $json.candidates[0].content.parts[0].text[\"카테고리\"] }}",
+              "type": "string"
+            },
+            {
+              "id": "a640d133-7619-430f-b6fc-37f64c141cd8",
+              "name": "keyword",
+              "value": "={{ $json.candidates[0].content.parts[0].text[\"핵심 키워드\"] }}",
+              "type": "string"
+            },
+            {
+              "id": "00c59297-e060-47a2-a165-0f279daed3af",
+              "name": "oneLineReview",
+              "value": "={{ $json.candidates[0].content.parts[0].text[\"한줄평\"] }}",
+              "type": "string"
+            },
+            {
+              "id": "1d06d154-f4f8-4d47-aebc-5c7ea0a306de",
+              "name": "keyValue",
+              "value": "={{ $('htmlDataEditField').item.json.keyValue }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        1840,
+        368
+      ],
+      "id": "8cb65dd9-9353-459d-b87d-97425c7ea047",
+      "name": "geminiNewsEditField"
+    },
+    {
+      "parameters": {
+        "operation": "appendOrUpdate",
+        "documentId": {
+          "__rl": true,
+          "value": "https://docs.google.com/spreadsheets/d/1oqnwLXHfSwU9BsxEji-2AMBox96xPvJEkDGz8U3FhDk/edit?usp=sharing",
+          "mode": "url"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": 1171067483,
+          "mode": "list",
+          "cachedResultName": "study_input_output_loop",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1oqnwLXHfSwU9BsxEji-2AMBox96xPvJEkDGz8U3FhDk/edit#gid=1171067483"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "keyValue": "={{ $json.keyValue }}",
+            "title": "={{ $json.title }}",
+            "oneLineReview": "={{ $json.oneLineReview }}",
+            "keyPoints": "=- 출처/언론사:  {{ $json.source }},\n- 기자: {{ $json.reporter }},\n- 카테고리: {{ $json.category }},\n- 키워드: {{ $json.keyword }},\n- 핵심요약: {{ $json.keyPoints }}",
+            "emailSendYn": "N",
+            "telegramSendYn": "N"
+          },
+          "matchingColumns": [
+            "keyValue"
+          ],
+          "schema": [
+            {
+              "id": "date",
+              "displayName": "date",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "URL",
+              "displayName": "URL",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "keyValue",
+              "displayName": "keyValue",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "title",
+              "displayName": "title",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "keyPoints",
+              "displayName": "keyPoints",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "oneLineReview",
+              "displayName": "oneLineReview",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "emailSendYn",
+              "displayName": "emailSendYn",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "emailList",
+              "displayName": "emailList",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "telegramSendYn",
+              "displayName": "telegramSendYn",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.7,
+      "position": [
+        2048,
+        368
+      ],
+      "id": "fdbaa1fb-bff4-46aa-a0ea-d43dac2ccecf",
+      "name": "newsSummaryUpdate",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "VCPdMeFhC2V9diqs",
+          "name": "jinh2kakao Google Sheets account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "modelId": {
+          "__rl": true,
+          "value": "models/gemini-2.5-pro",
+          "mode": "list",
+          "cachedResultName": "models/gemini-2.5-pro"
+        },
+        "messages": {
+          "values": [
+            {
+              "content": "=당신은 뉴스 요약 전문가입니다. 아래 뉴스 기사 내용을 이메일 본문에 바로 사용할 수 있는 HTML 형식으로 정리해주세요.\n\n[입력 데이터]\n{{ $json.newsSummary }}\n\n[출력 요구사항]\n1. 반드시 HTML 형식의 텍스트로만 응답\n2. JSON, 마크다운 코드 블록(```), 설명, 인사말 등 일체 포함하지 말것\n3. 순수 HTML 코드만 출력 (<!DOCTYPE>이나 <html>, <body> 태그 없이)\n4. 응답은 <div>로 시작해서 </div>로 끝나야 함\n\n[HTML 본문 작성 규칙]\n- 전체를 하나의 <div> 컨테이너로 감싸기\n- 각 뉴스를 <div> 태그로 구분\n- 제목은 <h3> 태그 사용\n- 요약 내용은 <p> 태그 사용\n- 적절한 여백과 구분선(<hr>)으로 가독성 확보\n- 이메일 클라이언트 호환성을 고려한 인라인 스타일 사용\n\n[출력 예시]\n<div style='font-family: Arial, sans-serif;'><div style='margin-bottom: 20px;'><h3 style='color: #333; margin-bottom: 10px;'>뉴스 제목 1</h3><p style='color: #666; line-height: 1.6;'>요약 내용...</p></div><hr style='border: none; border-top: 1px solid #eee; margin: 20px 0;'><div style='margin-bottom: 20px;'><h3 style='color: #333; margin-bottom: 10px;'>뉴스 제목 2</h3><p style='color: #666; line-height: 1.6;'>요약 내용...</p></div></div>"
+            }
+          ]
+        },
+        "simplify": false,
+        "jsonOutput": true,
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.googleGemini",
+      "typeVersion": 1,
+      "position": [
+        672,
+        784
+      ],
+      "id": "a0bc34ff-7d13-4cef-8b49-211c1081894d",
+      "name": "geminiEmailSummary",
+      "credentials": {
+        "googlePalmApi": {
+          "id": "EXc8HVtldy9X0z9R",
+          "name": "gemni_aistudio_apiKey_1017"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "modelId": {
+          "__rl": true,
+          "value": "models/gemini-2.5-flash",
+          "mode": "list",
+          "cachedResultName": "models/gemini-2.5-flash"
+        },
+        "messages": {
+          "values": [
+            {
+              "content": "=당신은 20년차 Product Owner, 여행 비즈니스 플랫폼 팀장(야놀자, 여기어때, 익스피디아, 트립닷컴 등), 채용 전문가 및 실무 전문가입니다.\n\n전달하는 **기사 내용**을 html로 전달하면 요약해줘.\n\n[요약 항목]\n  - 전체 응답은 반드시 유효한 JSON 객체여야 한다.\n  - 어떠한 설명이나 인사말, ```json 같은 마크다운 코드 블록 없이, 응답은 반드시 { 로 시작해서 `}` 로 끝나야 한다.\n  - \\, \\n 같은 코드는 제외하고 응답.\n\n**[출력 예시 구조 - JSON]**\n{\n  \"기사 제목\": TEXT,\n  \"출처/언론사\": TEXT,\n  \"기자 이름\": TEXT,\n  \"핵심 요약\": TEXT,\n  \"카테고리\": TEXT,\n  \"핵심 키워드\": TEXT,\n  \"한줄평\": TEXT,\n}\n\n[기사내용]\n{{ $('htmlDataEditField').item.json.data }}"
+            }
+          ]
+        },
+        "simplify": false,
+        "jsonOutput": true,
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.googleGemini",
+      "typeVersion": 1,
+      "position": [
+        1280,
+        368
+      ],
+      "id": "21767ab2-482b-4ddb-9df3-6fe6986a2a08",
+      "name": "geminiNewsSummary",
+      "credentials": {
+        "googlePalmApi": {
+          "id": "Xc7wTgYSxI27qvxo",
+          "name": "n8n_jinh2kakao_1022"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "fieldsToAggregate": {
+          "fieldToAggregate": [
+            {
+              "fieldToAggregate": "candidates[0].content.parts[0].text"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.aggregate",
+      "typeVersion": 1,
+      "position": [
+        1088,
+        784
+      ],
+      "id": "4743a324-d5fb-4d57-a8f5-f893fe795088",
+      "name": "newsAggregate"
+    },
+    {
+      "parameters": {
+        "fieldsToAggregate": {
+          "fieldToAggregate": [
+            {
+              "fieldToAggregate": "google Email"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.aggregate",
+      "typeVersion": 1,
+      "position": [
+        1568,
+        784
+      ],
+      "id": "d046166f-0639-4e41-b352-a4990a1f234a",
+      "name": "emailAddrAggregate"
+    },
+    {
+      "parameters": {
+        "documentId": {
+          "__rl": true,
+          "value": "15PSi6M5ssF-wcTMlC5ifEzl42g7iFld8CxvGtQasJdI",
+          "mode": "list",
+          "cachedResultName": "Member_informations",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/15PSi6M5ssF-wcTMlC5ifEzl42g7iFld8CxvGtQasJdI/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "gid=0",
+          "mode": "list",
+          "cachedResultName": "Sheet1",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/15PSi6M5ssF-wcTMlC5ifEzl42g7iFld8CxvGtQasJdI/edit#gid=0"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.7,
+      "position": [
+        1344,
+        784
+      ],
+      "id": "cca2865f-0b7d-433e-9543-98aa1acc1881",
+      "name": "getEmailAddr",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "VCPdMeFhC2V9diqs",
+          "name": "jinh2kakao Google Sheets account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "n8n-nodes-base.splitInBatches",
+      "typeVersion": 3,
+      "position": [
+        2544,
+        784
+      ],
+      "id": "99cdef03-0966-4858-80b4-f12f72a4a1c8",
+      "name": "Loop Over Items1"
+    },
+    {
+      "parameters": {
+        "content": "## 스케줄에 따라 대상 기사 URL 가져와서 데이터 배열로 합치기",
+        "height": 320,
+        "width": 752
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        -112,
+        -176
+      ],
+      "typeVersion": 1,
+      "id": "591bb299-0efe-405e-85bb-08206f03a3fa",
+      "name": "Sticky Note"
+    },
+    {
+      "parameters": {
+        "content": "## loop 가능하도록 split\n* 이전 단계의 aggregate와 split Out 단계가 꼭 필요한지는 확인 필요."
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        -128,
+        336
+      ],
+      "typeVersion": 1,
+      "id": "cfacee68-cda7-4b71-a7c4-1809fab54305",
+      "name": "Sticky Note1"
+    },
+    {
+      "parameters": {
+        "content": "## News data 추출하여 요청할 data 정리",
+        "height": 320,
+        "width": 592
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        608,
+        272
+      ],
+      "typeVersion": 1,
+      "id": "91fe21f3-6682-4242-a872-79586b42d600",
+      "name": "Sticky Note2"
+    },
+    {
+      "parameters": {
+        "content": "## News 요약하여 data update",
+        "height": 320,
+        "width": 912
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        1264,
+        272
+      ],
+      "typeVersion": 1,
+      "id": "5a8a1d87-6473-443f-89bb-db640bfb1c9d",
+      "name": "Sticky Note3"
+    },
+    {
+      "parameters": {
+        "content": "## telegram 발송",
+        "height": 320,
+        "width": 496
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        2208,
+        272
+      ],
+      "typeVersion": 1,
+      "id": "5372740c-cfb0-40bc-a842-03a551614ef4",
+      "name": "Sticky Note4"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "c8553118-e5f4-442b-934c-c999c0a250b8",
+              "name": "newsSummary",
+              "value": "={{ $('geminiNewsEditField').item.json.title }}, {{ $('geminiNewsEditField').item.json.keyPoints }}, {{ $('geminiNewsEditField').item.json.oneLineReview }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        448,
+        784
+      ],
+      "id": "639002b8-13ef-478b-846f-cc4507868ff2",
+      "name": "newsSummaryMerge"
+    },
+    {
+      "parameters": {
+        "content": "## 발송대상 기사 콘텐츠 이메일 발송용 데이터로 AI 요청",
+        "height": 272,
+        "width": 1088
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        160,
+        704
+      ],
+      "typeVersion": 1,
+      "id": "d71ccaf7-850a-411c-8158-1602dd9a399d",
+      "name": "Sticky Note5"
+    },
+    {
+      "parameters": {
+        "content": "## 이메일 발송\n",
+        "height": 272,
+        "width": 672
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        1296,
+        704
+      ],
+      "typeVersion": 1,
+      "id": "01ec1363-7a88-4feb-980b-4c3260fb1735",
+      "name": "Sticky Note6"
+    },
+    {
+      "parameters": {
+        "content": "## 이메일 발송여부 및 발송 대상자 리스트 저장",
+        "height": 272,
+        "width": 1104
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        2032,
+        704
+      ],
+      "typeVersion": 1,
+      "id": "7df0f093-4fb5-4f6d-a399-e3fe9f30dee6",
+      "name": "Sticky Note7"
+    },
+    {
+      "parameters": {
+        "documentId": {
+          "__rl": true,
+          "value": "https://docs.google.com/spreadsheets/d/1oqnwLXHfSwU9BsxEji-2AMBox96xPvJEkDGz8U3FhDk/edit?usp=sharing",
+          "mode": "url"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": 1171067483,
+          "mode": "list",
+          "cachedResultName": "study_input_output_loop",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1oqnwLXHfSwU9BsxEji-2AMBox96xPvJEkDGz8U3FhDk/edit#gid=1171067483"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.7,
+      "position": [
+        2080,
+        784
+      ],
+      "id": "1ba97cd2-8bb2-4530-b5b0-1314ec5f3568",
+      "name": "keyValueLoad",
+      "alwaysOutputData": false,
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "VCPdMeFhC2V9diqs",
+          "name": "jinh2kakao Google Sheets account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "fieldToSplitOut": "keyValue",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.splitOut",
+      "typeVersion": 1,
+      "position": [
+        2272,
+        784
+      ],
+      "id": "db8c9bb4-d55f-4e11-ab99-59d9834271c6",
+      "name": "keyValueSplit"
+    },
+    {
+      "parameters": {
+        "operation": "appendOrUpdate",
+        "documentId": {
+          "__rl": true,
+          "value": "https://docs.google.com/spreadsheets/d/1oqnwLXHfSwU9BsxEji-2AMBox96xPvJEkDGz8U3FhDk/edit?usp=sharing",
+          "mode": "url"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": 1171067483,
+          "mode": "list",
+          "cachedResultName": "study_input_output_loop",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1oqnwLXHfSwU9BsxEji-2AMBox96xPvJEkDGz8U3FhDk/edit#gid=1171067483"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "emailSendYn": "Y",
+            "keyValue": "={{ $('keyValueSplit').item.json.keyValue }}",
+            "emailList": "={{ $('emailAddrAggregate').item.json['google Email'].join(',') }}"
+          },
+          "matchingColumns": [
+            "keyValue"
+          ],
+          "schema": [
+            {
+              "id": "date",
+              "displayName": "date",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "URL",
+              "displayName": "URL",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "keyValue",
+              "displayName": "keyValue",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "title",
+              "displayName": "title",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "keyPoints",
+              "displayName": "keyPoints",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "oneLineReview",
+              "displayName": "oneLineReview",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "emailSendYn",
+              "displayName": "emailSendYn",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "emailList",
+              "displayName": "emailList",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "telegramSendYn",
+              "displayName": "telegramSendYn",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.7,
+      "position": [
+        2880,
+        784
+      ],
+      "id": "25cc45e2-26b6-45ec-a28a-f22ceb3744c5",
+      "name": "emailUpdate",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "VCPdMeFhC2V9diqs",
+          "name": "jinh2kakao Google Sheets account"
+        }
+      }
+    }
+  ],
+  "connections": {
+    "Schedule Trigger": {
+      "main": [
+        [
+          {
+            "node": "Get row(s) in sheet",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get row(s) in sheet": {
+      "main": [
+        [
+          {
+            "node": "Aggregate",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Loop Over Items": {
+      "main": [
+        [
+          {
+            "node": "Get row(s) in sheet2",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "HTTP Request",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "HTTP Request": {
+      "main": [
+        [
+          {
+            "node": "htmlDataEditField",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Aggregate": {
+      "main": [
+        [
+          {
+            "node": "Split Out",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Append or update row in sheet": {
+      "main": [
+        [
+          {
+            "node": "geminiNewsSummary",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Split Out": {
+      "main": [
+        [
+          {
+            "node": "Loop Over Items",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Send a text message": {
+      "main": [
+        [
+          {
+            "node": "telegramSendYn",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get row(s) in sheet2": {
+      "main": [
+        [
+          {
+            "node": "newsSummaryMerge",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Send a message": {
+      "main": [
+        [
+          {
+            "node": "keyValueLoad",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "telegramSendYn": {
+      "main": [
+        [
+          {
+            "node": "Loop Over Items",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "htmlDataEditField": {
+      "main": [
+        [
+          {
+            "node": "Append or update row in sheet",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "geminiNewsObject": {
+      "main": [
+        [
+          {
+            "node": "geminiNewsEditField",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "geminiNewsEditField": {
+      "main": [
+        [
+          {
+            "node": "newsSummaryUpdate",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "newsSummaryUpdate": {
+      "main": [
+        [
+          {
+            "node": "Send a text message",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "geminiEmailSummary": {
+      "main": [
+        [
+          {
+            "node": "newsAggregate",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "geminiNewsSummary": {
+      "main": [
+        [
+          {
+            "node": "geminiNewsObject",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "newsAggregate": {
+      "main": [
+        [
+          {
+            "node": "getEmailAddr",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "emailAddrAggregate": {
+      "main": [
+        [
+          {
+            "node": "Send a message",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "getEmailAddr": {
+      "main": [
+        [
+          {
+            "node": "emailAddrAggregate",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Loop Over Items1": {
+      "main": [
+        [],
+        [
+          {
+            "node": "emailUpdate",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "newsSummaryMerge": {
+      "main": [
+        [
+          {
+            "node": "geminiEmailSummary",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "keyValueLoad": {
+      "main": [
+        [
+          {
+            "node": "keyValueSplit",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "keyValueSplit": {
+      "main": [
+        [
+          {
+            "node": "Loop Over Items1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "emailUpdate": {
+      "main": [
+        [
+          {
+            "node": "Loop Over Items1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "staticData": null,
+  "pinData": {},
+  "triggerCount": 0,
+  "meta": {
+    "templateCredsSetupCompleted": true
+  }
+}

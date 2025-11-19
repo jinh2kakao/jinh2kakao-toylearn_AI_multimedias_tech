@@ -1,0 +1,466 @@
+{
+  "name": "Youtube Automation",
+  "nodes": [
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.manualTrigger",
+      "typeVersion": 1,
+      "position": [
+        0,
+        0
+      ],
+      "id": "bd3359ba-bef5-48b1-9a4a-da85189dd9d7",
+      "name": "When clicking ‘Execute workflow’"
+    },
+    {
+      "parameters": {
+        "modelId": {
+          "__rl": true,
+          "value": "models/gemini-2.5-pro",
+          "mode": "list",
+          "cachedResultName": "models/gemini-2.5-pro"
+        },
+        "messages": {
+          "values": [
+            {
+              "content": "=작가 및 출판사 편집가, 그리고 유튜브 PD 전문가로서, 제공된 북리뷰와 상세 줄거리 정보를 모두 참고하여, 제공된 도서를 주제로 한 유튜브 나레이션 대본 및 영상 제작 컨셉을 작성해 주세요.\n\n나레이션은 한 명의 연사(Single Narrator)가 진행하며, **총 분량은 사용자가 입력**에 맞추어야 합니다.\n\n또한, 대본의 각 장면(Scene)에 맞는 AI 이미지 생성 가이드(Image Prompt)를 구체적으로 제공하여, 영상의 시각적 완성도를 높일 수 있도록 합니다.\n\n책 제목: {{ $json.Book_Title }}\n지은이/장르: {{ $json.Author_Genre }}\n영상형식: {{ $json.Youtube_Type }}\n영상길이: {{ $json.Movie_Range }}\n영상콘셉: {{ $json.Visual_Concept }}\n음악컨셉: {{ $json.Music_Sound }}\n핵심문장: {{ $json.Key_Quotes }}\n\n## 출력 형식\n\n- 영상 제작 컨셉 (8분 길이의 롱폼 나레이션 콘텐츠에 적합한 타겟 시청층, 톤 앤 매너, 구성 방향 제시)\n\n- Image Prompt 공통 스타일 (AI 이미지 생성 시 일관되게 적용할 비주얼 컨셉, 질감, 색상 톤 정의. 예: 자연주의적 삽화 스타일, 따뜻하고 명암 대비가 강한 색감)\n\n- 대본: **Scene, Cut, Subtitle, Narration, Image Prompt, Movie Prompt**를 각각의 JSON 파라미터 구성으로 작성. / 항목명은 동일하게 사용.\n\n각 섹션은 대본 형식으로 작성하고, 적절한 이모티콘과 효과음을 포함하여 생동감 있게 표현해주세요."
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.googleGemini",
+      "typeVersion": 1,
+      "position": [
+        448,
+        0
+      ],
+      "id": "e85098ac-b228-4670-852c-19c3b62a454d",
+      "name": "Message a model",
+      "credentials": {
+        "googlePalmApi": {
+          "id": "EXc8HVtldy9X0z9R",
+          "name": "Google Gemini(PaLM) Api account 2"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "documentId": {
+          "__rl": true,
+          "value": "1QrJ580ZsO8IjNCOE_lEfQwdVd6KSXtVxMiVa_iBskIE",
+          "mode": "list",
+          "cachedResultName": "youtubeAutomationInput",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1QrJ580ZsO8IjNCOE_lEfQwdVd6KSXtVxMiVa_iBskIE/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": 593591594,
+          "mode": "list",
+          "cachedResultName": "input",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1QrJ580ZsO8IjNCOE_lEfQwdVd6KSXtVxMiVa_iBskIE/edit#gid=593591594"
+        },
+        "filtersUI": {
+          "values": [
+            {
+              "lookupColumn": "Status",
+              "lookupValue": "idea"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.7,
+      "position": [
+        224,
+        0
+      ],
+      "id": "b2f9494c-e8d2-4331-9a19-e43bc0327779",
+      "name": "Get row(s) in sheet",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "1o049wDY5ipBI2Bv",
+          "name": "jinh2 Google Sheets account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "// --- 고유 아이디 추가 최종 코드 ---\n// Gemini 노드 출력의 정확한 경로에서 텍스트 데이터를 가져옵니다.\nconst geminiOutput = $json.content.parts[0].text;\n\n// 데이터가 비어있거나 문자열이 아닌 경우를 대비한 안전장치\nif (!geminiOutput || typeof geminiOutput !== 'string') {\n  console.error(\"오류: Gemini로부터 텍스트를 받지 못했습니다. 데이터 경로($json.content.parts[0].text)를 확인하세요.\");\n  return [];\n}\n\n// 텍스트에서 JSON 배열 부분만 정확히 찾아내는 정규표현식\nconst jsonRegex = /(\\[[\\s\\S]*\\])/;\nconst match = geminiOutput.match(jsonRegex);\n\n// JSON 배열을 찾은 경우\nif (match && match[1]) {\n  const jsonString = match[1];\n  try {\n    const sceneData = JSON.parse(jsonString);\n    console.log(\"성공: JSON 파싱 성공! \" + sceneData.length + \"개의 아이템을 반환합니다.\");\n    \n    // ✨ 1. 전체 콘텐츠에 대한 고유 아이디 생성 (예: PACHINKO-20251015-111754)\n    //    실제 콘텐츠 제목 등을 활용하여 더 의미있는 ID를 만들 수도 있습니다.\n    const now = new Date();\n    const contentId = `CONTENT-${now.getFullYear()}${(now.getMonth() + 1).toString().padStart(2, '0')}${now.getDate().toString().padStart(2, '0')}-${now.getHours().toString().padStart(2, '0')}${now.getMinutes().toString().padStart(2, '0')}${now.getSeconds().toString().padStart(2, '0')}`;\n\n    // ✨ 2. map 함수를 사용하여 각 아이템에 고유 아이디를 추가하고 필드를 추출합니다.\n    const processedData = sceneData.map(item => {\n      // ✨ 3. 각 신-컷에 대한 고유 아이디 생성 (예: PACHINKO-20251015-111754-S1-C1)\n      const sceneCutId = `${contentId}-S${item.Scene}-C${item.Cut}`;\n      \n      return {\n        ContentID: contentId, // 전체 콘텐츠에 대한 ID\n        SceneCutID: sceneCutId, // 각 신-컷에 대한 고유 ID\n        Scene: item.Scene,\n        Cut: item.Cut,\n        Subtitle: item.Subtitle || item['자막 (Subtitle)'], // 두 가지 필드명 모두 호환\n        Narration: item.Narration || item['나레이션 (Narration)'],\n        'Image Prompt': item['Image Prompt'] || item['Image Prompt (AI 이미지 생성 가이드)'] || item['Image Prompt (AI 이미지 생성 가이드, 영문)'],\n        // 'Movie Prompt' 필드가 원본 데이터에 없어 주석 처리합니다. 필요시 주석을 해제하세요.\n        'Movie Prompt': item['Movie Prompt'] || item['Movie Prompt (AI 이미지 생성 가이드)'] || item['Movie Prompt (AI 이미지 생성 가이드, 영문)']\n      };\n    });\n    \n    return processedData.map(item => ({ json: item }));\n\n  } catch (error) {\n    console.error(\"오류: JSON 파싱에 실패했습니다.\", error);\n    return [];\n  }\n}\n\n// 텍스트에서 JSON 배열을 찾지 못한 경우\nconsole.error(\"오류: 받은 텍스트에서 JSON 배열([...])을 찾지 못했습니다.\");\nreturn [];"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        800,
+        0
+      ],
+      "id": "724fdaf5-a249-4909-9ef5-e25f3dde67c0",
+      "name": "Code in JavaScript",
+      "alwaysOutputData": true
+    },
+    {
+      "parameters": {
+        "operation": "appendOrUpdate",
+        "documentId": {
+          "__rl": true,
+          "value": "1QrJ580ZsO8IjNCOE_lEfQwdVd6KSXtVxMiVa_iBskIE",
+          "mode": "list",
+          "cachedResultName": "youtubeAutomationInput",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1QrJ580ZsO8IjNCOE_lEfQwdVd6KSXtVxMiVa_iBskIE/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": 1992165948,
+          "mode": "list",
+          "cachedResultName": "output",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1QrJ580ZsO8IjNCOE_lEfQwdVd6KSXtVxMiVa_iBskIE/edit#gid=1992165948"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "Scene": "={{ $json.Scene }}",
+            "Cut": "={{ $json.Cut }}",
+            "Subtitle": "={{ $json.Subtitle }}",
+            "Narration": "={{ $json.Narration }}",
+            "Image Prompt": "={{ $json['Image Prompt'] }}",
+            "Movie Prompt": "={{ $json['Movie Prompt'] }}",
+            "ID": "={{ $json.SceneCutID }}"
+          },
+          "matchingColumns": [
+            "ID"
+          ],
+          "schema": [
+            {
+              "id": "ID",
+              "displayName": "ID",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Scene",
+              "displayName": "Scene",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Cut",
+              "displayName": "Cut",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Subtitle",
+              "displayName": "Subtitle",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Narration",
+              "displayName": "Narration",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Image Prompt",
+              "displayName": "Image Prompt",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Movie Prompt",
+              "displayName": "Movie Prompt",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.7,
+      "position": [
+        1024,
+        0
+      ],
+      "id": "f72cab3f-86de-4569-8e13-d20a1205cc6b",
+      "name": "Append or update row in sheet",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "1o049wDY5ipBI2Bv",
+          "name": "jinh2 Google Sheets account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "content": "## 스토리보드 추출\n",
+        "height": 432,
+        "width": 1392
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        -112,
+        -160
+      ],
+      "id": "55d2cd44-ae47-4f83-a779-4fcb48e30291",
+      "name": "Sticky Note"
+    },
+    {
+      "parameters": {
+        "documentId": {
+          "__rl": true,
+          "value": "1QrJ580ZsO8IjNCOE_lEfQwdVd6KSXtVxMiVa_iBskIE",
+          "mode": "list",
+          "cachedResultName": "youtubeAutomationInput",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1QrJ580ZsO8IjNCOE_lEfQwdVd6KSXtVxMiVa_iBskIE/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": 1992165948,
+          "mode": "list",
+          "cachedResultName": "output",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1QrJ580ZsO8IjNCOE_lEfQwdVd6KSXtVxMiVa_iBskIE/edit#gid=1992165948"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.7,
+      "position": [
+        1504,
+        0
+      ],
+      "id": "5a3e4717-2751-4225-9dd3-490bfb7559c5",
+      "name": "Get row(s) in sheet1",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "1o049wDY5ipBI2Bv",
+          "name": "jinh2 Google Sheets account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "resource": "image",
+        "modelId": {
+          "__rl": true,
+          "value": "models/gemini-2.5-flash-image-preview",
+          "mode": "list",
+          "cachedResultName": "models/gemini-2.5-flash-image-preview (Nano Banana)"
+        },
+        "prompt": "={{ $json['Image Prompt'] }}",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.googleGemini",
+      "typeVersion": 1,
+      "position": [
+        1920,
+        -160
+      ],
+      "id": "7c113b66-0252-45d2-b029-09e2bbb349ec",
+      "name": "Generate an image",
+      "alwaysOutputData": false,
+      "credentials": {
+        "googlePalmApi": {
+          "id": "EXc8HVtldy9X0z9R",
+          "name": "Google Gemini(PaLM) Api account 2"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "n8n-nodes-base.splitInBatches",
+      "typeVersion": 3,
+      "position": [
+        1712,
+        0
+      ],
+      "id": "3f92cda7-471f-4df2-8d63-f6b2b160475f",
+      "name": "Loop Over Items"
+    },
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.noOp",
+      "name": "Replace Me",
+      "typeVersion": 1,
+      "position": [
+        1920,
+        0
+      ],
+      "id": "e98e6040-60fc-41f3-b25c-5035c6203749"
+    },
+    {
+      "parameters": {
+        "amount": 40
+      },
+      "type": "n8n-nodes-base.wait",
+      "typeVersion": 1.1,
+      "position": [
+        2096,
+        -160
+      ],
+      "id": "f725868c-732a-4ac4-b24e-c159a238977c",
+      "name": "Wait",
+      "webhookId": "e8fa9f6f-de01-49f6-be7e-272cc5c2fef0"
+    },
+    {
+      "parameters": {
+        "content": "## Image Generation",
+        "height": 432,
+        "width": 1392
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        1424,
+        -160
+      ],
+      "id": "52fc699a-f916-4d40-a4ad-955da3ede3b3",
+      "name": "Sticky Note1"
+    }
+  ],
+  "connections": {
+    "When clicking ‘Execute workflow’": {
+      "main": [
+        [
+          {
+            "node": "Get row(s) in sheet",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Message a model": {
+      "main": [
+        [
+          {
+            "node": "Code in JavaScript",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get row(s) in sheet": {
+      "main": [
+        [
+          {
+            "node": "Message a model",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code in JavaScript": {
+      "main": [
+        [
+          {
+            "node": "Append or update row in sheet",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Append or update row in sheet": {
+      "main": [
+        []
+      ]
+    },
+    "Get row(s) in sheet1": {
+      "main": [
+        [
+          {
+            "node": "Loop Over Items",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Loop Over Items": {
+      "main": [
+        [
+          {
+            "node": "Generate an image",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Replace Me",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Replace Me": {
+      "main": [
+        [
+          {
+            "node": "Loop Over Items",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Generate an image": {
+      "main": [
+        [
+          {
+            "node": "Wait",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "staticData": null,
+  "pinData": {},
+  "triggerCount": 0,
+  "meta": {
+    "templateCredsSetupCompleted": true
+  }
+}

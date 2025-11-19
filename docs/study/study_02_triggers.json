@@ -1,0 +1,192 @@
+{
+  "name": "study_02_triggers",
+  "nodes": [
+    {
+      "parameters": {
+        "chatId": "8297276244",
+        "text": "=N8M에서 보냅니다.\n제목: {{ $json.title }}, \n링크: {{ $json.link }},\n발행일: {{ $json.pubDate }}",
+        "additionalFields": {}
+      },
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [
+        416,
+        288
+      ],
+      "id": "479f7507-9f45-41c1-bf72-7be300e7d0b0",
+      "name": "Send a text message",
+      "webhookId": "caecfe61-bd0a-4b97-a467-4086d220ded2",
+      "credentials": {
+        "telegramApi": {
+          "id": "KIKzWEpf2iG9EOKg",
+          "name": "Telegram account 2"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "content": "## telegram 연동\n1. botfather 친구추가\n2. botfather 채팅창에 /newbot 입력\n3. 채팅방 이름 입력\n4. API 키 획득\n5. 내 채팅창 시작\n6. n8n에 credential 인증 입력\n7. n8n node 추가\n8. n8n node에 전송할 telegram의 채팅 ID 입력\n\n또는 아래 Url로 진행\nhttps://api.telegram.org/bot<bot tokken>/getUpdates",
+        "height": 288,
+        "width": 560
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        432,
+        -448
+      ],
+      "id": "7a11ad98-b78b-43e9-b8b7-0466e5fc127a",
+      "name": "Sticky Note"
+    },
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {}
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.2,
+      "position": [
+        -272,
+        -48
+      ],
+      "id": "cb11e5ec-84df-4f44-9fb1-3e1c9a3463ae",
+      "name": "Schedule Trigger"
+    },
+    {
+      "parameters": {
+        "url": "https://www.chosun.com/arc/outboundfeeds/rss/",
+        "sendQuery": true,
+        "queryParameters": {
+          "parameters": [
+            {
+              "name": "outputType",
+              "value": "xml"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        -64,
+        -48
+      ],
+      "id": "8dd94235-8ed5-4e2c-97b2-0bd0be51617a",
+      "name": "HTTP Request"
+    },
+    {
+      "parameters": {
+        "url": "https://www.chosun.com/arc/outboundfeeds/rss/?outputType=xml",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.rssFeedRead",
+      "typeVersion": 1.2,
+      "position": [
+        -64,
+        288
+      ],
+      "id": "449ea26f-894d-4959-8309-bf8f01589c8d",
+      "name": "RSS Read"
+    },
+    {
+      "parameters": {
+        "maxItems": 3,
+        "keep": "lastItems"
+      },
+      "type": "n8n-nodes-base.limit",
+      "typeVersion": 1,
+      "position": [
+        160,
+        288
+      ],
+      "id": "0a07bcbf-e771-4357-9fa8-4c2e6e657787",
+      "name": "Limit"
+    },
+    {
+      "parameters": {
+        "chatId": "8297276244",
+        "text": "=N8N 에서 보냅니다.\nXML형식입니다.",
+        "additionalFields": {}
+      },
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [
+        176,
+        -48
+      ],
+      "id": "b287a1a4-798c-4b18-8446-80c47c93752e",
+      "name": "Send a text message1",
+      "webhookId": "caecfe61-bd0a-4b97-a467-4086d220ded2",
+      "credentials": {
+        "telegramApi": {
+          "id": "KIKzWEpf2iG9EOKg",
+          "name": "Telegram account 2"
+        }
+      }
+    }
+  ],
+  "connections": {
+    "Schedule Trigger": {
+      "main": [
+        [
+          {
+            "node": "HTTP Request",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "RSS Read",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "HTTP Request": {
+      "main": [
+        [
+          {
+            "node": "Send a text message1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "RSS Read": {
+      "main": [
+        [
+          {
+            "node": "Limit",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Limit": {
+      "main": [
+        [
+          {
+            "node": "Send a text message",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "staticData": null,
+  "pinData": {},
+  "triggerCount": 0,
+  "meta": {
+    "templateCredsSetupCompleted": true
+  }
+}

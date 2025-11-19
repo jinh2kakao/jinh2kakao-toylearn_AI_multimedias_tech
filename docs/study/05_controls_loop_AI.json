@@ -1,0 +1,368 @@
+{
+  "name": "study_05_controls_loop_AI",
+  "nodes": [
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {}
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.2,
+      "position": [
+        -752,
+        0
+      ],
+      "id": "3d557553-49ac-4dad-8b58-d4b21a730210",
+      "name": "Schedule Trigger"
+    },
+    {
+      "parameters": {
+        "url": "={{ $json.feeds }}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.rssFeedRead",
+      "typeVersion": 1.2,
+      "position": [
+        304,
+        -48
+      ],
+      "id": "2ac5e4b5-a9a0-49c1-901c-32dc4d57183c",
+      "name": "RSS Read1"
+    },
+    {
+      "parameters": {
+        "keep": "lastItems"
+      },
+      "type": "n8n-nodes-base.limit",
+      "typeVersion": 1,
+      "position": [
+        528,
+        -48
+      ],
+      "id": "47ec3665-9780-49db-aeb3-71bec39fa96a",
+      "name": "Limit1"
+    },
+    {
+      "parameters": {
+        "content": "## RSS 전송",
+        "height": 336,
+        "width": 496
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        240,
+        -112
+      ],
+      "id": "83f092f1-a430-4220-9c9c-221e8ff6b5dd",
+      "name": "Sticky Note3"
+    },
+    {
+      "parameters": {
+        "fieldToSplitOut": "feeds",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.splitOut",
+      "typeVersion": 1,
+      "position": [
+        -336,
+        0
+      ],
+      "id": "be32e6c4-2ad2-4628-9271-3a2e39c35aa2",
+      "name": "Split Out"
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "n8n-nodes-base.splitInBatches",
+      "typeVersion": 3,
+      "position": [
+        -128,
+        0
+      ],
+      "id": "de1164ab-e7ca-4e54-ab20-b6beb1f6da8d",
+      "name": "Loop Over Items"
+    },
+    {
+      "parameters": {
+        "content": "## RSS 대상주소 처리 및 배치",
+        "height": 336,
+        "width": 768
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        -576,
+        -112
+      ],
+      "id": "eed85727-453b-4553-bda2-d83f063072c1",
+      "name": "Sticky Note"
+    },
+    {
+      "parameters": {
+        "mode": "raw",
+        "jsonOutput": "{\n\"feeds\": [\n  \"https://www.aitimes.com/rss/allArticle.xml\",\n  \"https://tech.kakaoenterprise.com/feed\",\n  \"https://uxdesign.cc/feed\"\n]\n}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        -544,
+        0
+      ],
+      "id": "5b92f085-be32-4d54-87e2-5dc8d39b3777",
+      "name": "RSS URI LIST"
+    },
+    {
+      "parameters": {
+        "chatId": "8297276244",
+        "text": "={{ $json.content.parts[0].text }}",
+        "additionalFields": {
+          "appendAttribution": false
+        }
+      },
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [
+        320,
+        352
+      ],
+      "id": "e13643a5-7eda-45f0-98a6-4e4db0dd39cd",
+      "name": "Send a text message",
+      "webhookId": "66fc8216-5d53-40c4-a1f9-197166597430",
+      "credentials": {
+        "telegramApi": {
+          "id": "KIKzWEpf2iG9EOKg",
+          "name": "Telegram account 2"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "content": "## Gemini prompt 검토\n기사 내용을 간략화 해줘.\n\ncontent 필드값을 10자로 줄여줘.\n나머지 필드들은 수정하지말고 내용 고정.\n\n##출력 예시 (Json 형식)\n{\n\"title\": \"text\",\n\"link\": \"link\",\n\"content:encoded\": \"text\",\n\"pubDate\": \"date\"\n},\n\n\n\n##기사 내용\n{\n\"title\": \"오픈AI, 챗GPT 쇼핑에 월마트 추가...\\\"에이전트 커머스 지원\\\"\",\n\"link\": \"https://www.aitimes.com/news/articleView.html?idxno=203179\",\n\"content:encoded\": \"오픈AI가 세계 최대의 유통 기업 월마트와 협력, 사용자들이 '챗GPT'에서 직접 상품을 검색하고 결제까지 완료할 수 있는 새로운 에이전틱 쇼핑(agentic shopping) 기능을 선보인다. 월마트는 14일(현지시간) 사용자들이 챗GPT를 사용해 식료품, 생활용품 등 다양한 제품을 구매할 수 있도록 조치, 대화 도중 ‘구매(Buy)’ 버튼을 눌러 즉시 결제(Instant Checkout)까지 진행할 수 있는 기능을 도입한다고 발표했다. 오픈AI의 에이전틱 쇼핑은 단순한 검색형 전자상거래를 넘어, 제품 탐색–추천–결제를 모두 AI\",\n\"pubDate\": \"2025-10-15 18:00:00\"\n},",
+        "height": 480,
+        "width": 608
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        -304,
+        592
+      ],
+      "id": "cdaf17ee-d5ba-43ea-bba3-f55818e664e5",
+      "name": "Sticky Note1"
+    },
+    {
+      "parameters": {
+        "modelId": {
+          "__rl": true,
+          "value": "models/gemini-2.5-flash",
+          "mode": "list",
+          "cachedResultName": "models/gemini-2.5-flash"
+        },
+        "messages": {
+          "values": [
+            {
+              "content": "=기사 내용을 간략화 해줘.\n\ncontent 필드값을 30자로 줄여줘. (**markdown, markup 제외, p태그, span태그 제외**)\n나머지 필드들은 수정하지말고 내용 고정.\n\n\n##기사 내용\n\n{\n\"title\": \"{{ $json.title }}\",\n\"link\": \"{{ $json.link }}\",\n\"content:encoded\": \"{{ $json['content:encoded'] }}\",\n\"pubDate\": \"{{ $json.pubDate }}\"\n}\n\n\n##출력 예시 (Json 형식)\n\n{\n\"title\": \"text\",\n\"link\": \"link\",\n\"content:encoded\": \"text\",\n\"pubDate\": \"date\"\n},"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.googleGemini",
+      "typeVersion": 1,
+      "position": [
+        -272,
+        352
+      ],
+      "id": "9ed2a64a-62e3-41f2-a70f-d8c92727175e",
+      "name": "News contents to Gemini",
+      "credentials": {
+        "googlePalmApi": {
+          "id": "EXc8HVtldy9X0z9R",
+          "name": "gemni_aistudio_apiKey_1017"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "651bad2b-b63c-4084-b65f-842712129669",
+              "name": "title",
+              "value": "={{ $json.title }}",
+              "type": "string"
+            },
+            {
+              "id": "f11a7ae0-76d5-4445-90dc-882684fe865b",
+              "name": "link",
+              "value": "={{ $json.link }}",
+              "type": "string"
+            },
+            {
+              "id": "1cba5ed8-c8f3-4a7e-ba2a-e214cf79b759",
+              "name": "content:encoded",
+              "value": "={{ $json.content }}",
+              "type": "string"
+            },
+            {
+              "id": "3b9f8c32-84f3-4174-9d11-352335d6b74e",
+              "name": "pubDate",
+              "value": "={{ $json.pubDate }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        -544,
+        352
+      ],
+      "id": "7fdbd980-e17c-407a-aa6f-74263f56d388",
+      "name": "RSS to Parameter"
+    },
+    {
+      "parameters": {
+        "jsCode": "// 결과를 저장할 빈 배열을 생성합니다.\nconst results = [];\n\n// 이전 노드에서 들어온 모든 아이템을 순회합니다.\n// 'items'는 n8n에서 사용하는 기본 입력 변수입니다.\nfor (const item of items) {\n  try {\n    // 1. 파싱할 대상이 되는 원본 텍스트를 가져옵니다.\n    //    사용자가 제공한 복잡한 구조를 정확히 타겟팅합니다.\n    const rawText = item.json.content.parts[0].text;\n\n    // 2. 텍스트에서 순수한 JSON 부분만 추출합니다.\n    //    앞뒤의 ```json 이나 ``` 같은 불필요한 부분을 제거합니다.\n    const firstBraceIndex = rawText.indexOf('{');\n    const lastBraceIndex = rawText.lastIndexOf('}');\n    const jsonString = rawText.substring(firstBraceIndex, lastBraceIndex + 1);\n\n    // 3. 추출한 문자열을 JSON 객체로 파싱합니다.\n    const parsedData = JSON.parse(jsonString);\n\n    // 4. 원하는 데이터(title, link, content:encoded)를 추출하여 새 객체를 만듭니다.\n    const newItem = {\n      json: {\n        title: parsedData.title,\n        link: parsedData.link,\n        // 'content:encoded'처럼 키에 특수문자가 포함된 경우 대괄호 표기법을 사용합니다.\n        // 키 이름을 'contentEncoded'로 변경하여 다음 노드에서 사용하기 쉽게 만듭니다.\n        contentEncoded: parsedData['content:encoded']\n      }\n    };\n\n    // 5. 최종 결과 배열에 새로 만든 객체를 추가합니다.\n    results.push(newItem);\n\n  } catch (error) {\n    // 만약 JSON 파싱 중 오류가 발생하면, 워크플로우 전체가 멈추지 않도록\n    // 에러를 기록하고 해당 아이템은 건너뜁니다.\n    console.error(\"아이템 처리 중 오류 발생:\", error);\n    // 필요하다면, 오류가 발생한 아이템을 별도로 반환할 수도 있습니다.\n    // results.push({ json: { error: error.message, originalItem: item.json } });\n  }\n}\n\n// 6. 최종적으로 파싱되고 정리된 데이터 배열을 반환합니다.\n// 이 데이터가 Code 노드의 출력이 되어 다음 노드로 전달됩니다.\nreturn results;"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        80,
+        352
+      ],
+      "id": "f710d634-8cbb-4de0-9928-9d3482fa3f36",
+      "name": "Code in JavaScript"
+    }
+  ],
+  "connections": {
+    "RSS Read1": {
+      "main": [
+        [
+          {
+            "node": "Limit1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Limit1": {
+      "main": [
+        [
+          {
+            "node": "Loop Over Items",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Schedule Trigger": {
+      "main": [
+        [
+          {
+            "node": "RSS URI LIST",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Split Out": {
+      "main": [
+        [
+          {
+            "node": "Loop Over Items",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Loop Over Items": {
+      "main": [
+        [
+          {
+            "node": "RSS to Parameter",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "RSS Read1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "RSS URI LIST": {
+      "main": [
+        [
+          {
+            "node": "Split Out",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Send a text message": {
+      "main": [
+        []
+      ]
+    },
+    "News contents to Gemini": {
+      "main": [
+        [
+          {
+            "node": "Code in JavaScript",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "RSS to Parameter": {
+      "main": [
+        [
+          {
+            "node": "News contents to Gemini",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code in JavaScript": {
+      "main": [
+        [
+          {
+            "node": "Send a text message",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "staticData": null,
+  "pinData": {},
+  "triggerCount": 0,
+  "meta": {
+    "templateCredsSetupCompleted": true
+  }
+}

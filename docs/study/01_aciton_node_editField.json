@@ -1,0 +1,213 @@
+{
+  "name": "study_01_aciton_node_editField",
+  "nodes": [
+    {
+      "parameters": {
+        "content": "## 노드 추가\nEdit Fileds 노드로 필드명 수정하여 output 가능",
+        "width": 352
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        -416,
+        -32
+      ],
+      "id": "4eb1d665-009c-4c01-8fdd-f439c560a74b",
+      "name": "Sticky Note"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "6bfbd329-01ea-4039-95fc-775206194337",
+              "name": "유저 아이디",
+              "value": "={{ $json.userId }}",
+              "type": "number"
+            },
+            {
+              "id": "d9b47a5d-cb3c-4539-aa94-68b9847512d0",
+              "name": "타이틀",
+              "value": "={{ $json.title }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        416,
+        0
+      ],
+      "id": "30e80d29-3a18-491d-a436-673f538e6e52",
+      "name": "Edit Fields"
+    },
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.manualTrigger",
+      "typeVersion": 1,
+      "position": [
+        0,
+        0
+      ],
+      "id": "b54453bc-9c98-4e42-8537-40aa6a840679",
+      "name": "Manual Trigger",
+      "alwaysOutputData": true,
+      "retryOnFail": false
+    },
+    {
+      "parameters": {
+        "url": "https://jsonplaceholder.typicode.com/todos/2",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        208,
+        0
+      ],
+      "id": "8d373266-4be4-4139-a0d0-ed5c48b7d248",
+      "name": "HTTP"
+    },
+    {
+      "parameters": {
+        "url": "https://search.daum.net/search",
+        "sendQuery": true,
+        "queryParameters": {
+          "parameters": [
+            {
+              "name": "w",
+              "value": "news"
+            },
+            {
+              "name": "q",
+              "value": "카카오뱅크"
+            },
+            {
+              "name": "enc",
+              "value": "utf8"
+            },
+            {
+              "name": "cluster",
+              "value": "y"
+            },
+            {
+              "name": "cluster_page",
+              "value": "1"
+            },
+            {
+              "name": "DA",
+              "value": "DNS"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        208,
+        224
+      ],
+      "id": "8d062b6e-2fe6-4734-a888-63dd43aa0200",
+      "name": "Daum Search"
+    },
+    {
+      "parameters": {
+        "url": "=https://jsonplaceholder.typicode.com/todos/{{ $json.number }}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        208,
+        448
+      ],
+      "id": "d3f010ac-1830-4840-bcb1-74b68db9d25c",
+      "name": "HTTP1"
+    }
+  ],
+  "connections": {
+    "Edit Fields": {
+      "main": [
+        []
+      ]
+    },
+    "Manual Trigger": {
+      "main": [
+        [
+          {
+            "node": "HTTP",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Daum Search",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "HTTP1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "HTTP": {
+      "main": [
+        [
+          {
+            "node": "Edit Fields",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "staticData": null,
+  "pinData": {
+    "Manual Trigger": [
+      {
+        "json": {
+          "text": "First item",
+          "number": 1
+        }
+      },
+      {
+        "json": {
+          "text": "Second item",
+          "number": 2
+        }
+      },
+      {
+        "json": {
+          "text": "third item",
+          "number": 3
+        }
+      },
+      {
+        "json": {
+          "text": "forth item",
+          "number": 4
+        }
+      },
+      {
+        "json": {
+          "text": "fifth item",
+          "number": 5
+        }
+      }
+    ]
+  },
+  "triggerCount": 0,
+  "meta": {
+    "templateCredsSetupCompleted": true
+  }
+}

@@ -1,0 +1,279 @@
+{
+  "name": "study_04_loop_schedule_RSSread",
+  "nodes": [
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {}
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.2,
+      "position": [
+        -752,
+        0
+      ],
+      "id": "17900f19-05ba-4bfe-ae51-3a9475fe66df",
+      "name": "Schedule Trigger"
+    },
+    {
+      "parameters": {
+        "url": "={{ $json.feeds }}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.rssFeedRead",
+      "typeVersion": 1.2,
+      "position": [
+        304,
+        -48
+      ],
+      "id": "14e0a387-cbd7-47a1-a829-8e9ee4b5b8c4",
+      "name": "RSS Read1"
+    },
+    {
+      "parameters": {
+        "keep": "lastItems"
+      },
+      "type": "n8n-nodes-base.limit",
+      "typeVersion": 1,
+      "position": [
+        528,
+        -48
+      ],
+      "id": "321f296d-b4bb-4720-8bf0-84e12ca925f4",
+      "name": "Limit1"
+    },
+    {
+      "parameters": {
+        "content": "## RSS 전송",
+        "height": 336,
+        "width": 496
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        240,
+        -112
+      ],
+      "id": "31d39b3c-15ca-4718-a32f-f40154a082f1",
+      "name": "Sticky Note3"
+    },
+    {
+      "parameters": {
+        "fieldToSplitOut": "feeds",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.splitOut",
+      "typeVersion": 1,
+      "position": [
+        -336,
+        0
+      ],
+      "id": "b1059ef7-9cef-44b7-8463-37d9accada9a",
+      "name": "Split Out"
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "n8n-nodes-base.splitInBatches",
+      "typeVersion": 3,
+      "position": [
+        -128,
+        0
+      ],
+      "id": "6e7460db-7c19-496c-8456-c765edf52760",
+      "name": "Loop Over Items"
+    },
+    {
+      "parameters": {
+        "content": "## RSS 대상주소 처리 및 배치",
+        "height": 336,
+        "width": 768
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        -576,
+        -112
+      ],
+      "id": "7e1ac66a-0117-4b84-a2ae-bdd0032fb4bd",
+      "name": "Sticky Note"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "651bad2b-b63c-4084-b65f-842712129669",
+              "name": "title",
+              "value": "={{ $('Limit1').item.json.title }}",
+              "type": "string"
+            },
+            {
+              "id": "f11a7ae0-76d5-4445-90dc-882684fe865b",
+              "name": "link",
+              "value": "={{ $('Limit1').item.json.link }}",
+              "type": "string"
+            },
+            {
+              "id": "1cba5ed8-c8f3-4a7e-ba2a-e214cf79b759",
+              "name": "content:encoded",
+              "value": "={{ $('Limit1').item.json['content:encoded'] }}{{ $('Limit1').item.json.content }}",
+              "type": "string"
+            },
+            {
+              "id": "3b9f8c32-84f3-4174-9d11-352335d6b74e",
+              "name": "pubDate",
+              "value": "={{ $('Limit1').item.json.pubDate }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        -544,
+        352
+      ],
+      "id": "9dc6270d-ae66-4f64-83e1-14bc61f866cf",
+      "name": "Edit Fields1"
+    },
+    {
+      "parameters": {
+        "mode": "raw",
+        "jsonOutput": "{\n\"feeds\": [\n  \"https://www.aitimes.com/rss/allArticle.xml\",\n  \"https://tech.kakaoenterprise.com/feed\",\n  \"https://uxdesign.cc/feed\"\n]\n}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        -544,
+        0
+      ],
+      "id": "5de4e531-dce1-41c9-b531-6905e2085305",
+      "name": "RSS URI LIST"
+    },
+    {
+      "parameters": {
+        "chatId": "8297276244",
+        "text": "=N8M에서 보냅니다.\n\n타이틀: {{ $json.title }}, \n링크: {{ $json.link }},",
+        "additionalFields": {
+          "appendAttribution": false
+        }
+      },
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [
+        -304,
+        352
+      ],
+      "id": "b667b51e-2eec-4185-8f5a-9c7c34e88f8d",
+      "name": "Send a text message",
+      "webhookId": "b17c7103-1304-43f9-814c-8a31eb246676",
+      "credentials": {
+        "telegramApi": {
+          "id": "KIKzWEpf2iG9EOKg",
+          "name": "Telegram account 2"
+        }
+      }
+    }
+  ],
+  "connections": {
+    "RSS Read1": {
+      "main": [
+        [
+          {
+            "node": "Limit1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Limit1": {
+      "main": [
+        [
+          {
+            "node": "Loop Over Items",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Schedule Trigger": {
+      "main": [
+        [
+          {
+            "node": "RSS URI LIST",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Split Out": {
+      "main": [
+        [
+          {
+            "node": "Loop Over Items",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Loop Over Items": {
+      "main": [
+        [
+          {
+            "node": "Edit Fields1",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "RSS Read1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "RSS URI LIST": {
+      "main": [
+        [
+          {
+            "node": "Split Out",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Edit Fields1": {
+      "main": [
+        [
+          {
+            "node": "Send a text message",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "staticData": null,
+  "pinData": {},
+  "triggerCount": 0,
+  "meta": null
+}
