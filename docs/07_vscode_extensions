@@ -1,0 +1,4 @@
+- live server(ritwickdey.liveserver): 로컬에서 데몬 동작
+- Remote Development (ms-vscode-remote.vscode-remote-extensionpack) : 리모트 어쩌고
+- indent-rainbow (oderwat.indent-rainbow): 코딩 들여쓰기 색상 표시
+- vscode-icon (vscode-icons-team.vscode-icons): 확장자 아이콘 변경
