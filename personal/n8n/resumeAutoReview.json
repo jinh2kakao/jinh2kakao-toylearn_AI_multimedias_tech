@@ -1,0 +1,896 @@
+{
+  "name": "resumeAutoReview",
+  "nodes": [
+    {
+      "parameters": {
+        "formTitle": "이력서 자동 리뷰 및 수정",
+        "formDescription": "공고 내용을 입력하면 김진현의 이력서를 불러와 검토 후 수정",
+        "formFields": {
+          "values": [
+            {
+              "fieldLabel": "company",
+              "placeholder": "회사명을 입력해주세요.",
+              "requiredField": true
+            },
+            {
+              "fieldLabel": "jobDescription",
+              "fieldType": "textarea",
+              "placeholder": "직무내용을 입력해주세요.",
+              "requiredField": true
+            },
+            {
+              "fieldLabel": "qualifications",
+              "fieldType": "textarea",
+              "placeholder": "자격요건을 입력해주세요."
+            },
+            {
+              "fieldLabel": "preferentialTreatment",
+              "fieldType": "textarea",
+              "placeholder": "우대사항을 입력해주세요."
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.formTrigger",
+      "typeVersion": 2.3,
+      "position": [
+        -64,
+        16
+      ],
+      "id": "743ba398-803a-4754-b135-b90cf267fcb5",
+      "name": "On form submission",
+      "webhookId": "4f4f08e0-af3b-4e5c-b9e5-411dc209819c"
+    },
+    {
+      "parameters": {
+        "modelId": {
+          "__rl": true,
+          "value": "models/gemini-2.5-flash",
+          "mode": "list",
+          "cachedResultName": "models/gemini-2.5-flash"
+        },
+        "messages": {
+          "values": [
+            {
+              "content": "=[ROLE] 당신은 20년 경력의 헤드헌터이자 채용 공고 분석 전문가(JD Analyst)입니다. 당신의 임무는 채용 공고(JD)를 '해체'하여, 이력서 검토에 필요한 '핵심 평가 기준(Key Evaluation Criteria)'을 추출하는 것입니다.\n\n[INPUT]\n\n[JOB_DESCRIPTION]\n- 회사명: {{ $json.company }}\n- 직무소개: {{ $json.jobDescription }}\n- 자격요건: {{ $json.qualifications }}\n- 우대사항: {{ $json.preferentialTreatment }}\n\n[TASK] [JOB_DESCRIPTION]을 분석하여, 5명의 이력서 검토 전문가(자기소개, 역량, 기술, 성과, 경력)가 공통으로 사용해야 할 '핵심 평가 기준 리포트'를 생성합니다.\n\n[EXECUTION]\n\nMust-Have (필수 요건): 자격 요건(Must-Have)을 명확히 식별하고 3~5가지 핵심 역량으로 요약합니다.\n\nPreferred (우대 사항): 우대 사항(Nice-to-Have)을 식별하고, '있으면 치명적인' 매력 포인트를 정의합니다.\n\nKey Keywords & Verbs: JD에서 반복적으로 등장하는 핵심 키워드(예: '데이터 기반', '확장성', '그로스 해킹')와 선호하는 동사(예: '주도한', '구축한', '최적화한')를 추출합니다.\n\nTone & Culture: JD의 문맥에서 유추할 수 있는 기업 문화(예: '빠른 실행력', '논리적 커뮤니케이션', '팀워크')를 정의합니다.\n\n[OUTPUT_FORMAT] (JSON 형식으로 출력)\n\nJSON\n\n{\n  \"positionTitle\": \"[채용 직무명]\",\n  \"mustHaveCriteria\": [\n    \"[핵심 필수 역량 1]\",\n    \"[핵심 필수 역량 2]\",\n    \"...\"\n  ],\n  \"preferredCriteria\": [\n    \"[핵심 우대 역량 1]\",\n    \"...\"\n  ],\n  \"keyKeywords\": [\"[키워드 1]\", \"키워드 2\", \"동사 1\", \"동사 2\"],\n  \"inferredCulture\": \"[기업 문화 키워드 1], [키워드 2]\"\n}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.googleGemini",
+      "typeVersion": 1,
+      "position": [
+        144,
+        16
+      ],
+      "id": "7cefb31d-edca-407f-83b4-0a4d4a94b0c7",
+      "name": "Message a model",
+      "credentials": {
+        "googlePalmApi": {
+          "id": "y5uPwd8LysBc9xrS",
+          "name": "Google Gemini(PaLM) Api account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "get",
+        "documentURL": "11izXQOqElaOAFNkffSwhg5Vu20bdU7QP2uMIQjgoOy4"
+      },
+      "type": "n8n-nodes-base.googleDocs",
+      "typeVersion": 2,
+      "position": [
+        128,
+        416
+      ],
+      "id": "d6d2fffb-ec66-4316-811f-064dfe9106c4",
+      "name": "Get a document",
+      "credentials": {
+        "googleDocsOAuth2Api": {
+          "id": "4bWErfGpoIsWWRJL",
+          "name": "Google Docs account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "78a7ee97-b8aa-43b4-98da-0cd3dd546dcd",
+              "name": "keyEvaluationCriteria",
+              "value": "={{ $('Message a model').item.json.content.parts[0].text }}",
+              "type": "string"
+            },
+            {
+              "id": "f367360e-7d37-4998-95ff-e56c24085bda",
+              "name": "selfIntroduction",
+              "value": "={{ $json.content }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        368,
+        416
+      ],
+      "id": "ceac64c1-819d-48d5-b98a-b5e7d98495e0",
+      "name": "Edit Fields1"
+    },
+    {
+      "parameters": {
+        "modelId": {
+          "__rl": true,
+          "value": "models/gemini-2.5-flash",
+          "mode": "list",
+          "cachedResultName": "models/gemini-2.5-flash"
+        },
+        "messages": {
+          "values": [
+            {
+              "content": "=[ROLE] 당신은 지원자의 '첫인상'을 책임지는 최고의 퍼스널 브랜딩 전문가이자 카피라이터입니다.\n\n[CONTEXT]\n\n[JD_ANALYSIS_REPORT]: {{ $json.keyEvaluationCriteria }}\n\n[selfIntroduction_AS_IS]: {{ $json.selfIntroduction }}\n\n[TASK] [selfIntroduction_AS_IS]를 [JD_ANALYSIS_REPORT]의 'mustHaveCriteria'와 'positionTitle'에 맞춰 전략적으로 수정하는 JSON 결과를 생성합니다.\n\n[OUTPUT_FORMAT] 아래 [JSON_SCHEMA]를 엄격히 따르는 단일 JSON 객체만 출력합니다. (설명이나 다른 텍스트 제외)\n\n[JSON_SCHEMA]\n\nJSON\n\n{\n  \"section\": \"selfIntroduction\",\n  \"analysis\": {\n    \"critique\": \"(현재 자기소개가 JD 대비 부족한 점. 예: 'JD는 '그로스 해킹'을 원하는데, 지원자는 '성실함'만 강조함.')\"\n  },\n  \"recommendation\": {\n    \"strategy\": \"(JD의 핵심 키워드를 사용한 수정 방향. 예: '성실함 대신 '데이터 기반 실험'과 '빠른 실행력'을 전면에 내세워야 함.')\",\n    \"suggestedContent\": {\n      \"copy\": \"(JD 맞춤형으로 완벽하게 재작성된 1~3문장의 강력한 자기소개 예시)\"\n    }\n  }\n}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.googleGemini",
+      "typeVersion": 1,
+      "position": [
+        592,
+        416
+      ],
+      "id": "3a065947-4880-4fdf-b432-c4fc19ee8732",
+      "name": "Message a model1",
+      "credentials": {
+        "googlePalmApi": {
+          "id": "y5uPwd8LysBc9xrS",
+          "name": "Google Gemini(PaLM) Api account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "modelId": {
+          "__rl": true,
+          "value": "models/gemini-2.5-flash",
+          "mode": "list",
+          "cachedResultName": "models/gemini-2.5-flash"
+        },
+        "messages": {
+          "values": [
+            {
+              "content": "=[ROLE] 당신은 기업의 역량 모델(Competency Model)을 설계하는 HR 컨설턴트입니다.\n\n[CONTEXT]\n\n[JD_ANALYSIS_REPORT]: {{ $('Edit Fields1').item.json.keyEvaluationCriteria }}\n\n[coreCompetencies_AS_IS]: {{ $json.coreCompetencies }}\n\n[TASK] [coreCompetencies_AS_IS]를 [JD_ANALYSIS_REPORT]를 기반으로 재구성하는 JSON 결과를 생성합니다. (우선순위 재배치, 그룹화, 키워드 매칭)\n\n[OUTPUT_FORMAT] 아래 [JSON_SCHEMA]를 엄격히 따르는 단일 JSON 객체만 출력합니다. (설명이나 다른 텍스트 제외)\n\n[JSON_SCHEMA]\n\nJSON\n\n{\n  \"section\": \"coreCompetencies\",\n  \"analysis\": {\n    \"critique\": \"(현재 역량 목록의 문제점. 예: '핵심 역량과 부가 역량이 혼재되어 JD와의 관련성을 파악하기 어려움.')\"\n  },\n  \"recommendation\": {\n    \"strategy\": \"(JD 우선순위에 맞춘 재배치 및 그룹화 전략.)\",\n    \"suggestedContent\": {\n      \"structure\": [\n        {\n          \"group\": \"JD 핵심 역량 (Must-Have)\",\n          \"items\": [\"(JD `mustHaveCriteria`와 일치하는 역량 1)\", \"(... 2)\"]\n        },\n        {\n          \"group\": \"보유 기술 및 도구 (Tools)\",\n          \"items\": [\"(관련 기술 1)\"]\n        },\n        {\n          \"group\": \"소프트 스킬 (Soft Skills)\",\n          \"items\": [\"(JD `inferredCulture`와 일치하는 역량. 예: 논리적 커뮤니케이션)\"]\n        }\n      ]\n    }\n  }\n}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.googleGemini",
+      "typeVersion": 1,
+      "position": [
+        608,
+        880
+      ],
+      "id": "ba493401-9f60-491d-97c8-98c9f0da05c6",
+      "name": "Message a model2",
+      "credentials": {
+        "googlePalmApi": {
+          "id": "y5uPwd8LysBc9xrS",
+          "name": "Google Gemini(PaLM) Api account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "get",
+        "documentURL": "1L6uz8U9AgKnD4O_EKz9t3smfSLESnjMgdLDmQJP3030"
+      },
+      "type": "n8n-nodes-base.googleDocs",
+      "typeVersion": 2,
+      "position": [
+        144,
+        880
+      ],
+      "id": "23c476e0-86fb-4795-8644-ff1b40160409",
+      "name": "Get a document1",
+      "credentials": {
+        "googleDocsOAuth2Api": {
+          "id": "4bWErfGpoIsWWRJL",
+          "name": "Google Docs account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "00470b9f-a125-4e5e-841c-d815d4b79030",
+              "name": "coreCompetencies",
+              "value": "={{ $json.content }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        384,
+        880
+      ],
+      "id": "307e0061-cfce-4fd2-b726-7fadf3583445",
+      "name": "Edit Fields"
+    },
+    {
+      "parameters": {
+        "operation": "get",
+        "documentURL": "1GCaCDYuh_rQDV5oFAaxlypbpIi69igjSBi-Ep2n6mQA"
+      },
+      "type": "n8n-nodes-base.googleDocs",
+      "typeVersion": 2,
+      "position": [
+        160,
+        1376
+      ],
+      "id": "9698fd4a-ab35-488a-a9c4-ddf95f08a5e9",
+      "name": "Get a document2",
+      "credentials": {
+        "googleDocsOAuth2Api": {
+          "id": "4bWErfGpoIsWWRJL",
+          "name": "Google Docs account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "0082156e-a014-44f8-a202-26770af2683f",
+              "name": "techStack",
+              "value": "={{ $json.content }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        400,
+        1376
+      ],
+      "id": "19d61464-fe35-41cb-bcaf-78419316c739",
+      "name": "Edit Fields2"
+    },
+    {
+      "parameters": {
+        "modelId": {
+          "__rl": true,
+          "value": "models/gemini-2.5-flash",
+          "mode": "list",
+          "cachedResultName": "models/gemini-2.5-flash"
+        },
+        "messages": {
+          "values": [
+            {
+              "content": "=[ROLE] 당신은 실리콘밸리의 시니어 테크니컬 리크루터입니다.\n\n[CONTEXT]\n\n[JD_ANALYSIS_REPORT]: {{ $('Edit Fields1').item.json.keyEvaluationCriteria }}\n\n[techStack_AS_IS]: {{ $json.techStack }}\n\n[TASK] [techStack_AS_IS]를 JD의 기술 요건에 맞게 명확하고 전략적으로 표현하도록 수정하는 JSON 결과를 생성합니다. (숙련도 명시, JD 관련 기술 강조, 카테고리화)\n\n[OUTPUT_FORMAT] 아래 [JSON_SCHEMA]를 엄격히 따르는 단일 JSON 객체만 출력합니다. (설명이나 다른 텍스트 제외)\n\n[JSON_SCHEMA]\n\nJSON\n\n{\n  \"section\": \"techStack\",\n  \"analysis\": {\n    \"critique\": \"(예: '기술이 단순 나열되어 있어, JD가 요구하는 'React'에 대한 숙련도를 알 수 없음.')\"\n  },\n  \"recommendation\": {\n    \"strategy\": \"(JD 요구 기술 강조 및 숙련도 표기 제안.)\",\n    \"suggestedContent\": {\n      \"structure\": [\n        {\n          \"category\": \"Frontend\",\n          \"items\": [\"React (상/핵심 기술)\", \"TypeScript (중)\"]\n        },\n        {\n          \"category\": \"Backend\",\n          \"items\": [\"Node.js (중)\", \"Python (하/우대 사항 경험)\"]\n        },\n        {\n          \"category\": \"Cloud\",\n          \"items\": [\"AWS (EC2, S3) (중)\"]\n        }\n      ]\n    }\n  }\n}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.googleGemini",
+      "typeVersion": 1,
+      "position": [
+        624,
+        1376
+      ],
+      "id": "5cf7868d-4222-481c-9fc5-6d1de6d42abe",
+      "name": "Message a model3",
+      "credentials": {
+        "googlePalmApi": {
+          "id": "y5uPwd8LysBc9xrS",
+          "name": "Google Gemini(PaLM) Api account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "get",
+        "documentURL": "1C264GQUQFlu8O7xG5c-wuHtB_4cCgK_YYTKhh1HWEP8"
+      },
+      "type": "n8n-nodes-base.googleDocs",
+      "typeVersion": 2,
+      "position": [
+        176,
+        1856
+      ],
+      "id": "84bcb169-5ab5-44c4-8399-df60060d2658",
+      "name": "Get a document3",
+      "credentials": {
+        "googleDocsOAuth2Api": {
+          "id": "4bWErfGpoIsWWRJL",
+          "name": "Google Docs account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "0b5c3ac7-c3b7-4203-bf4c-1242e807b8c9",
+              "name": "keyAchievements",
+              "value": "={{ $json.content }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        416,
+        1856
+      ],
+      "id": "be5a0075-d694-4d0a-9ee1-2bb85a84bf13",
+      "name": "Edit Fields3"
+    },
+    {
+      "parameters": {
+        "modelId": {
+          "__rl": true,
+          "value": "models/gemini-2.5-flash",
+          "mode": "list",
+          "cachedResultName": "models/gemini-2.5-flash"
+        },
+        "messages": {
+          "values": [
+            {
+              "content": "=[ROLE] 당신은 임원(C-level)을 코칭하는 성과 관리 전문가입니다. 당신은 모든 성과를 STAR 기법과 정량적 수치로 바꿔내는 전문가입니다.\n\n[CONTEXT]\n\n[JD_ANALYSIS_REPORT]: {{ $('Edit Fields1').item.json.keyEvaluationCriteria }}\n\n[keyAchievements_AS_IS]: {{ $json.keyAchievements }}\n\n[TASK] [keyAchievements_AS_IS]의 모든 항목을 '성과 중심'(STAR, 정량화)으로 재작성하는 JSON 결과를 생성합니다.\n\n[OUTPUT_FORMAT] 아래 [JSON_SCHEMA]를 엄격히 따르는 단일 JSON 객체만 출력합니다. (설명이나 다른 텍스트 제외)\n\n[JSON_SCHEMA]\n\nJSON\n\n{\n  \"section\": \"keyAchievements\",\n  \"analysis\": {\n    \"critique\": \"(예: '성과 1: '...에 기여함.' -> 추상적이며 결과가 불명확함. 정량적 성과 부재.')\"\n  },\n  \"recommendation\": {\n    \"strategy\": \"(STAR 기법과 정량화를 통한 성과 임팩트 극대화. JD 연관 성과를 상단에 배치.)\",\n    \"suggestedContent\": {\n      \"revisions\": [\n        {\n          \"asIs\": \"(기존 성과 문구 1)\",\n          \"toBe\": \"(STAR 기법과 정량화가 적용된 수정 예시 문구 1. 예: '[Action] A/B 테스트 플랫폼 도입... -> [Result] ...전환율 12%p 개선')\"\n        },\n        {\n          \"asIs\": \"(기존 성과 문구 2)\",\n          \"toBe\": \"(수정 예시 문구 2)\"\n        }\n      ]\n    }\n  }\n}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.googleGemini",
+      "typeVersion": 1,
+      "position": [
+        640,
+        1856
+      ],
+      "id": "e21c8de9-0482-456b-a0ab-36e02ce7d87f",
+      "name": "Message a model4",
+      "credentials": {
+        "googlePalmApi": {
+          "id": "y5uPwd8LysBc9xrS",
+          "name": "Google Gemini(PaLM) Api account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "get",
+        "documentURL": "18NoYEXtw4SykDve9QcYQG2ZFtpXgf1ePnq_D-EwfjKk"
+      },
+      "type": "n8n-nodes-base.googleDocs",
+      "typeVersion": 2,
+      "position": [
+        176,
+        2304
+      ],
+      "id": "2d6b6ced-ab34-425f-84aa-eff5f4d86f4b",
+      "name": "Get a document4",
+      "credentials": {
+        "googleDocsOAuth2Api": {
+          "id": "4bWErfGpoIsWWRJL",
+          "name": "Google Docs account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "342a0ec8-e268-4ec5-b39d-ce4e99e37604",
+              "name": "careerHistory",
+              "value": "={{ $json.content }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        384,
+        2304
+      ],
+      "id": "468ff87e-22e4-4f2b-8be5-029ee60158cb",
+      "name": "Edit Fields4"
+    },
+    {
+      "parameters": {
+        "modelId": {
+          "__rl": true,
+          "value": "models/gemini-2.5-pro",
+          "mode": "list",
+          "cachedResultName": "models/gemini-2.5-pro"
+        },
+        "messages": {
+          "values": [
+            {
+              "content": "=[ROLE] 당신은 지원자의 경력을 하나의 '성장 스토리'로 엮어내는 커리어 내러티브 전략가이자, 방대한 경력 속에서 직무 적합성이 높은 경험만을 골라내는 **이력서 큐레이터(Curator)**입니다.\n\n[CONTEXT]\n\n[JD_ANALYSIS_REPORT]: {{ $('Edit Fields1').item.json.keyEvaluationCriteria }}\n\n[careerHistory_AS_IS]: {{ $json.careerHistory }}\n\n[TASK] [careerHistory_AS_IS]에 나열된 모든 경력을 빠짐없이 검토한 뒤, [JD_ANALYSIS_REPORT]에 입각하여 전략적으로 선별된 경력만으로 구성된 JSON 결과를 생성합니다.\n\nFull Scan (전수 검토): 지원자의 모든 과거 경력을 읽고 직무 연관성을 평가합니다.\n\nFiltering (전략적 선별): JD의 직무(Position) 및 필수 요건(Must-Have)과 직접적인 관련이 없는 경력(예: 단순 아르바이트, 직무와 무관한 과거 이력)은 결과물(Output)에서 과감히 제외합니다.\n\nRewriting (재작성): 선별된 '핵심 경력'에 대해서만 단순 업무 나열을 지양하고, JD 키워드를 활용한 **성과 중심(Action -> Result)**의 문장으로 재구성합니다.\n\n[OUTPUT_FORMAT] 아래 [JSON_SCHEMA]를 엄격히 따르는 단일 JSON 객체만 출력합니다. (설명이나 다른 텍스트 제외)\n\n주의: suggestedContent.revisions 배열에는 검토 결과 JD와 유의미한 연관성이 있어 선별된 경력만 포함시킵니다. (제외된 경력은 포함하지 않음)\n\n[JSON_SCHEMA]\n\nJSON\n\n{\n  \"section\": \"careerHistory\",\n  \"analysis\": {\n    \"critique\": \"(예: '총 5개의 경력 중 JD와 직무 연관성이 높은 A사, B사 경력에 집중하고, 무관한 C 카페 아르바이트 경력은 제외함. 기존 서술은 성과 수치가 부족함.')\"\n  },\n  \"recommendation\": {\n    \"strategy\": \"(예: JD의 '그로스 해킹' 관련 경험이 있는 최근 2개 경력을 중심으로 기술하고, 불필요한 과거 이력은 생략하여 전문성을 강조하는 전략.)\",\n    \"suggestedContent\": {\n      \"revisions\": [\n        {\n          \"company\": \"A 회사 (선별된 핵심 경력)\",\n          \"asIs\": [\n            \"- 마케팅 기획\",\n            \"- 광고 집행\"\n          ],\n          \"toBe\": [\n            \"- (JD: '데이터 기반') GA, Amplitude 기반 데이터 분석을 통한 마케팅 전략 수립\",\n            \"- (JD: '그로스 해킹') 퍼포먼스 마케팅(SA/DA) 예산 운영 및 A/B 테스트를 통한 광고 소재 최적화 (주요 성과: ROAS 150% 달성)\"\n          ]\n        },\n        {\n          \"company\": \"B 회사 (선별된 핵심 경력)\",\n          \"asIs\": [\"- ...\"],\n          \"toBe\": [\"- ...\"]\n        }\n      ]\n    }\n  }\n}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.googleGemini",
+      "typeVersion": 1,
+      "position": [
+        592,
+        2304
+      ],
+      "id": "61ea630d-b021-455b-b45a-1c37e3feabdd",
+      "name": "Message a model5",
+      "credentials": {
+        "googlePalmApi": {
+          "id": "y5uPwd8LysBc9xrS",
+          "name": "Google Gemini(PaLM) Api account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "modelId": {
+          "__rl": true,
+          "value": "models/gemini-2.5-pro",
+          "mode": "list",
+          "cachedResultName": "models/gemini-2.5-pro"
+        },
+        "messages": {
+          "values": [
+            {
+              "content": "=[ROLE] 당신은 5명의 전문 AI(자기소개, 역량, 기술, 성과, 경력)가 제출한 개별 검토 보고서를 최종 취합하고 종합적인 전략을 도출하는 **총괄 HR 임원(CHRO)**이자 수석 커리어 코치입니다.\n\n당신의 임무는 개별 JSON 보고서들을 기계적으로 합치는 것이 아니라, [JD_ANALYSIS_REPORT]라는 공동의 목표(채용 공고)에 맞춰 일관성을 검토하고, 시너지를 극대화하며, 지원자에게 최종적으로 전달할 **'종합 전략 리포트'**를 완성도 높게 작성하는 것입니다.\n\n[GOAL] 5개의 개별 JSON 검토 결과를 하나의 **일관성 있고 강력한 '이력서 강화 전략 리포트'**로 통합하고, 지원자를 위한 실행 가능한 '총괄 코멘트'를 작성합니다.\n\n[INPUTS] (총 6개의 JSON 객체)\n\n[JD_ANALYSIS_REPORT]: {{ $('Edit Fields1').item.json.keyEvaluationCriteria }}\n\n[SELF_INTRODUCTION_JSON]: {{ $('Edit Fields1').item.json.selfIntroduction }}\n\n[CORE_COMPETENCIES_JSON]: {{ $('Edit Fields').item.json.coreCompetencies }}\n\n[TECH_STACK_JSON]: {{ $('Edit Fields2').item.json.techStack }}\n\n[KEY_ACHIEVEMENTS_JSON]: {{ $('Edit Fields3').item.json.keyAchievements }}\n\n[CAREER_HISTORY_JSON]: {{ $('Edit Fields4').item.json.careerHistory }}\n\n[CORE_TASK & EXECUTION_STEPS]\n\n[1단계: 종합 전략 수립 (Synthesize)]\n\n5개 JSON의 analysis.critique와 recommendation.strategy를 [JD_ANALYSIS_REPORT]와 교차 검증합니다.\n\n지원자의 현 이력서가 JD 대비 가진 **가장 강력한 무기(Strongest Asset)**와 **가장 치명적인 약점(Critical Weakness)**을 1~2가지로 요약합니다.\n\n5개 섹션 수정안 전체를 관통하는 **핵심 수정 전략(Key Strategy)**을 '헤드라인'으로 제시합니다. (예: '경험 나열형'에서 '성과 증명형'으로의 완전한 전환)\n\n(중요) 5개 섹션 간의 **불일치(Inconsistency)**나 시너지(Synergy) 포인트를 짚어줍니다.\n\n(예시: 'selfIntroduction에서 '데이터 기반 의사결정'을 강조했지만, keyAchievements에 관련 정량 성과가 부족하여 설득력이 약합니다. keyAchievements의 TO-BE 제안을 반드시 반영해야 합니다.')\n\n(예시: 'careerHistory에서 수정 제안된 성과 키워드가 coreCompetencies의 TO-BE 목록에 잘 반영되어 시너지가 좋습니다.')\n\n[2단계: 최종 리포트 통합 (Integrate)]\n\n[1단계]에서 수립한 '종합 전략'을 **'총괄 코멘트(Executive Summary)'**로 서두에 작성합니다.\n\n5개 JSON의 analysis와 recommendation 내용을 'AS-IS / TO-BE' 형식이 명확히 드러나는 단일 마크다운(Markdown) 문서로 재구성합니다.\n\n각 JSON의 suggestedContent (수정 예시 카피, 구조)를 독자가 즉시 이해하고 적용할 수 있도록 시각화하여 통합합니다.\n\nkeyAchievements나 careerHistory의 revisions 배열은 'AS-IS'와 'TO-BE'가 명확히 대비되도록 블록 인용(blockquote)이나 테이블을 사용해 가독성을 높입니다.\n\n[OUTPUT_FORMAT (Markdown)] (아래 마크다운 형식을 엄격하게 준수하여, 6개의 JSON 입력을 종합한 단일 문서를 생성합니다.)\n\n# 📄 [지원자명]님을 위한 이력서 강화 전략 리포트\n\n(이 리포트는 5개 영역 전문 AI의 분석을 기반으로, CHRO가 최종 검토 및 통합한 결과입니다.)\n\n## 💡 총괄 코멘트 (Executive Summary)\n\n* **[핵심 수정 전략]**: (예: 단순 '경험 나열' 중심의 이력서를 JD가 요구하는 '성과 증명' 중심으로 즉각 전환합니다.)\n* **[가장 강력한 무기]**: (예: JD의 핵심 요구사항인 'Python' 및 'AWS' 경험을 보유하고 있으며, 5년 차의 도메인 경험이 강점입니다.)\n* **[가장 치명적인 약점]**: (예: 강점 대비 성과가 정량화되지 않았고, `selfIntroduction`이 JD와 무관하여 첫인상에서 매력을 어필하지 못하고 있습니다.)\n* **[섹션 간 시너지 코멘트]**: (예: `keyAchievements`의 성과를 정량화하는 것이 가장 시급하며, 이 수치를 `selfIntroduction`의 헤드라인으로 끌어올려야 합니다. `techStack`의 '상/중/하' 숙련도 표기도 필수입니다.)\n\n---\n\n## 🔍 섹션별 상세 분석 및 수정 제안\n\n### 1. selfIntroduction (자기소개)\n\n* **[AS-IS 분석]**:\n    > (From `SELF_INTRODUCTION_JSON.analysis.critique`)\n    > 예: JD는 '그로스 해킹'을 원하는데, 지원자는 '성실함'만 강조함.\n* **[TO-BE 전략]**:\n    > (From `SELF_INTRODUCTION_JSON.recommendation.strategy`)\n    > 예: '데이터 기반 실험'과 '빠른 실행력'을 전면에 내세워야 함.\n* **[Suggested Copy (수정 예시)]**:\n    > (From `SELF_INTRODUCTION_JSON.recommendation.suggestedContent.copy`)\n    > 예: 5회의 A/B 테스트로 구매 전환율 15%를 개선한 경험이 있는 데이터 기반 마케터입니다.\n\n### 2. coreCompetencies (핵심 역량)\n\n* **[AS-IS 분석]**:\n    > (From `CORE_COMPETENCIES_JSON.analysis.critique`)\n    > 예: 핵심 역량과 부가 역량이 혼재되어 JD와의 관련성을 파악하기 어려움.\n* **[TO-BE 전략]**:\n    > (From `CORE_COMPETENCIES_JSON.recommendation.strategy`)\n    > 예: JD 우선순위에 맞춘 재배치 및 그룹화.\n* **[Suggested Structure (수정 예시)]**:\n    (From `CORE_COMPETENCIES_JSON.recommendation.suggestedContent.structure`)\n    * **JD 핵심 역량 (Must-Have)**\n        * 데이터 기반 그로스 해킹\n        * A/B 테스트 설계 및 실행\n    * **보유 기술 및 도구 (Tools)**\n        * Google Analytics, Amplitude\n    * **소프트 스킬 (Soft Skills)**\n        * 논리적 커뮤니케이션\n\n### 3. techStack (기술 스택)\n\n* **[AS-IS 분석]**:\n    > (From `TECH_STACK_JSON.analysis.critique`)\n    > 예: 기술이 단순 나열되어 있어, JD가 요구하는 'React'에 대한 숙련도를 알 수 없음.\n* **[TO-BE 전략]**:\n    > (From `TECH_STACK_JSON.recommendation.strategy`)\n    > 예: JD 요구 기술 강조 및 숙련도(상/중/하) 표기 제안.\n* **[Suggested Structure (수정 예시)]**:\n    (From `TECH_STACK_JSON.recommendation.suggestedContent.structure`)\n    * **Frontend**: React (상/핵심 기술), TypeScript (중)\n    * **Backend**: Node.js (중), Python (하/우대 사항 경험)\n    * **Cloud**: AWS (EC2, S3) (중)\n\n### 4. keyAchievements (주요 성과)\n\n* **[AS-IS 분석]**:\n    > (From `KEY_ACHIEVEMENTS_JSON.analysis.critique`)\n    > 예: 성과 1: '...에 기여함.' -> 추상적이며 결과가 불명확함.\n* **[TO-BE 전략]**:\n    > (From `KEY_ACHIEVEMENTS_JSON.recommendation.strategy`)\n    > 예: STAR 기법과 정량화를 통한 성과 임팩트 극대화.\n* **[Revisions (수정 제안)]**:\n    (From `KEY_ACHIEVEMENTS_JSON.recommendation.suggestedContent.revisions`)\n\n    **[성과 1]**\n    * **AS-IS**:\n        > A/B 테스트 도입 및 서비스 개선\n    * **TO-BE (권장)**:\n        > [Action] A/B 테스트 플랫폼 도입 및 월 5회 이상 가설 검증 프로세스 구축 -> [Result] 이를 통해 회원가입 전환율 12%p 개선\n\n    **[성과 2]**\n    * **AS-IS**:\n        > 광고 효율 증대에 기여\n    * **TO-BE (권장)**:\n        > [Action] 페이스북 광고 소재 20종 제작 및 테스트 -> [Result] 기존 대비 ROAS 150% 달성 (월 5천만 원 예산 집행)\n\n### 5. careerHistory (경력 기술)\n\n* **[AS-IS 분석]**:\n    > (From `CAREER_HISTORY_JSON.analysis.critique`)\n    > 예: 'A회사: 마케팅 기획, 광고 집행' -> 단순 업무 나열로 JD가 원하는 '그로스 해킹' 역량을 파악 불가.\n* **[TO-BE 전략]**:\n    > (From `CAREER_HISTORY_JSON.recommendation.strategy`)\n    > 예: JD의 '그로스 해킹'과 '데이터 분석' 키워드를 활용하여 업무를 성과 중심으로 재정의.\n* **[Revisions (수정 제안)]**:\n    (From `CAREER_HISTORY_JSON.recommendation.suggestedContent.revisions`)\n\n    **[회사명: A 회사 (00.00 ~ 00.00)]**\n    * **AS-IS**:\n        * 마케팅 기획\n        * 광고 집행\n    * **TO-BE (권장)**:\n        * (JD: '데이터 기반') GA, Amplitude 기반 데이터 분석을 통한 마케팅 전략 수립\n        * (JD: '그로스 해킹') 퍼포먼스 마케팅(SA/DA) 예산 운영 및 A/B 테스트를 통한 광고 소재 최적화 (주요 성과: ROAS 150% 달성)\n\n---\n\n## 🏁 최종 점검 (Final Checklist)\n\n* [ ] 모든 수정이 완료된 후, JD의 '자격 요건' 키워드가 이력서 전반에 자연스럽게 녹아들었는지 최종 검토하십시오.\n* [ ] `keyAchievements` 섹션의 핵심 숫자(예: 12%p 개선)가 `selfIntroduction`의 헤드라인과 일치하는지 반드시 확인하십시오."
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.googleGemini",
+      "typeVersion": 1,
+      "position": [
+        160,
+        2768
+      ],
+      "id": "a9ff44a0-bac5-428d-8167-d681d4fcf168",
+      "name": "Message a model6",
+      "credentials": {
+        "googlePalmApi": {
+          "id": "y5uPwd8LysBc9xrS",
+          "name": "Google Gemini(PaLM) Api account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "folderId": "1sawQJZkci9Y7m1l6ylQz6FHaULsNLjEu",
+        "title": "={{ $('On form submission').item.json.company }}_{{ $('On form submission').item.json.submittedAt }}"
+      },
+      "type": "n8n-nodes-base.googleDocs",
+      "typeVersion": 2,
+      "position": [
+        512,
+        2768
+      ],
+      "id": "0992a587-41aa-4a3e-88d3-74c0cd896f0f",
+      "name": "Create a document",
+      "credentials": {
+        "googleDocsOAuth2Api": {
+          "id": "4bWErfGpoIsWWRJL",
+          "name": "Google Docs account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "update",
+        "documentURL": "={{ $json.id }}",
+        "actionsUi": {
+          "actionFields": [
+            {
+              "action": "insert",
+              "text": "={{ $('Message a model6').item.json.content.parts[0].text }}"
+            }
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.googleDocs",
+      "typeVersion": 2,
+      "position": [
+        720,
+        2768
+      ],
+      "id": "f8f589c5-4b2c-4e3c-9516-c05101e86df6",
+      "name": "Update a document",
+      "credentials": {
+        "googleDocsOAuth2Api": {
+          "id": "4bWErfGpoIsWWRJL",
+          "name": "Google Docs account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "content": "##지원 공고 및 분석 검토",
+        "height": 240,
+        "width": 672
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        -160,
+        -48
+      ],
+      "typeVersion": 1,
+      "id": "77070f6f-1678-4603-a57d-47f6d4d329ed",
+      "name": "Sticky Note"
+    },
+    {
+      "parameters": {
+        "content": "## 자기소개 분석",
+        "height": 320,
+        "width": 912
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        48,
+        336
+      ],
+      "typeVersion": 1,
+      "id": "14ddefb4-fb12-486e-a5b7-abc53aa038ea",
+      "name": "Sticky Note1"
+    },
+    {
+      "parameters": {
+        "content": "## 핵심역량 검토",
+        "height": 352,
+        "width": 928
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        48,
+        800
+      ],
+      "typeVersion": 1,
+      "id": "e6a54e27-ce06-4b20-8021-a8e49f848a57",
+      "name": "Sticky Note2"
+    },
+    {
+      "parameters": {
+        "content": "## 기술 스택 분석",
+        "height": 336,
+        "width": 928
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        48,
+        1280
+      ],
+      "typeVersion": 1,
+      "id": "1bb0d869-9976-4061-a561-c1f371a562fb",
+      "name": "Sticky Note3"
+    },
+    {
+      "parameters": {
+        "content": "## 주요성과 분석",
+        "height": 336,
+        "width": 928
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        48,
+        1760
+      ],
+      "typeVersion": 1,
+      "id": "e8655191-2708-442a-a78f-ea570e717196",
+      "name": "Sticky Note4"
+    },
+    {
+      "parameters": {
+        "content": "## 경력사항 분석",
+        "height": 336,
+        "width": 912
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        64,
+        2208
+      ],
+      "typeVersion": 1,
+      "id": "d7d7de91-1b7e-468f-adcb-93ed5c725299",
+      "name": "Sticky Note5"
+    },
+    {
+      "parameters": {
+        "content": "## 1차 draft 종합 검토",
+        "height": 320,
+        "width": 928
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        80,
+        2672
+      ],
+      "typeVersion": 1,
+      "id": "70cacd02-8733-47e8-b10c-0fb4b6e3000b",
+      "name": "Sticky Note6"
+    }
+  ],
+  "pinData": {
+    "On form submission": [
+      {
+        "json": {
+          "company": "CJ올리브네트웍스",
+          "jobDescription": "B2C 웹/앱 서비스의 사용자 경험 설계 및 기획 PL을 수행합니다.\r\n\r\n1. 데이터기반 UX 컨설팅 및 비즈니스 도메인 이해도를 바탕으로 UX 구축 전략 수립\r\n- 고객 데이터 분석과 Customer Journey에 따른 Pain Point를 도출하여 서비스 개선 프로세스를 기획합니다.\r\n- 디지털 플랫폼 벤치마킹, UX리서치를 통해 서비스에 최적화된 사용자 경험을 설계합니다.\r\n- UX Trend 및 기술을 분석하고 소비자 접점에 적합한 UX전략을 세워 고객사에 제안하는 역할을 수행합니다.\r\n\r\n2. 웹/앱 서비스 구축 시 서비스 및 UX 기획 PL 혹은 기획 PM 업무를 수행\r\n- PM/PO, 프로덕트 디자이너, 개발자와 협업하여 프로덕트 UX 구축 계획을 수립하고 관리/실행 합니다.\r\n- 프로덕트 서비스 제안 및 UI/UX화면 설계, 트렌드 분석을 통해 신규 서비스의 핵심 목표에 최적화된 사용자 경험을 기획합니다.\r\n- 프로덕트 온보딩/유지운영을 위한 콘텐츠, 서비스를 제안하고 필요한 UX/UI화면 구축을 리딩합니다.\r\n\r\n3. 신규 서비스 제안\r\n- 그룹 내 계열사 및 대외 B2C, 모바일, 금융 등 신규 서비스를 제안합니다.\r\n- RFP 기반 제안 전략 수립 및 제안서 작성 지원, 관련 구축 프로젝트에 참여합니다.",
+          "qualifications": "[Education]\r\n- 학사 이상\r\n\r\n[Experience]\r\n- 총 경력 7년~15년 사이의 경력\r\n- 다양한 분야의 B2C 웹/앱 UX기획 경험 (5년 이상)\r\n- UX 구축 기획 PM 및 PL 경험 (2년 이상)\r\n- UX 리서치, 데이터 분석을 통한 사용자 프로세스 설계 및 테스트, 프로토타이핑 경험\r\n\r\n[Functional Competencies]\r\n- UX컨설팅 문서 작성 및 Presentaion Skill 능통\r\n- 전략 방향성에 맞춘 서비스 기획 및 제안서 제작 역량\r\n- Customer Jouney에 따른 Painpoint 분석, 인사이트 도출 역량\r\n\r\n[Skill/ Qualification]\r\n- Google Analytics, Figma 툴 활용자 우대\r\n- 데이터 분석을 통한 인사이트 도출 및 개선 제안/실행 기획 경험",
+          "preferentialTreatment": "- 커머스 서비스 기획 PL/PM 경험 우대\r\n- AI 서비스 구축 경험 우대\r\n- Product Manager 경험 우대",
+          "submittedAt": "2025-11-18T09:58:49.153+09:00",
+          "formMode": "test"
+        }
+      }
+    ],
+    "Message a model6": [
+      {
+        "json": {
+          "content": {
+            "parts": [
+              {
+                "text": "# 📄 김진현님을 위한 이력서 강화 전략 리포트\n\n(이 리포트는 5개 영역 전문 AI의 분석을 기반으로, CHRO가 최종 검토 및 통합한 결과입니다.)\n\n## 💡 총괄 코멘트 (Executive Summary)\n\n*   **[핵심 수정 전략]**: **'비즈니스 중심의 Product Owner'에서 JD가 찾는 '데이터 기반 UX 전략 리더'로 포지셔닝을 전환합니다.** 현재 이력서는 훌륭한 비즈니스 성과를 나열하지만, '어떤 UX 전략과 방법론을 통해' 그 성과를 만들었는지 명확히 보여주지 못합니다. 모든 섹션에서 JD의 핵심 키워드(데이터 기반, Customer Journey, Pain Point, UX 전략)를 활용하여 경험을 재구성해야 합니다.\n*   **[가장 강력한 무기]**: **18년간의 B2C 플랫폼 경험과 데이터로 증명된 구체적인 성과(전환율 10%↑, 신규유입 25%↑ 등)**입니다. 특히 8년간의 PL/PM급 리딩 경험은 JD의 'PL/PM 2년 이상 리딩' 요건을 월등히 초과하는 강력한 자산입니다.\n*   **[가장 치명적인 약점]**: **'UX 기획' 프로세스의 부재입니다.** 성과는 명확하지만, 그 과정에 있었을 '고객 데이터 분석 → Pain Point 도출 → UX 전략 수립 → 기획/설계'의 흐름이 전혀 드러나지 않아, UX 전문가로서의 깊이를 의심하게 만듭니다. '여행' 도메인에 특화된 용어 사용 또한 범용 B2C 플랫폼으로의 확장성을 저해하는 요소입니다.\n*   **[섹션 간 시너지 코멘트]**: `careerHistory`에 기술된 '룸그룹핑 시스템 구축'과 같은 프로젝트는 '고객의 Pain Point'를 해결한 훌륭한 사례입니다. 이 경험을 `keyAchievements`에서 UX 관점으로 재구성하고, 그 핵심 성과를 `selfIntroduction`의 첫 문장으로 끌어올려야 합니다. 즉, **경력(How) → 성과(What) → 자기소개(Who I am)**가 하나의 강력한 스토리로 연결되도록 만들어야 합니다.\n\n---\n\n## 🔍 섹션별 상세 분석 및 수정 제안\n\n### 1. selfIntroduction (자기소개)\n\n*   **[AS-IS 분석]**:\n    > '여행 플랫폼 Product Owner'로 자신을 정의하며 비즈니스 성과를 잘 제시했습니다. 하지만 JD가 찾는 역할은 'B2C 서비스 UX 기획 PL'이므로, 포지셔닝과 사용 어휘에 미스매치가 발생합니다. '파편화된 고객 경험 연결'이라는 표현은 좋지만, JD의 언어와는 다소 거리가 있습니다.\n*   **[TO-BE 전략]**:\n    > '데이터 기반 B2C UX 전략가/리더'로 첫 문장을 변경하고, JD의 핵심 키워드인 'Customer Journey', 'Pain Point', 'UX 전략'을 사용하여 경험을 재정의합니다. 비즈니스 성과가 어떤 UX 개선 활동의 결과인지를 명확히 연결하여 UX 기획 리더로서의 전문성을 부각합니다.\n*   **[Suggested Copy (수정 예시)]**:\n    > 18년간 B2C 플랫폼에서 **고객 데이터를 분석하여 Customer Journey의 Pain Point를 해결**하고, **UX 전략 수립 및 실행을 리딩**하여 비즈니스 성과(전환율 10%↑, 신규유입 25%↑)를 창출한 UX 기획 리더 김진현입니다.\n    >\n    > 웹 에이전시와 SI 경험을 통해 쌓은 기술 이해도를 바탕으로 복잡한 B2C 서비스의 문제를 해결해왔습니다. 특히 타이드스퀘어에서 8년간 UX 팀장 및 PL로서 연 매출 1,100억 규모의 플랫폼을 리딩하며, **사용자 리서치와 A/B 테스트 기반의 UX 개선을 통해** 예약 전환율 10% 향상, 신규 고객 유입 25% 증대 등 데이터로 성과를 증명했습니다.\n    >\n    > 앞으로 CJ올리브네트웍스에서 데이터 기반의 UX 컨설팅 역량을 발휘하여 고객 경험을 혁신하고, 성공적인 B2C 서비스를 이끄는 PL이 되겠습니다.\n\n### 2. coreCompetencies (핵심 역량)\n\n*   **[AS-IS 분석]**:\n    > 역량들이 단순 나열되어 있어, 지원자가 어떤 부분에 강점이 있는지 한눈에 파악하기 어렵습니다. JD의 요구사항과 직접적으로 어떻게 연결되는지 알 수 없습니다.\n*   **[TO-BE 전략]**:\n    > JD의 Must-Have Criteria를 기준으로 역량을 그룹화하고, JD의 키워드를 사용하여 역량을 재정의합니다. 이를 통해 평가자가 지원자의 역량을 JD와 즉시 매핑하여 검토할 수 있도록 구조를 변경합니다.\n*   **[Suggested Structure (수정 예시)]**:\n    *   **데이터 기반 UX 컨설팅 및 전략**\n        *   고객 데이터 분석 (GA, 사용자 행동 분석)\n        *   Customer Journey Map 설계 및 Pain Point 도출\n        *   인사이트 기반 UX 전략 수립 및 제안\n    *   **B2C 서비스 UX/UI 기획 및 리딩 (PL/PM)**\n        *   신규 서비스 제안 및 화면 설계 총괄\n        *   UX 리서치, 프로토타이핑, 사용성 테스트 리딩\n        *   프로덕트 로드맵 수립 및 백로그 관리\n    *   **이해관계자 관리 및 협업**\n        *   크로스 펑셔널 팀 (개발, 디자인, 마케팅) 리딩\n        *   UX 컨설팅 문서 및 제안서 작성, 프레젠테이션\n\n### 3. techStack (기술 스택)\n\n*   **[AS-IS 분석]**:\n    > 다양한 툴을 잘 분류했지만, 각 기술의 숙련도나 실제 프로젝트에서의 활용 경험이 드러나지 않습니다. 'AI STACK'은 JD의 우대사항(AI 서비스 기획)과 연결될 수 있는 좋은 포인트지만, 구체성이 부족합니다.\n*   **[TO-BE 전략]**:\n    > JD와의 관련성을 기준으로 재분류하고, 핵심 툴 옆에 숙련도(상/중/하)나 활용 경험을 간략히 추가하여 전문성을 어필합니다. AI 관련 기술은 'AI 서비스 기획 경험'을 뒷받침하는 근거로 활용될 수 있도록 구체화합니다.\n*   **[Suggested Structure (수정 예시)]**:\n    *   **데이터 분석 & UX 리서치**: Google Analytics (상/전환율 분석 및 KPI 설정), A/B Testing (상/서비스 개선 가설 검증), Tableau, SEO Analytics\n    *   **UX/UI 기획 & 프로토타이핑**: Figma (상/Hi-fi 프로토타이핑), Framer, Adobe XD, Moqup\n    *   **프로젝트 관리 & 협업**: JIRA (상/스프린트 및 백로그 관리), Confluence, Postman\n    *   **AI 서비스 기획 관련**: N8N (자동화 PoC), Gemini API (기능 프로토타이핑)\n\n### 4. keyAchievements (주요 성과)\n\n*   **[AS-IS 분석]**:\n    > 모든 성과가 정량화되어 매우 훌륭합니다. 하지만 결과(Result)만 있고, 그 결과를 만들어낸 UX적 행동(Action)이 빠져 있어 성과의 설득력이 절반으로 줄어듭니다.\n*   **[TO-BE 전략]**:\n    > 모든 성과 항목을 '[UX Action] → [Result]' 구조로 변경합니다. Action 부분에 JD의 키워드(데이터 분석, 사용자 리서치, Pain Point 등)를 적극적으로 사용하여, 본인이 단순한 관리자가 아닌 실무 역량을 갖춘 UX 리더임을 증명합니다.\n*   **[Revisions (수정 제안)]**:\n\n    **[성과 1]**\n    *   **AS-IS**:\n        > 예약 전환율 10% 향상 (숙박 상품 상세 페이지 리뉴얼)\n    *   **TO-BE (권장)**:\n        > **[Action]** 고객 이탈률이 높은 상품 상세 페이지의 **Pain Point를 데이터 분석으로 도출**, 사용자 인터뷰를 통해 가설을 수립하고 UI/UX를 개편 → **[Result]** 페이지 평균 체류 시간 15% 및 예약 전환율 10% 향상\n\n    **[성과 2]**\n    *   **AS-IS**:\n        > 중복 상품 노출률 40% 감소 (룸그룹핑 시스템 구축)\n    *   **TO-BE (권장)**:\n        > **[Action]** '동일 호텔 다른 조건 상품 비교'의 어려움이라는 **고객 Journey의 핵심 Pain Point를 해결**하기 위해 룸그룹핑 시스템 기획 및 구축 리딩 → **[Result]** 중복 상품 노출 40% 감소 및 사용자 검색 시간 단축\n\n### 5. careerHistory (경력 기술)\n\n*   **[AS-IS 분석]**:\n    > 수행 업무가 상세히 기술되어 있으나, 대부분 '무엇을 했는지(What)'에 대한 나열에 그칩니다. JD가 요구하는 'UX 기획 PL'의 관점에서 각 업무가 어떤 의미를 가지며, 어떤 성과로 이어졌는지 연결이 부족합니다. '룸그룹핑', 'GDS' 등 여행 도메인 전문 용어가 많아 범용성을 해칩니다.\n*   **[TO-BE 전략]**:\n    > 각 경력의 핵심 업무를 JD의 용어와 관점으로 재해석하여 작성합니다. 단순 업무 나열을 지양하고, '문제 정의 → 나의 역할/액션 → 정량적/정성적 성과'가 드러나는 성과 중심으로 기술합니다. (최신 경력 위주로 상세히 수정)\n\n*   **[Revisions (수정 제안)]**:\n\n    **[타이드스퀘어 (호텔 P.O) - 2022년 07월 ~ 2025년 07월]**\n    *   **AS-IS**:\n        > 숙박 B2C 상품상세 리뉴얼\n        > - 프리비아, 투어비스 숙박 상품 상세 페이지를 사용자 중심의 UI/UX 개편\n        > - 리뉴얼 후 숙박 상품 상세 페이지의 평균 체류 시간과 예약 전환율이 각각 15% 및 10% 증가\n    *   **TO-BE (권장)**:\n        > **데이터 기반 B2C 서비스 UX 전략 수립 및 기획 리딩 (PL)**\n        > - **(JD: 데이터 기반 UX 컨설팅)** GA 데이터 분석으로 이탈률이 높은 상품 상세 페이지의 **Pain Point 도출**, UI/UX 개편 프로젝트 리딩\n        > - **(성과)** 예약 전환율 10%p, 페이지 평균 체류 시간 15%p 향상\n\n    *   **AS-IS**:\n        > 룸그룹핑 (룸매핑) 시스템/서비스 구축\n        > - 공급사별 상이한 룸 타입 명칭을 표준화하여 통합된 룸 카테고리 체계 수립\n        > - 중복 상품 노출률 40% 감소, 예약 전환율 10% 향상\n    *   **TO-BE (권장)**:\n        > **사용자 Pain Point 해결을 위한 신규 서비스 기획 및 구축 리딩**\n        > - **(JD: Customer Journey Pain Point 도출)** '복잡한 상품 비교'라는 **고객 여정의 핵심 문제를 해결**하기 위해 룸그룹핑 서비스 제안 및 기획 총괄\n        > - **(성과)** 중복 상품 노출 40% 감소를 통해 사용자 탐색 경험 개선 및 전환율 10% 추가 향상\n\n---\n\n## 🏁 최종 점검 (Final Checklist)\n\n*   [ ] 모든 수정이 완료된 후, JD의 '자격 요건' 키워드(B2C, 데이터 기반, UX 전략, PL/PM, 리딩)가 이력서 전반에 자연스럽게 녹아들었는지 최종 검토하십시오.\n*   [ ] `keyAchievements` 섹션의 핵심 숫자(예: 전환율 10% 향상)가 `selfIntroduction`의 헤드라인과 일치하는지 반드시 확인하십시오."
+              }
+            ],
+            "role": "model"
+          },
+          "finishReason": "STOP",
+          "index": 0
+        }
+      }
+    ]
+  },
+  "connections": {
+    "On form submission": {
+      "main": [
+        [
+          {
+            "node": "Message a model",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Message a model": {
+      "main": [
+        [
+          {
+            "node": "Get a document",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get a document": {
+      "main": [
+        [
+          {
+            "node": "Edit Fields1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Edit Fields1": {
+      "main": [
+        [
+          {
+            "node": "Message a model1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Message a model1": {
+      "main": [
+        [
+          {
+            "node": "Get a document1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get a document1": {
+      "main": [
+        [
+          {
+            "node": "Edit Fields",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Edit Fields": {
+      "main": [
+        [
+          {
+            "node": "Message a model2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Message a model2": {
+      "main": [
+        [
+          {
+            "node": "Get a document2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get a document2": {
+      "main": [
+        [
+          {
+            "node": "Edit Fields2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Edit Fields2": {
+      "main": [
+        [
+          {
+            "node": "Message a model3",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Message a model3": {
+      "main": [
+        [
+          {
+            "node": "Get a document3",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get a document3": {
+      "main": [
+        [
+          {
+            "node": "Edit Fields3",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Edit Fields3": {
+      "main": [
+        [
+          {
+            "node": "Message a model4",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Message a model4": {
+      "main": [
+        [
+          {
+            "node": "Get a document4",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get a document4": {
+      "main": [
+        [
+          {
+            "node": "Edit Fields4",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Edit Fields4": {
+      "main": [
+        [
+          {
+            "node": "Message a model5",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Message a model5": {
+      "main": [
+        [
+          {
+            "node": "Message a model6",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Message a model6": {
+      "main": [
+        [
+          {
+            "node": "Create a document",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Create a document": {
+      "main": [
+        [
+          {
+            "node": "Update a document",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "e192ee25-4d81-4472-bf37-299c0aad7704",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "777b07ef47bd7c75e9e34b7e5095f486f52077aca2a4ed266a442d29f4412bed"
+  },
+  "id": "MtGoPreRjVHFzIQq",
+  "tags": []
+}
