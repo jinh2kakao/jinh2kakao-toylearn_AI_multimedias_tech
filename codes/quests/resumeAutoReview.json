@@ -27,6 +27,13 @@
               "fieldLabel": "preferentialTreatment",
               "fieldType": "textarea",
               "placeholder": "우대사항을 입력해주세요."
+            },
+            {
+              "fieldLabel": "resume",
+              "fieldType": "file",
+              "multipleFiles": false,
+              "acceptFileTypes": ".pdf, .docx, ",
+              "requiredField": true
             }
           ]
         },
@@ -35,7 +42,7 @@
       "type": "n8n-nodes-base.formTrigger",
       "typeVersion": 2.3,
       "position": [
-        -64,
+        -560,
         16
       ],
       "id": "743ba398-803a-4754-b135-b90cf267fcb5",
@@ -46,14 +53,14 @@
       "parameters": {
         "modelId": {
           "__rl": true,
-          "value": "models/gemini-2.5-flash",
+          "value": "models/gemini-2.5-pro",
           "mode": "list",
-          "cachedResultName": "models/gemini-2.5-flash"
+          "cachedResultName": "models/gemini-2.5-pro"
         },
         "messages": {
           "values": [
             {
-              "content": "=[ROLE] 당신은 20년 경력의 헤드헌터이자 채용 공고 분석 전문가(JD Analyst)입니다. 당신의 임무는 채용 공고(JD)를 '해체'하여, 이력서 검토에 필요한 '핵심 평가 기준(Key Evaluation Criteria)'을 추출하는 것입니다.\n\n[INPUT]\n\n[JOB_DESCRIPTION]\n- 회사명: {{ $json.company }}\n- 직무소개: {{ $json.jobDescription }}\n- 자격요건: {{ $json.qualifications }}\n- 우대사항: {{ $json.preferentialTreatment }}\n\n[TASK] [JOB_DESCRIPTION]을 분석하여, 5명의 이력서 검토 전문가(자기소개, 역량, 기술, 성과, 경력)가 공통으로 사용해야 할 '핵심 평가 기준 리포트'를 생성합니다.\n\n[EXECUTION]\n\nMust-Have (필수 요건): 자격 요건(Must-Have)을 명확히 식별하고 3~5가지 핵심 역량으로 요약합니다.\n\nPreferred (우대 사항): 우대 사항(Nice-to-Have)을 식별하고, '있으면 치명적인' 매력 포인트를 정의합니다.\n\nKey Keywords & Verbs: JD에서 반복적으로 등장하는 핵심 키워드(예: '데이터 기반', '확장성', '그로스 해킹')와 선호하는 동사(예: '주도한', '구축한', '최적화한')를 추출합니다.\n\nTone & Culture: JD의 문맥에서 유추할 수 있는 기업 문화(예: '빠른 실행력', '논리적 커뮤니케이션', '팀워크')를 정의합니다.\n\n[OUTPUT_FORMAT] (JSON 형식으로 출력)\n\nJSON\n\n{\n  \"positionTitle\": \"[채용 직무명]\",\n  \"mustHaveCriteria\": [\n    \"[핵심 필수 역량 1]\",\n    \"[핵심 필수 역량 2]\",\n    \"...\"\n  ],\n  \"preferredCriteria\": [\n    \"[핵심 우대 역량 1]\",\n    \"...\"\n  ],\n  \"keyKeywords\": [\"[키워드 1]\", \"키워드 2\", \"동사 1\", \"동사 2\"],\n  \"inferredCulture\": \"[기업 문화 키워드 1], [키워드 2]\"\n}"
+              "content": "=[ROLE] 당신은 20년 경력의 헤드헌터이자 채용 공고 분석 전문가(JD Analyst)입니다. 당신의 임무는 채용 공고(JD)를 '해체'하여, 이력서 검토에 필요한 '핵심 평가 기준(Key Evaluation Criteria)'을 추출하는 것입니다.\n\n[INPUT]\n\n[JOB_DESCRIPTION]\n- 회사명: {{ $('On form submission').item.json.company }}\n- 직무소개: {{ $('On form submission').item.json.jobDescription }}\n- 자격요건: {{ $('On form submission').item.json.qualifications }}\n- 우대사항: {{ $('On form submission').item.json.preferentialTreatment }}\n\n[TASK] [JOB_DESCRIPTION]을 분석하여, 5명의 이력서 검토 전문가(자기소개, 역량, 기술, 성과, 경력)가 공통으로 사용해야 할 '핵심 평가 기준 리포트'를 생성합니다.\n\n[EXECUTION]\n\nMust-Have (필수 요건): 자격 요건(Must-Have)을 명확히 식별하고 3~5가지 핵심 역량으로 요약합니다.\n\nPreferred (우대 사항): 우대 사항(Nice-to-Have)을 식별하고, '있으면 치명적인' 매력 포인트를 정의합니다.\n\nKey Keywords & Verbs: JD에서 반복적으로 등장하는 핵심 키워드(예: '데이터 기반', '확장성', '그로스 해킹')와 선호하는 동사(예: '주도한', '구축한', '최적화한')를 추출합니다.\n\nTone & Culture: JD의 문맥에서 유추할 수 있는 기업 문화(예: '빠른 실행력', '논리적 커뮤니케이션', '팀워크')를 정의합니다.\n\n[OUTPUT_FORMAT] (JSON 형식으로 출력)\n\nJSON\n\n{\n  \"positionTitle\": \"[채용 직무명]\",\n  \"mustHaveCriteria\": [\n    \"[핵심 필수 역량 1]\",\n    \"[핵심 필수 역량 2]\",\n    \"...\"\n  ],\n  \"preferredCriteria\": [\n    \"[핵심 우대 역량 1]\",\n    \"...\"\n  ],\n  \"keyKeywords\": [\"[키워드 1]\", \"키워드 2\", \"동사 1\", \"동사 2\"],\n  \"inferredCulture\": \"[기업 문화 키워드 1], [키워드 2]\"\n}"
             }
           ]
         },
@@ -62,8 +69,8 @@
       "type": "@n8n/n8n-nodes-langchain.googleGemini",
       "typeVersion": 1,
       "position": [
-        144,
-        16
+        -352,
+        416
       ],
       "id": "7cefb31d-edca-407f-83b4-0a4d4a94b0c7",
       "name": "Message a model",
@@ -73,55 +80,6 @@
           "name": "Google Gemini(PaLM) Api account"
         }
       }
-    },
-    {
-      "parameters": {
-        "operation": "get",
-        "documentURL": "11izXQOqElaOAFNkffSwhg5Vu20bdU7QP2uMIQjgoOy4"
-      },
-      "type": "n8n-nodes-base.googleDocs",
-      "typeVersion": 2,
-      "position": [
-        128,
-        416
-      ],
-      "id": "d6d2fffb-ec66-4316-811f-064dfe9106c4",
-      "name": "Get a document",
-      "credentials": {
-        "googleDocsOAuth2Api": {
-          "id": "4bWErfGpoIsWWRJL",
-          "name": "Google Docs account"
-        }
-      }
-    },
-    {
-      "parameters": {
-        "assignments": {
-          "assignments": [
-            {
-              "id": "78a7ee97-b8aa-43b4-98da-0cd3dd546dcd",
-              "name": "keyEvaluationCriteria",
-              "value": "={{ $('Message a model').item.json.content.parts[0].text }}",
-              "type": "string"
-            },
-            {
-              "id": "f367360e-7d37-4998-95ff-e56c24085bda",
-              "name": "selfIntroduction",
-              "value": "={{ $json.content }}",
-              "type": "string"
-            }
-          ]
-        },
-        "options": {}
-      },
-      "type": "n8n-nodes-base.set",
-      "typeVersion": 3.4,
-      "position": [
-        368,
-        416
-      ],
-      "id": "ceac64c1-819d-48d5-b98a-b5e7d98495e0",
-      "name": "Edit Fields1"
     },
     {
       "parameters": {
@@ -143,8 +101,8 @@
       "type": "@n8n/n8n-nodes-langchain.googleGemini",
       "typeVersion": 1,
       "position": [
-        592,
-        416
+        -560,
+        944
       ],
       "id": "3a065947-4880-4fdf-b432-c4fc19ee8732",
       "name": "Message a model1",
@@ -166,7 +124,7 @@
         "messages": {
           "values": [
             {
-              "content": "=[ROLE] 당신은 기업의 역량 모델(Competency Model)을 설계하는 HR 컨설턴트입니다.\n\n[CONTEXT]\n\n[JD_ANALYSIS_REPORT]: {{ $('Edit Fields1').item.json.keyEvaluationCriteria }}\n\n[coreCompetencies_AS_IS]: {{ $json.coreCompetencies }}\n\n[TASK] [coreCompetencies_AS_IS]를 [JD_ANALYSIS_REPORT]를 기반으로 재구성하는 JSON 결과를 생성합니다. (우선순위 재배치, 그룹화, 키워드 매칭)\n\n[OUTPUT_FORMAT] 아래 [JSON_SCHEMA]를 엄격히 따르는 단일 JSON 객체만 출력합니다. (설명이나 다른 텍스트 제외)\n\n[JSON_SCHEMA]\n\nJSON\n\n{\n  \"section\": \"coreCompetencies\",\n  \"analysis\": {\n    \"critique\": \"(현재 역량 목록의 문제점. 예: '핵심 역량과 부가 역량이 혼재되어 JD와의 관련성을 파악하기 어려움.')\"\n  },\n  \"recommendation\": {\n    \"strategy\": \"(JD 우선순위에 맞춘 재배치 및 그룹화 전략.)\",\n    \"suggestedContent\": {\n      \"structure\": [\n        {\n          \"group\": \"JD 핵심 역량 (Must-Have)\",\n          \"items\": [\"(JD `mustHaveCriteria`와 일치하는 역량 1)\", \"(... 2)\"]\n        },\n        {\n          \"group\": \"보유 기술 및 도구 (Tools)\",\n          \"items\": [\"(관련 기술 1)\"]\n        },\n        {\n          \"group\": \"소프트 스킬 (Soft Skills)\",\n          \"items\": [\"(JD `inferredCulture`와 일치하는 역량. 예: 논리적 커뮤니케이션)\"]\n        }\n      ]\n    }\n  }\n}"
+              "content": "=[ROLE] 당신은 기업의 역량 모델(Competency Model)을 설계하는 HR 컨설턴트입니다.\n\n[CONTEXT]\n\n[JD_ANALYSIS_REPORT]: {{ $('Edit Fields5').item.json.keyEvaluationCriteria }}\n\n[coreCompetencies_AS_IS]: {{ $('Edit Fields5').item.json.coreCompetencies }}\n\n[TASK] [coreCompetencies_AS_IS]를 [JD_ANALYSIS_REPORT]를 기반으로 재구성하는 JSON 결과를 생성합니다. (우선순위 재배치, 그룹화, 키워드 매칭)\n\n[OUTPUT_FORMAT] 아래 [JSON_SCHEMA]를 엄격히 따르는 단일 JSON 객체만 출력합니다. (설명이나 다른 텍스트 제외)\n\n[JSON_SCHEMA]\n\nJSON\n\n{\n  \"section\": \"coreCompetencies\",\n  \"analysis\": {\n    \"critique\": \"(현재 역량 목록의 문제점. 예: '핵심 역량과 부가 역량이 혼재되어 JD와의 관련성을 파악하기 어려움.')\"\n  },\n  \"recommendation\": {\n    \"strategy\": \"(JD 우선순위에 맞춘 재배치 및 그룹화 전략.)\",\n    \"suggestedContent\": {\n      \"structure\": [\n        {\n          \"group\": \"JD 핵심 역량 (Must-Have)\",\n          \"items\": [\"(JD `mustHaveCriteria`와 일치하는 역량 1)\", \"(... 2)\"]\n        },\n        {\n          \"group\": \"보유 기술 및 도구 (Tools)\",\n          \"items\": [\"(관련 기술 1)\"]\n        },\n        {\n          \"group\": \"소프트 스킬 (Soft Skills)\",\n          \"items\": [\"(JD `inferredCulture`와 일치하는 역량. 예: 논리적 커뮤니케이션)\"]\n        }\n      ]\n    }\n  }\n}"
             }
           ]
         },
@@ -175,8 +133,8 @@
       "type": "@n8n/n8n-nodes-langchain.googleGemini",
       "typeVersion": 1,
       "position": [
-        608,
-        880
+        -224,
+        944
       ],
       "id": "ba493401-9f60-491d-97c8-98c9f0da05c6",
       "name": "Message a model2",
@@ -189,92 +147,6 @@
     },
     {
       "parameters": {
-        "operation": "get",
-        "documentURL": "1L6uz8U9AgKnD4O_EKz9t3smfSLESnjMgdLDmQJP3030"
-      },
-      "type": "n8n-nodes-base.googleDocs",
-      "typeVersion": 2,
-      "position": [
-        144,
-        880
-      ],
-      "id": "23c476e0-86fb-4795-8644-ff1b40160409",
-      "name": "Get a document1",
-      "credentials": {
-        "googleDocsOAuth2Api": {
-          "id": "4bWErfGpoIsWWRJL",
-          "name": "Google Docs account"
-        }
-      }
-    },
-    {
-      "parameters": {
-        "assignments": {
-          "assignments": [
-            {
-              "id": "00470b9f-a125-4e5e-841c-d815d4b79030",
-              "name": "coreCompetencies",
-              "value": "={{ $json.content }}",
-              "type": "string"
-            }
-          ]
-        },
-        "options": {}
-      },
-      "type": "n8n-nodes-base.set",
-      "typeVersion": 3.4,
-      "position": [
-        384,
-        880
-      ],
-      "id": "307e0061-cfce-4fd2-b726-7fadf3583445",
-      "name": "Edit Fields"
-    },
-    {
-      "parameters": {
-        "operation": "get",
-        "documentURL": "1GCaCDYuh_rQDV5oFAaxlypbpIi69igjSBi-Ep2n6mQA"
-      },
-      "type": "n8n-nodes-base.googleDocs",
-      "typeVersion": 2,
-      "position": [
-        160,
-        1376
-      ],
-      "id": "9698fd4a-ab35-488a-a9c4-ddf95f08a5e9",
-      "name": "Get a document2",
-      "credentials": {
-        "googleDocsOAuth2Api": {
-          "id": "4bWErfGpoIsWWRJL",
-          "name": "Google Docs account"
-        }
-      }
-    },
-    {
-      "parameters": {
-        "assignments": {
-          "assignments": [
-            {
-              "id": "0082156e-a014-44f8-a202-26770af2683f",
-              "name": "techStack",
-              "value": "={{ $json.content }}",
-              "type": "string"
-            }
-          ]
-        },
-        "options": {}
-      },
-      "type": "n8n-nodes-base.set",
-      "typeVersion": 3.4,
-      "position": [
-        400,
-        1376
-      ],
-      "id": "19d61464-fe35-41cb-bcaf-78419316c739",
-      "name": "Edit Fields2"
-    },
-    {
-      "parameters": {
         "modelId": {
           "__rl": true,
           "value": "models/gemini-2.5-flash",
@@ -284,7 +156,7 @@
         "messages": {
           "values": [
             {
-              "content": "=[ROLE] 당신은 실리콘밸리의 시니어 테크니컬 리크루터입니다.\n\n[CONTEXT]\n\n[JD_ANALYSIS_REPORT]: {{ $('Edit Fields1').item.json.keyEvaluationCriteria }}\n\n[techStack_AS_IS]: {{ $json.techStack }}\n\n[TASK] [techStack_AS_IS]를 JD의 기술 요건에 맞게 명확하고 전략적으로 표현하도록 수정하는 JSON 결과를 생성합니다. (숙련도 명시, JD 관련 기술 강조, 카테고리화)\n\n[OUTPUT_FORMAT] 아래 [JSON_SCHEMA]를 엄격히 따르는 단일 JSON 객체만 출력합니다. (설명이나 다른 텍스트 제외)\n\n[JSON_SCHEMA]\n\nJSON\n\n{\n  \"section\": \"techStack\",\n  \"analysis\": {\n    \"critique\": \"(예: '기술이 단순 나열되어 있어, JD가 요구하는 'React'에 대한 숙련도를 알 수 없음.')\"\n  },\n  \"recommendation\": {\n    \"strategy\": \"(JD 요구 기술 강조 및 숙련도 표기 제안.)\",\n    \"suggestedContent\": {\n      \"structure\": [\n        {\n          \"category\": \"Frontend\",\n          \"items\": [\"React (상/핵심 기술)\", \"TypeScript (중)\"]\n        },\n        {\n          \"category\": \"Backend\",\n          \"items\": [\"Node.js (중)\", \"Python (하/우대 사항 경험)\"]\n        },\n        {\n          \"category\": \"Cloud\",\n          \"items\": [\"AWS (EC2, S3) (중)\"]\n        }\n      ]\n    }\n  }\n}"
+              "content": "=[ROLE] 당신은 실리콘밸리의 시니어 테크니컬 리크루터입니다.\n\n[CONTEXT]\n\n[JD_ANALYSIS_REPORT]: {{ $('Edit Fields5').item.json.keyEvaluationCriteria }}\n\n[techStack_AS_IS]: {{ $('Edit Fields5').item.json.techStack }}\n\n[TASK] [techStack_AS_IS]를 JD의 기술 요건에 맞게 명확하고 전략적으로 표현하도록 수정하는 JSON 결과를 생성합니다. (숙련도 명시, JD 관련 기술 강조, 카테고리화)\n\n[OUTPUT_FORMAT] 아래 [JSON_SCHEMA]를 엄격히 따르는 단일 JSON 객체만 출력합니다. (설명이나 다른 텍스트 제외)\n\n[JSON_SCHEMA]\n\nJSON\n\n{\n  \"section\": \"techStack\",\n  \"analysis\": {\n    \"critique\": \"(예: '기술이 단순 나열되어 있어, JD가 요구하는 'React'에 대한 숙련도를 알 수 없음.')\"\n  },\n  \"recommendation\": {\n    \"strategy\": \"(JD 요구 기술 강조 및 숙련도 표기 제안.)\",\n    \"suggestedContent\": {\n      \"structure\": [\n        {\n          \"category\": \"Frontend\",\n          \"items\": [\"React (상/핵심 기술)\", \"TypeScript (중)\"]\n        },\n        {\n          \"category\": \"Backend\",\n          \"items\": [\"Node.js (중)\", \"Python (하/우대 사항 경험)\"]\n        },\n        {\n          \"category\": \"Cloud\",\n          \"items\": [\"AWS (EC2, S3) (중)\"]\n        }\n      ]\n    }\n  }\n}"
             }
           ]
         },
@@ -293,8 +165,8 @@
       "type": "@n8n/n8n-nodes-langchain.googleGemini",
       "typeVersion": 1,
       "position": [
-        624,
-        1376
+        128,
+        944
       ],
       "id": "5cf7868d-4222-481c-9fc5-6d1de6d42abe",
       "name": "Message a model3",
@@ -307,49 +179,6 @@
     },
     {
       "parameters": {
-        "operation": "get",
-        "documentURL": "1C264GQUQFlu8O7xG5c-wuHtB_4cCgK_YYTKhh1HWEP8"
-      },
-      "type": "n8n-nodes-base.googleDocs",
-      "typeVersion": 2,
-      "position": [
-        176,
-        1856
-      ],
-      "id": "84bcb169-5ab5-44c4-8399-df60060d2658",
-      "name": "Get a document3",
-      "credentials": {
-        "googleDocsOAuth2Api": {
-          "id": "4bWErfGpoIsWWRJL",
-          "name": "Google Docs account"
-        }
-      }
-    },
-    {
-      "parameters": {
-        "assignments": {
-          "assignments": [
-            {
-              "id": "0b5c3ac7-c3b7-4203-bf4c-1242e807b8c9",
-              "name": "keyAchievements",
-              "value": "={{ $json.content }}",
-              "type": "string"
-            }
-          ]
-        },
-        "options": {}
-      },
-      "type": "n8n-nodes-base.set",
-      "typeVersion": 3.4,
-      "position": [
-        416,
-        1856
-      ],
-      "id": "be5a0075-d694-4d0a-9ee1-2bb85a84bf13",
-      "name": "Edit Fields3"
-    },
-    {
-      "parameters": {
         "modelId": {
           "__rl": true,
           "value": "models/gemini-2.5-flash",
@@ -359,7 +188,7 @@
         "messages": {
           "values": [
             {
-              "content": "=[ROLE] 당신은 임원(C-level)을 코칭하는 성과 관리 전문가입니다. 당신은 모든 성과를 STAR 기법과 정량적 수치로 바꿔내는 전문가입니다.\n\n[CONTEXT]\n\n[JD_ANALYSIS_REPORT]: {{ $('Edit Fields1').item.json.keyEvaluationCriteria }}\n\n[keyAchievements_AS_IS]: {{ $json.keyAchievements }}\n\n[TASK] [keyAchievements_AS_IS]의 모든 항목을 '성과 중심'(STAR, 정량화)으로 재작성하는 JSON 결과를 생성합니다.\n\n[OUTPUT_FORMAT] 아래 [JSON_SCHEMA]를 엄격히 따르는 단일 JSON 객체만 출력합니다. (설명이나 다른 텍스트 제외)\n\n[JSON_SCHEMA]\n\nJSON\n\n{\n  \"section\": \"keyAchievements\",\n  \"analysis\": {\n    \"critique\": \"(예: '성과 1: '...에 기여함.' -> 추상적이며 결과가 불명확함. 정량적 성과 부재.')\"\n  },\n  \"recommendation\": {\n    \"strategy\": \"(STAR 기법과 정량화를 통한 성과 임팩트 극대화. JD 연관 성과를 상단에 배치.)\",\n    \"suggestedContent\": {\n      \"revisions\": [\n        {\n          \"asIs\": \"(기존 성과 문구 1)\",\n          \"toBe\": \"(STAR 기법과 정량화가 적용된 수정 예시 문구 1. 예: '[Action] A/B 테스트 플랫폼 도입... -> [Result] ...전환율 12%p 개선')\"\n        },\n        {\n          \"asIs\": \"(기존 성과 문구 2)\",\n          \"toBe\": \"(수정 예시 문구 2)\"\n        }\n      ]\n    }\n  }\n}"
+              "content": "=[ROLE] 당신은 임원(C-level)을 코칭하는 성과 관리 전문가입니다. 당신은 모든 성과를 STAR 기법과 정량적 수치로 바꿔내는 전문가입니다.\n\n[CONTEXT]\n\n[JD_ANALYSIS_REPORT]: {{ $('Edit Fields5').item.json.keyEvaluationCriteria }}\n\n[keyAchievements_AS_IS]: {{ $('Edit Fields5').item.json.keyAchievements }}\n\n[TASK] [keyAchievements_AS_IS]의 모든 항목을 '성과 중심'(STAR, 정량화)으로 재작성하는 JSON 결과를 생성합니다.\n\n[OUTPUT_FORMAT] 아래 [JSON_SCHEMA]를 엄격히 따르는 단일 JSON 객체만 출력합니다. (설명이나 다른 텍스트 제외)\n\n[JSON_SCHEMA]\n\nJSON\n\n{\n  \"section\": \"keyAchievements\",\n  \"analysis\": {\n    \"critique\": \"(예: '성과 1: '...에 기여함.' -> 추상적이며 결과가 불명확함. 정량적 성과 부재.')\"\n  },\n  \"recommendation\": {\n    \"strategy\": \"(STAR 기법과 정량화를 통한 성과 임팩트 극대화. JD 연관 성과를 상단에 배치.)\",\n    \"suggestedContent\": {\n      \"revisions\": [\n        {\n          \"asIs\": \"(기존 성과 문구 1)\",\n          \"toBe\": \"(STAR 기법과 정량화가 적용된 수정 예시 문구 1. 예: '[Action] A/B 테스트 플랫폼 도입... -> [Result] ...전환율 12%p 개선')\"\n        },\n        {\n          \"asIs\": \"(기존 성과 문구 2)\",\n          \"toBe\": \"(수정 예시 문구 2)\"\n        }\n      ]\n    }\n  }\n}"
             }
           ]
         },
@@ -368,8 +197,8 @@
       "type": "@n8n/n8n-nodes-langchain.googleGemini",
       "typeVersion": 1,
       "position": [
-        640,
-        1856
+        496,
+        944
       ],
       "id": "e21c8de9-0482-456b-a0ab-36e02ce7d87f",
       "name": "Message a model4",
@@ -382,49 +211,6 @@
     },
     {
       "parameters": {
-        "operation": "get",
-        "documentURL": "18NoYEXtw4SykDve9QcYQG2ZFtpXgf1ePnq_D-EwfjKk"
-      },
-      "type": "n8n-nodes-base.googleDocs",
-      "typeVersion": 2,
-      "position": [
-        176,
-        2304
-      ],
-      "id": "2d6b6ced-ab34-425f-84aa-eff5f4d86f4b",
-      "name": "Get a document4",
-      "credentials": {
-        "googleDocsOAuth2Api": {
-          "id": "4bWErfGpoIsWWRJL",
-          "name": "Google Docs account"
-        }
-      }
-    },
-    {
-      "parameters": {
-        "assignments": {
-          "assignments": [
-            {
-              "id": "342a0ec8-e268-4ec5-b39d-ce4e99e37604",
-              "name": "careerHistory",
-              "value": "={{ $json.content }}",
-              "type": "string"
-            }
-          ]
-        },
-        "options": {}
-      },
-      "type": "n8n-nodes-base.set",
-      "typeVersion": 3.4,
-      "position": [
-        384,
-        2304
-      ],
-      "id": "468ff87e-22e4-4f2b-8be5-029ee60158cb",
-      "name": "Edit Fields4"
-    },
-    {
-      "parameters": {
         "modelId": {
           "__rl": true,
           "value": "models/gemini-2.5-pro",
@@ -434,17 +220,18 @@
         "messages": {
           "values": [
             {
-              "content": "=[ROLE] 당신은 지원자의 과거 모든 경험을 지원 직무(JD)의 관점에서 재해석하여 가치를 극대화하는 **커리어 내러티브 전략가(Career Narrative Strategist)**입니다. 당신은 \"버릴 경험은 없다, 다만 표현 방식이 다를 뿐이다\"라는 신조를 가지고 있습니다.\n\n[CONTEXT]\n\n[JD_ANALYSIS_REPORT]: {{ $('Edit Fields1').item.json.keyEvaluationCriteria }}\n\n[careerHistory_AS_IS]: {{ $json.careerHistory }}\n\n\n[TASK] [careerHistory_AS_IS]에 포함된 모든 경력 항목을 하나도 빠짐없이 검토하고, 각 경력의 상세 업무 내용(Bullet points)을 JD에 맞춰 **재작성(Rewriting)**합니다.\n\n[EXECUTION_GUIDELINES]\n\n직무 연관성이 높은 경력 (High Relevance):\n\nJD의 keyKeywords와 mustHaveCriteria를 직접적으로 사용하여 전문성을 강조합니다.\n\n업무 내용을 '문제(Problem) - 행동(Action) - 성과(Result)' 구조로 명확히 변경합니다.\n\n예: \"서버 관리\" -> \"AWS EC2 기반 트래픽 오토스케일링 환경 구축 및 운영 (가동률 99.9% 달성)\"\n\n직무 연관성이 낮은 경력 (Low Relevance / Transferable Skills):\n\n해당 경력에서 발휘한 **소프트 스킬(Soft Skills)**이나 **태도(Attitude)**를 JD의 인재상(inferredCulture)과 연결합니다.\n\n커뮤니케이션, 협업, 문제 해결 능력, 책임감, 빠른 습득력 등을 강조하여 '일 잘하는 사람'의 이미지를 구축합니다.\n\n예: \"카페 아르바이트\" -> \"고객 응대 및 재고 관리\" (X) -> \"일 평균 300명 고객 응대 및 POS 데이터 기반 재고 관리 최적화로 폐기율 10% 감소 (책임감 및 데이터 활용 능력)\" (O)\n\n용어 교체 (Terminology Swap):\n\n지원자가 사용한 일반적인 용어를 JD에 명시된 **업계 표준 용어(Industry Standard Terms)**로 교체합니다.\n\n[OUTPUT_FORMAT] 아래 [JSON_SCHEMA]를 엄격히 따르는 단일 JSON 객체만 출력합니다. (설명이나 다른 텍스트 제외)\n\n[JSON_SCHEMA]\n\nJSON\n\n{\n  \"section\": \"careerHistory\",\n  \"analysis\": {\n    \"critique\": \"(예: 'A사는 직무 연관성이 높아 전문성을 강조했고, B사는 이종 산업 경력이지만 JD의 핵심 가치인 '데이터 기반 사고'를 보여주도록 수정함.')\"\n  },\n  \"recommendation\": {\n    \"strategy\": \"(예: 모든 경력을 유지하되, 최근 경력은 JD 키워드 매칭율을 높이고, 과거 경력은 '문제 해결 능력'과 '협업' 역량을 중심으로 재서술하여 성장 서사를 완성함.)\",\n    \"suggestedContent\": {\n      \"revisions\": [\n        {\n          \"company\": \"A 회사 (가장 최근 경력)\",\n          \"role\": \"(직무명)\",\n          \"period\": \"(근무 기간)\",\n          \"asIs\": [\n            \"- (원문) 마케팅 기획\",\n            \"- (원문) 광고 집행\"\n          ],\n          \"toBe\": [\n            \"- (JD: '데이터 기반') GA, Amplitude 활용 유저 퍼널 분석을 통한 마케팅 KPI 수립 및 전략 도출\",\n            \"- (JD: '그로스 해킹') 퍼포먼스 마케팅(SA/DA) 예산 운영 및 소재 A/B 테스트 리딩 (주요 성과: ROAS 150% 달성)\"\n          ]\n        },\n        {\n          \"company\": \"B 회사 (과거 경력/이종 직무)\",\n          \"role\": \"(직무명)\",\n          \"period\": \"(근무 기간)\",\n          \"asIs\": [\"- (원문) 매장 관리 및 고객 응대\"],\n          \"toBe\": [\"- (JD: '고객 중심 사고') 고객 피드백 데이터 수집 및 분석을 통한 매장 운영 프로세스 개선 (고객 만족도 제고)\", \"- (JD: '협업') 5인 규모의 팀 스케줄 관리 및 신규 인원 교육 담당 (리더십 및 커뮤니케이션)\"]\n        }\n      ]\n    }\n  }\n}"
+              "content": "=[ROLE] 당신은 지원자의 과거 모든 경험을 지원 직무(JD)의 관점에서 재해석하여 가치를 극대화하는 **커리어 내러티브 전략가(Career Narrative Strategist)**입니다. 당신은 \"버릴 경험은 없다, 다만 표현 방식이 다를 뿐이다\"라는 신조를 가지고 있습니다.\n\n[CONTEXT]\n\n[JD_ANALYSIS_REPORT]: {{ $('Edit Fields5').item.json.keyEvaluationCriteria }}\n\n[careerHistory_AS_IS]: {{ JSON.stringify($('Edit Fields5').item.json.careerHistory, null, 2) }}\n\n\n[TASK] [careerHistory_AS_IS]에 포함된 모든 경력 항목을 하나도 빠짐없이 검토하고, 각 경력의 상세 업무 내용(Bullet points)을 JD에 맞춰 **재작성(Rewriting)**합니다.\n\n[EXECUTION_GUIDELINES]\n\n직무 연관성이 높은 경력 (High Relevance):\n\nJD의 keyKeywords와 mustHaveCriteria를 직접적으로 사용하여 전문성을 강조합니다.\n\n업무 내용을 '문제(Problem) - 행동(Action) - 성과(Result)' 구조로 명확히 변경합니다.\n\n예: \"서버 관리\" -> \"AWS EC2 기반 트래픽 오토스케일링 환경 구축 및 운영 (가동률 99.9% 달성)\"\n\n직무 연관성이 낮은 경력 (Low Relevance / Transferable Skills):\n\n해당 경력에서 발휘한 **소프트 스킬(Soft Skills)**이나 **태도(Attitude)**를 JD의 인재상(inferredCulture)과 연결합니다.\n\n커뮤니케이션, 협업, 문제 해결 능력, 책임감, 빠른 습득력 등을 강조하여 '일 잘하는 사람'의 이미지를 구축합니다.\n\n예: \"카페 아르바이트\" -> \"고객 응대 및 재고 관리\" (X) -> \"일 평균 300명 고객 응대 및 POS 데이터 기반 재고 관리 최적화로 폐기율 10% 감소 (책임감 및 데이터 활용 능력)\" (O)\n\n용어 교체 (Terminology Swap):\n\n지원자가 사용한 일반적인 용어를 JD에 명시된 **업계 표준 용어(Industry Standard Terms)**로 교체합니다.\n\n[OUTPUT_FORMAT] 아래 [JSON_SCHEMA]를 엄격히 따르는 단일 JSON 객체만 출력합니다. (설명이나 다른 텍스트 제외)\n\n[JSON_SCHEMA]\n\nJSON\n\n{\n  \"section\": \"careerHistory\",\n  \"analysis\": {\n    \"critique\": \"(예: 'A사는 직무 연관성이 높아 전문성을 강조했고, B사는 이종 산업 경력이지만 JD의 핵심 가치인 '데이터 기반 사고'를 보여주도록 수정함.')\"\n  },\n  \"recommendation\": {\n    \"strategy\": \"(예: 모든 경력을 유지하되, 최근 경력은 JD 키워드 매칭율을 높이고, 과거 경력은 '문제 해결 능력'과 '협업' 역량을 중심으로 재서술하여 성장 서사를 완성함.)\",\n    \"suggestedContent\": {\n      \"revisions\": [\n        {\n          \"company\": \"A 회사 (가장 최근 경력)\",\n          \"role\": \"(직무명)\",\n          \"period\": \"(근무 기간)\",\n          \"asIs\": [\n            \"- (원문) 마케팅 기획\",\n            \"- (원문) 광고 집행\"\n          ],\n          \"toBe\": [\n            \"- (JD: '데이터 기반') GA, Amplitude 활용 유저 퍼널 분석을 통한 마케팅 KPI 수립 및 전략 도출\",\n            \"- (JD: '그로스 해킹') 퍼포먼스 마케팅(SA/DA) 예산 운영 및 소재 A/B 테스트 리딩 (주요 성과: ROAS 150% 달성)\"\n          ]\n        },\n        {\n          \"company\": \"B 회사 (과거 경력/이종 직무)\",\n          \"role\": \"(직무명)\",\n          \"period\": \"(근무 기간)\",\n          \"asIs\": [\"- (원문) 매장 관리 및 고객 응대\"],\n          \"toBe\": [\"- (JD: '고객 중심 사고') 고객 피드백 데이터 수집 및 분석을 통한 매장 운영 프로세스 개선 (고객 만족도 제고)\", \"- (JD: '협업') 5인 규모의 팀 스케줄 관리 및 신규 인원 교육 담당 (리더십 및 커뮤니케이션)\"]\n        }\n      ]\n    }\n  }\n}"
             }
           ]
         },
+        "jsonOutput": true,
         "options": {}
       },
       "type": "@n8n/n8n-nodes-langchain.googleGemini",
       "typeVersion": 1,
       "position": [
-        592,
-        2304
+        816,
+        944
       ],
       "id": "61ea630d-b021-455b-b45a-1c37e3feabdd",
       "name": "Message a model5",
@@ -466,7 +253,7 @@
         "messages": {
           "values": [
             {
-              "content": "=[ROLE] 당신은 5명의 전문 AI(자기소개, 역량, 기술, 성과, 경력)가 제출한 개별 검토 보고서를 최종 취합하고 종합적인 전략을 도출하는 **총괄 HR 임원(CHRO)**이자 수석 커리어 코치입니다.\n\n당신의 임무는 개별 JSON 보고서들을 기계적으로 합치는 것이 아니라, [JD_ANALYSIS_REPORT]라는 공동의 목표(채용 공고)에 맞춰 일관성을 검토하고, 시너지를 극대화하며, 지원자에게 최종적으로 전달할 **'종합 전략 리포트'**를 완성도 높게 작성하는 것입니다.\n\n[GOAL] 5개의 개별 JSON 검토 결과를 하나의 **일관성 있고 강력한 '이력서 강화 전략 리포트'**로 통합하고, 지원자를 위한 실행 가능한 '총괄 코멘트'를 작성합니다.\n\n[INPUTS] (총 6개의 JSON 객체)\n\n[JD_ANALYSIS_REPORT]: {{ $('Edit Fields1').item.json.keyEvaluationCriteria }}\n\n[SELF_INTRODUCTION_JSON]: {{ $('Edit Fields1').item.json.selfIntroduction }}\n\n[CORE_COMPETENCIES_JSON]: {{ $('Edit Fields').item.json.coreCompetencies }}\n\n[TECH_STACK_JSON]: {{ $('Edit Fields2').item.json.techStack }}\n\n[KEY_ACHIEVEMENTS_JSON]: {{ $('Edit Fields3').item.json.keyAchievements }}\n\n[CAREER_HISTORY_JSON]: {{ $('Edit Fields4').item.json.careerHistory }}\n\n[CORE_TASK & EXECUTION_STEPS]\n\n[1단계: 종합 전략 수립 (Synthesize)]\n\n5개 JSON의 analysis.critique와 recommendation.strategy를 [JD_ANALYSIS_REPORT]와 교차 검증합니다.\n\n지원자의 현 이력서가 JD 대비 가진 **가장 강력한 무기(Strongest Asset)**와 **가장 치명적인 약점(Critical Weakness)**을 1~2가지로 요약합니다.\n\n5개 섹션 수정안 전체를 관통하는 **핵심 수정 전략(Key Strategy)**을 '헤드라인'으로 제시합니다. (예: '경험 나열형'에서 '성과 증명형'으로의 완전한 전환)\n\n입력된 Career History의 모든 경력을 Output에 포함합니다.\n\n(중요) 5개 섹션 간의 **불일치(Inconsistency)**나 시너지(Synergy) 포인트를 짚어줍니다.\n\n(예시: 'selfIntroduction에서 '데이터 기반 의사결정'을 강조했지만, keyAchievements에 관련 정량 성과가 부족하여 설득력이 약합니다. keyAchievements의 TO-BE 제안을 반드시 반영해야 합니다.')\n\n(예시: 'careerHistory에서 수정 제안된 성과 키워드가 coreCompetencies의 TO-BE 목록에 잘 반영되어 시너지가 좋습니다.')\n\n[2단계: 최종 리포트 통합 (Integrate)]\n\n[1단계]에서 수립한 '종합 전략'을 **'총괄 코멘트(Executive Summary)'**로 서두에 작성합니다.\n\n5개 JSON의 analysis와 recommendation 내용을 'AS-IS / TO-BE' 형식이 명확히 드러나는 단일 마크다운(Markdown) 문서로 재구성합니다.\n\n각 JSON의 suggestedContent (수정 예시 카피, 구조)를 독자가 즉시 이해하고 적용할 수 있도록 시각화하여 통합합니다.\n\nkeyAchievements나 careerHistory의 revisions 배열은 'AS-IS'와 'TO-BE'가 명확히 대비되도록 블록 인용(blockquote)이나 테이블을 사용해 가독성을 높입니다.\n\n[MAPPING GUIDELINES] (데이터 가공 지침)\n\n텍스트 포맷팅: Google Docs는 Markdown(**bold**)을 인식하지 못합니다. 강조가 필요한 부분은 텍스트 자체를 명확하게 쓰거나, 리스트 항목 앞에 • 기호를 붙여서 구분하십시오.\n\n줄바꿈 처리: 여러 줄의 내용은 \\n (개행 문자)을 사용하여 하나의 문자열로 합치십시오. (예: [\"A\", \"B\"] -> \"• A\\n• B\")\n\nTop 2 선정: keyAchievements는 템플릿 공간 제약상 가장 임팩트 있는 상위 2개 항목만 선별하여 매핑하십시오.\n\n종합 전략 도출: 5개 섹션의 analysis와 recommendation을 종합하여 executive_summary 섹션의 하위 필드를 전략적으로 작성하십시오.\n\n[OUTPUT_FORMAT] 반드시 아래 JSON 스키마를 준수하여 단일 JSON 객체만 출력하십시오.\n\n{\n  \"meta\": {\n    \"applicant_name\": \"(지원자 이름 - 없을 경우 '지원자'로 표기)\",\n    \"target_position\": \"(JD의 positionTitle)\",\n    \"date\": \"(YYYY-MM-DD 형식의 오늘 날짜)\"\n  },\n  \"executive_summary\": {\n    \"headline\": \"(전체를 관통하는 강력한 한 줄 헤드라인. 예: '경험 나열형'에서 '성과 증명형' 그로스 마케터로의 도약)\",\n    \"summary_text\": \"(종합적인 평가 및 수정 방향성을 3~4문장으로 서술)\",\n    \"key_strategy\": \"(핵심 수정 전략 요약)\",\n    \"strong_point\": \"(지원자의 가장 강력한 무기 1가지)\",\n    \"weak_point\": \"(보완이 시급한 약점 1가지)\",\n    \"synergy_point\": \"(섹션 간 시너지를 낼 수 있는 조언)\"\n  },\n  \"sections\": {\n    \"self_introduction\": {\n      \"analysis\": \"(Self Intro 전문가의 분석 요약)\",\n      \"strategy\": \"(Self Intro 전문가의 수정 전략)\",\n      \"tobe_copy\": \"(수정 제안된 자기소개 문구 전체)\"\n    },\n    \"core_competencies\": {\n      \"analysis\": \"(Competency 전문가의 분석 요약)\",\n      \"strategy\": \"(Competency 전문가의 수정 전략)\",\n      \"tobe_structure\": \"(수정된 역량 리스트를 줄바꿈 '\\\\n'과 불릿 '•'을 사용하여 하나의 문자열로 변환. 예: '• [JD핵심] 데이터 분석\\n• [Tool] Python')\"\n    },\n    \"tech_stack\": {\n      \"analysis\": \"(Tech 전문가의 분석 요약)\",\n      \"strategy\": \"(Tech 전문가의 수정 전략)\",\n      \"tobe_structure\": \"(수정된 기술 스택 리스트를 줄바꿈과 불릿을 사용하여 하나의 문자열로 변환)\"\n    },\n    \"key_achievements\": [\n      {\n        \"title\": \"(첫 번째 핵심 성과 제목)\",\n        \"asis\": \"(AS-IS 원문)\",\n        \"tobe\": \"(STAR 기법이 적용된 TO-BE 수정안)\"\n      },\n      {\n        \"title\": \"(두 번째 핵심 성과 제목 - 없으면 빈 문자열)\",\n        \"asis\": \"(AS-IS 원문 - 없으면 빈 문자열)\",\n        \"tobe\": \"(TO-BE 수정안 - 없으면 빈 문자열)\"\n      }\n    ],\n    \"career_history\": [\n      {\n        \"company_name\": \"(첫 번째 주요 회사명)\",\n        \"company_role\": \"(첫 번째 주요 회사 role)\",\n        \"company_period\": \"(첫 번째 주요 회사 재직기간)\",\n        \"tobe_bullets\": \"(해당 회사의 수정된 경력 기술(bullet points)을 줄바꿈 '\\\\n'과 불릿 '•'을 사용하여 하나의 문자열로 변환)\"\n      },\n      {\n        \"company_name\": \"(두 번째 주요 회사명 - 없으면 빈 문자열)\",\n        \"company_role\": \"(두 번째 주요 회사 role - 없으면 빈 문자열)\",\n        \"company_period\": \"(두 번째 주요 회사 재직기간 - 없으면 빈 문자열)\",\n        \"tobe_bullets\": \"(내용 - 없으면 빈 문자열)\"\n      }\n      {\n        \"company_name\": \"(세 번째 주요 회사명 - 없으면 빈 문자열)\",\n        \"company_role\": \"(세 번째 주요 회사 role - 없으면 빈 문자열)\",\n        \"company_period\": \"(세 번째 주요 회사 재직기간 - 없으면 빈 문자열)\",\n        \"tobe_bullets\": \"(내용 - 없으면 빈 문자열)\"\n      }\n      {\n        \"company_name\": \"(네 번째 주요 회사명 - 없으면 빈 문자열)\",\n        \"company_role\": \"(네 번째 주요 회사 role - 없으면 빈 문자열)\",\n        \"company_period\": \"(네 번째 주요 회사 재직기간 - 없으면 빈 문자열)\",\n        \"tobe_bullets\": \"(내용 - 없으면 빈 문자열)\"\n      }\n      {\n        \"company_name\": \"(다섯 번째 주요 회사명 - 없으면 빈 문자열)\",\n        \"company_role\": \"(다섯 번째 주요 회사 role - 없으면 빈 문자열)\",\n        \"company_period\": \"(다섯 번째 주요 회사 재직기간 - 없으면 빈 문자열)\",\n        \"tobe_bullets\": \"(내용 - 없으면 빈 문자열)\"\n      }\n    ]\n  },\n  \"final_checklist\": \"(지원자가 이력서 제출 전 반드시 확인해야 할 2~3가지 최종 점검 사항)\"\n}"
+              "content": "=[ROLE] 당신은 5명의 전문 AI(자기소개, 역량, 기술, 성과, 경력)가 제출한 개별 검토 보고서를 최종 취합하고 종합적인 전략을 도출하는 **총괄 HR 임원(CHRO)**이자 수석 커리어 코치입니다.\n\n당신의 임무는 개별 JSON 보고서들을 기계적으로 합치는 것이 아니라, [JD_ANALYSIS_REPORT]라는 공동의 목표(채용 공고)에 맞춰 일관성을 검토하고, 시너지를 극대화하며, 지원자에게 최종적으로 전달할 **'종합 전략 리포트'**를 완성도 높게 작성하는 것입니다.\n\n[GOAL] 5개의 개별 JSON 검토 결과를 하나의 **일관성 있고 강력한 '이력서 강화 전략 리포트'**로 통합하고, 지원자를 위한 실행 가능한 '총괄 코멘트'를 작성합니다.\n\n[INPUTS] (총 6개의 JSON 객체)\n\n[JD_ANALYSIS_REPORT]: {{ $json.keyEvaluationCriteria }}\n\n[SELF_INTRODUCTION_JSON]: {{ $json.selfIntroduction }}\n\n[CORE_COMPETENCIES_JSON]: {{ $json.coreCompetencies }}\n\n[TECH_STACK_JSON]: {{ $json.techStack }}\n\n[KEY_ACHIEVEMENTS_JSON]: {{ $json.keyAchievements }}\n\n[CAREER_HISTORY_JSON]: {{ $json.careerHistory }}\n\n[CORE_TASK & EXECUTION_STEPS]\n\n[1단계: 종합 전략 수립 (Synthesize)]\n\n5개 JSON의 analysis.critique와 recommendation.strategy를 [JD_ANALYSIS_REPORT]와 교차 검증합니다.\n\n지원자의 현 이력서가 JD 대비 가진 **가장 강력한 무기(Strongest Asset)**와 **가장 치명적인 약점(Critical Weakness)**을 1~2가지로 요약합니다.\n\n5개 섹션 수정안 전체를 관통하는 **핵심 수정 전략(Key Strategy)**을 '헤드라인'으로 제시합니다. (예: '경험 나열형'에서 '성과 증명형'으로의 완전한 전환)\n\n입력된 Career History의 모든 경력을 Output에 포함합니다. Career History의 tobe_bullets에는 (JD Culture: '협업')과 같은 불필요한 내용은 삽입하지 않고 최종 전달될 내용으로 작성.\n\n(중요) 5개 섹션 간의 **불일치(Inconsistency)**나 시너지(Synergy) 포인트를 짚어줍니다.\n\n(예시: 'selfIntroduction에서 '데이터 기반 의사결정'을 강조했지만, keyAchievements에 관련 정량 성과가 부족하여 설득력이 약합니다. keyAchievements의 TO-BE 제안을 반드시 반영해야 합니다.')\n\n(예시: 'careerHistory에서 수정 제안된 성과 키워드가 coreCompetencies의 TO-BE 목록에 잘 반영되어 시너지가 좋습니다.')\n\n[2단계: 최종 리포트 통합 (Integrate)]\n\n[1단계]에서 수립한 '종합 전략'을 **'총괄 코멘트(Executive Summary)'**로 서두에 작성합니다.\n\n5개 JSON의 analysis와 recommendation 내용을 'AS-IS / TO-BE' 형식이 명확히 드러나는 단일 마크다운(Markdown) 문서로 재구성합니다.\n\n각 JSON의 suggestedContent (수정 예시 카피, 구조)를 독자가 즉시 이해하고 적용할 수 있도록 시각화하여 통합합니다.\n\n[MAPPING GUIDELINES] (데이터 가공 지침)\n\n텍스트 포맷팅: Google Docs는 Markdown(**bold**)을 인식하지 못합니다. 강조가 필요한 부분은 텍스트 자체를 명확하게 쓰거나, 리스트 항목 앞에 • 기호를 붙여서 구분하십시오.\n\n줄바꿈 처리: 여러 줄의 내용은 \\n (개행 문자)을 사용하여 하나의 문자열로 합치십시오. (예: [\"A\", \"B\"] -> \"• A\\n• B\")\n\nTop 2 선정: keyAchievements는 템플릿 공간 제약상 가장 임팩트 있는 상위 2개 항목만 선별하여 매핑하십시오.\n\n종합 전략 도출: 5개 섹션의 analysis와 recommendation을 종합하여 executive_summary 섹션의 하위 필드를 전략적으로 작성하십시오.\n\n[OUTPUT_FORMAT] 반드시 아래 JSON 스키마를 준수하여 단일 JSON 객체만 출력하십시오.\n\n{\n  \"meta\": {\n    \"applicant_name\": \"(지원자 이름 - 없을 경우 '지원자'로 표기)\",\n    \"target_position\": \"(JD의 positionTitle)\",\n    \"date\": \"(YYYY-MM-DD 형식의 오늘 날짜)\"\n  },\n  \"executive_summary\": {\n    \"headline\": \"(전체를 관통하는 강력한 한 줄 헤드라인. 예: '경험 나열형'에서 '성과 증명형' 그로스 마케터로의 도약)\",\n    \"summary_text\": \"(종합적인 평가 및 수정 방향성을 3~4문장으로 서술)\",\n    \"key_strategy\": \"(핵심 수정 전략 요약)\",\n    \"strong_point\": \"(지원자의 가장 강력한 무기 1가지)\",\n    \"weak_point\": \"(보완이 시급한 약점 1가지)\",\n    \"synergy_point\": \"(섹션 간 시너지를 낼 수 있는 조언)\"\n  },\n  \"sections\": {\n    \"self_introduction\": {\n      \"analysis\": \"(Self Intro 전문가의 분석 요약)\",\n      \"strategy\": \"(Self Intro 전문가의 수정 전략)\",\n      \"tobe_copy\": \"(수정 제안된 자기소개 문구 전체)\"\n    },\n    \"core_competencies\": {\n      \"analysis\": \"(Competency 전문가의 분석 요약)\",\n      \"strategy\": \"(Competency 전문가의 수정 전략)\",\n      \"tobe_structure\": \"(수정된 역량 리스트를 줄바꿈 '\\\\n'과 불릿 '•'을 사용하여 하나의 문자열로 변환. 예: '• [JD핵심] 데이터 분석\\n• [Tool] Python')\"\n    },\n    \"tech_stack\": {\n      \"analysis\": \"(Tech 전문가의 분석 요약)\",\n      \"strategy\": \"(Tech 전문가의 수정 전략)\",\n      \"tobe_structure\": \"(수정된 기술 스택 리스트를 줄바꿈과 불릿을 사용하여 하나의 문자열로 변환)\"\n    },\n    \"key_achievements\": [\n      {\n        \"title\": \"(첫 번째 핵심 성과 제목)\",\n        \"asis\": \"(AS-IS 원문)\",\n        \"tobe\": \"(STAR 기법이 적용된 TO-BE 수정안)\"\n      },\n      {\n        \"title\": \"(두 번째 핵심 성과 제목 - 없으면 빈 문자열)\",\n        \"asis\": \"(AS-IS 원문 - 없으면 빈 문자열)\",\n        \"tobe\": \"(TO-BE 수정안 - 없으면 빈 문자열)\"\n      }\n    ],\n    \"career_history\": [\n      {\n        \"company_name\": \"(첫 번째 주요 회사명)\",\n        \"company_role\": \"(첫 번째 주요 회사 role)\",\n        \"company_period\": \"(첫 번째 주요 회사 재직기간)\",\n        \"tobe_bullets\": \"(해당 회사의 수정된 경력 기술(bullet points)을 줄바꿈 '\\\\n'과 불릿 '•'을 사용하여 하나의 문자열로 변환)\"\n      },\n      {\n        \"company_name\": \"(두 번째 주요 회사명 - 없으면 빈 문자열)\",\n        \"company_role\": \"(두 번째 주요 회사 role - 없으면 빈 문자열)\",\n        \"company_period\": \"(두 번째 주요 회사 재직기간 - 없으면 빈 문자열)\",\n        \"tobe_bullets\": \"(내용 - 없으면 빈 문자열)\"\n      }\n      {\n        \"company_name\": \"(세 번째 주요 회사명 - 없으면 빈 문자열)\",\n        \"company_role\": \"(세 번째 주요 회사 role - 없으면 빈 문자열)\",\n        \"company_period\": \"(세 번째 주요 회사 재직기간 - 없으면 빈 문자열)\",\n        \"tobe_bullets\": \"(내용 - 없으면 빈 문자열)\"\n      }\n      {\n        \"company_name\": \"(네 번째 주요 회사명 - 없으면 빈 문자열)\",\n        \"company_role\": \"(네 번째 주요 회사 role - 없으면 빈 문자열)\",\n        \"company_period\": \"(네 번째 주요 회사 재직기간 - 없으면 빈 문자열)\",\n        \"tobe_bullets\": \"(내용 - 없으면 빈 문자열)\"\n      }\n      {\n        \"company_name\": \"(다섯 번째 주요 회사명 - 없으면 빈 문자열)\",\n        \"company_role\": \"(다섯 번째 주요 회사 role - 없으면 빈 문자열)\",\n        \"company_period\": \"(다섯 번째 주요 회사 재직기간 - 없으면 빈 문자열)\",\n        \"tobe_bullets\": \"(내용 - 없으면 빈 문자열)\"\n      }\n    ]\n  },\n  \"final_checklist\": \"(지원자가 이력서 제출 전 반드시 확인해야 할 2~3가지 최종 점검 사항)\"\n}"
             }
           ]
         },
@@ -475,8 +262,8 @@
       "type": "@n8n/n8n-nodes-langchain.googleGemini",
       "typeVersion": 1,
       "position": [
-        1296,
-        416
+        896,
+        32
       ],
       "id": "a9ff44a0-bac5-428d-8167-d681d4fcf168",
       "name": "Message a model6",
@@ -489,13 +276,13 @@
     },
     {
       "parameters": {
-        "content": "##지원 공고 및 분석 검토",
+        "content": "## 지원 공고 및 이력서 입력",
         "height": 240,
-        "width": 672
+        "width": 1136
       },
       "type": "n8n-nodes-base.stickyNote",
       "position": [
-        -160,
+        -656,
         -48
       ],
       "typeVersion": 1,
@@ -504,14 +291,14 @@
     },
     {
       "parameters": {
-        "content": "## 자기소개 분석",
+        "content": "## 지원공고 분석 및 데이터 정리",
         "height": 320,
         "width": 912
       },
       "type": "n8n-nodes-base.stickyNote",
       "position": [
-        48,
-        336
+        -656,
+        352
       ],
       "typeVersion": 1,
       "id": "14ddefb4-fb12-486e-a5b7-abc53aa038ea",
@@ -519,14 +306,14 @@
     },
     {
       "parameters": {
-        "content": "## 핵심역량 검토",
+        "content": "## 분야별 전문가 5인의 분석",
         "height": 352,
-        "width": 928
+        "width": 1792
       },
       "type": "n8n-nodes-base.stickyNote",
       "position": [
-        48,
-        800
+        -656,
+        816
       ],
       "typeVersion": 1,
       "id": "e6a54e27-ce06-4b20-8021-a8e49f848a57",
@@ -534,59 +321,14 @@
     },
     {
       "parameters": {
-        "content": "## 기술 스택 분석",
-        "height": 336,
-        "width": 928
-      },
-      "type": "n8n-nodes-base.stickyNote",
-      "position": [
-        48,
-        1280
-      ],
-      "typeVersion": 1,
-      "id": "1bb0d869-9976-4061-a561-c1f371a562fb",
-      "name": "Sticky Note3"
-    },
-    {
-      "parameters": {
-        "content": "## 주요성과 분석",
-        "height": 336,
-        "width": 928
-      },
-      "type": "n8n-nodes-base.stickyNote",
-      "position": [
-        48,
-        1760
-      ],
-      "typeVersion": 1,
-      "id": "e8655191-2708-442a-a78f-ea570e717196",
-      "name": "Sticky Note4"
-    },
-    {
-      "parameters": {
-        "content": "## 경력사항 분석",
-        "height": 336,
-        "width": 912
-      },
-      "type": "n8n-nodes-base.stickyNote",
-      "position": [
-        64,
-        2208
-      ],
-      "typeVersion": 1,
-      "id": "d7d7de91-1b7e-468f-adcb-93ed5c725299",
-      "name": "Sticky Note5"
-    },
-    {
-      "parameters": {
         "content": "## 1차 draft 종합 검토",
         "height": 320,
-        "width": 1152
+        "width": 1280
       },
       "type": "n8n-nodes-base.stickyNote",
       "position": [
-        1216,
-        320
+        592,
+        -64
       ],
       "typeVersion": 1,
       "id": "70cacd02-8733-47e8-b10c-0fb4b6e3000b",
@@ -600,7 +342,7 @@
           "mode": "id",
           "value": "1Umjt3uCXT4qhimPYRPYI4CU9qLF2D4lA__ZA1mvugV0"
         },
-        "name": "={{ $('On form submission').item.json.company }}_이력서_검토_리포트",
+        "name": "={{ $('On form submission').item.json.company }}_이력서_검토_리포트_{{ $('On form submission').item.json.submittedAt }}",
         "sameFolder": false,
         "driveId": {
           "__rl": true,
@@ -619,8 +361,8 @@
       "type": "n8n-nodes-base.googleDrive",
       "typeVersion": 3,
       "position": [
-        1856,
-        416
+        1456,
+        32
       ],
       "id": "ded8f4a1-585e-46e7-b47f-c3e6a05f4901",
       "name": "Copy file",
@@ -781,6 +523,41 @@
               "action": "replaceAll",
               "text": "{{final_checklist_text}}",
               "replaceText": "={{ $('Code in JavaScript').item.json.final_checklist }}"
+            },
+            {
+              "action": "replaceAll",
+              "text": "{{education1_school_name}}",
+              "replaceText": "={{ $('Code in JavaScript1').item.json.education[0].schoolName }}"
+            },
+            {
+              "action": "replaceAll",
+              "text": "{{education1_major}}",
+              "replaceText": "={{ $('Code in JavaScript1').item.json.education[0].major }}"
+            },
+            {
+              "action": "replaceAll",
+              "text": "{{education1_period}}",
+              "replaceText": "={{ $('Code in JavaScript1').item.json.education[0].status }} {{ $('Code in JavaScript1').item.json.education[0].period }}"
+            },
+            {
+              "action": "replaceAll",
+              "text": "{{education2_school_name}}",
+              "replaceText": "={{ $('Code in JavaScript1').item.json.education[1].schoolName }}"
+            },
+            {
+              "action": "replaceAll",
+              "text": "{{education2_major}}",
+              "replaceText": "={{ $('Code in JavaScript1').item.json.education[1].major }}"
+            },
+            {
+              "action": "replaceAll",
+              "text": "{{education2_period}}",
+              "replaceText": "={{ $('Code in JavaScript1').item.json.education[1].status }} {{ $('Code in JavaScript1').item.json.education[1].period }}"
+            },
+            {
+              "action": "replaceAll",
+              "text": "{{etc_info}}",
+              "replaceText": "={{ $('Code in JavaScript1').item.json.etc }}"
             }
           ]
         }
@@ -788,8 +565,8 @@
       "type": "n8n-nodes-base.googleDocs",
       "typeVersion": 2,
       "position": [
-        2064,
-        416
+        1664,
+        32
       ],
       "id": "10f7004a-a59f-4639-86c6-0b36ca92c581",
       "name": "Update a document",
@@ -807,8 +584,8 @@
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        1648,
-        416
+        1248,
+        32
       ],
       "id": "ccf94b46-42bd-4d65-aad5-61f84dea18f9",
       "name": "Code in JavaScript"
@@ -821,7 +598,7 @@
           "value": "14h-ijfo6ZdsjbrPxfSYIZAchSFBLcazM65YdGd4d90M",
           "mode": "id"
         },
-        "name": "={{ $('On form submission').item.json.company }}_{{ $('Code in JavaScript').item.json.applicant_name }}_{{ $('Code in JavaScript').item.json.date }}",
+        "name": "={{ $('On form submission').item.json.company }}_{{ $('Code in JavaScript').item.json.applicant_name }}_{{ $('On form submission').item.json.submittedAt }}",
         "sameFolder": false,
         "driveId": {
           "__rl": true,
@@ -838,8 +615,8 @@
       "type": "n8n-nodes-base.googleDrive",
       "typeVersion": 3,
       "position": [
-        1296,
-        800
+        832,
+        416
       ],
       "id": "d10a5b05-7b81-49c2-8c03-d392496ca100",
       "name": "Copy file1",
@@ -1100,6 +877,41 @@
               "action": "replaceAll",
               "text": "{{company_9_tobe_bullets}}",
               "replaceText": "={{ $('Code in JavaScript').item.json.career_9_tobe_bullets }}"
+            },
+            {
+              "action": "replaceAll",
+              "text": "{{education1_school_name}}",
+              "replaceText": "={{ $('Code in JavaScript1').item.json.education[0].schoolName }}"
+            },
+            {
+              "action": "replaceAll",
+              "text": "{{education1_major}}",
+              "replaceText": "={{ $('Code in JavaScript1').item.json.education[0].major }}"
+            },
+            {
+              "action": "replaceAll",
+              "text": "{{education1_period}}",
+              "replaceText": "={{ $('Code in JavaScript1').item.json.education[0].status }} {{ $('Code in JavaScript1').item.json.education[0].period }}"
+            },
+            {
+              "action": "replaceAll",
+              "text": "{{education2_school_name}}",
+              "replaceText": "={{ $('Code in JavaScript1').item.json.education[1].schoolName }}"
+            },
+            {
+              "action": "replaceAll",
+              "text": "{{education2_major}}",
+              "replaceText": "={{ $('Code in JavaScript1').item.json.education[1].major }}"
+            },
+            {
+              "action": "replaceAll",
+              "text": "{{education2_period}}",
+              "replaceText": "={{ $('Code in JavaScript1').item.json.education[1].status }} {{ $('Code in JavaScript1').item.json.education[1].period }}"
+            },
+            {
+              "action": "replaceAll",
+              "text": "{{etc_info}}",
+              "replaceText": "={{ $('Code in JavaScript1').item.json.etc }}"
             }
           ]
         }
@@ -1107,8 +919,8 @@
       "type": "n8n-nodes-base.googleDocs",
       "typeVersion": 2,
       "position": [
-        1504,
-        800
+        1040,
+        416
       ],
       "id": "a2905d14-8daf-45b6-98ff-fda89410f1d3",
       "name": "Update a document1",
@@ -1123,134 +935,204 @@
       "parameters": {
         "content": "## 이력서 생성",
         "height": 320,
-        "width": 1152
+        "width": 576
       },
       "type": "n8n-nodes-base.stickyNote",
       "position": [
-        1216,
-        736
+        752,
+        352
       ],
       "typeVersion": 1,
       "id": "dbce2d36-bd82-4933-b218-aa7db786e85d",
       "name": "Sticky Note7"
+    },
+    {
+      "parameters": {
+        "operation": "pdf",
+        "binaryPropertyName": "resume",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.extractFromFile",
+      "typeVersion": 1,
+      "position": [
+        -352,
+        16
+      ],
+      "id": "6ae303aa-f3c4-4d95-9aee-2a208924bee3",
+      "name": "Extract from File"
+    },
+    {
+      "parameters": {
+        "modelId": {
+          "__rl": true,
+          "value": "models/gemini-2.0-flash",
+          "mode": "list",
+          "cachedResultName": "models/gemini-2.0-flash"
+        },
+        "messages": {
+          "values": [
+            {
+              "content": "=[ROLE] 당신은 비정형 텍스트 처리 및 문서 구조화 전문가(Document Parser)입니다. 당신의 임무는 형식이 제각각인 이력서 원본 텍스트([RAW_RESUME_TEXT])를 분석하여, 다운스트림 AI 에이전트들이 처리할 수 있는 표준화된 JSON 포맷으로 변환하는 것입니다.\n\n[INPUT]\n\n[RAW_RESUME_TEXT]: {{ $json.text }}\n\n[TASK] [RAW_RESUME_TEXT]를 논리적 구획으로 나누고, 다음 7가지 핵심 영역으로 데이터를 추출 및 정제하십시오.\n\n[EXTRACTION_RULES] (데이터 추출 규칙)\n\nmeta (기본 정보):\n\n이름, 이메일, 전화번호, 포트폴리오 링크 등을 최상단 영역에서 찾아 추출합니다.\n\nselfIntroduction (자기소개):\n\n'자기소개', 'About Me', 'Profile', 'Intro' 등의 헤더 아래에 있는 서술형 텍스트를 추출합니다.\n\n별도 헤더가 없다면, 경력 기술 전의 긴 서문(3문장 이상)을 자기소개로 간주합니다.\n\ncoreCompetencies (핵심 역량):\n\n'핵심 역량', 'Key Competencies', 'Skills', '강점' 등의 섹션에 있는 항목을 리스트로 추출합니다.\n\ntechStack (기술 스택):\n\n'Tech Stack', 'Skills', 'Tools', '언어', '프레임워크' 섹션에서 기술 키워드(Python, Java, AWS 등)를 추출합니다.\n\n별도 섹션이 없다면 coreCompetencies나 careerHistory에서 기술 명사만 필터링하여 추출합니다.\n\nkeyAchievements (주요 성과):\n\n'주요 성과', 'Key Achievements', 'Projects' 섹션이 별도로 있다면 해당 내용을 추출합니다.\n\n중요: 별도 성과 섹션이 없다면, careerHistory 내에서 숫자가 포함된 성과(예: 30% 성장, 1위 달성) 문장만 별도로 복사하여 이 섹션을 구성합니다.\n\ncareerHistory (경력 기술):\n\n회사명, 근무 기간, 직무(Role), 상세 업무(Bullets)를 식별하여 객체 배열로 구조화합니다.\n\n근무 기간은 표준 형식(YYYY.MM - YYYY.MM)으로 통일합니다.\n\neducation (학력):\n\n학교명, 전공, 학위, 재학 기간을 추출합니다.\n\n[DATA_CLEANSING] (정제 지침)\n\n불필요한 특수문자(***, ===, ---)나 페이지 번호, 머리글/바닥글 텍스트는 제거합니다.\n\nnull 또는 비어있는 섹션은 빈 리스트 []나 빈 문자열 \"\"로 반환합니다. (키 자체를 삭제하지 마십시오.)\n\n[OUTPUT_FORMAT] 반드시 아래 JSON Schema를 준수하는 단일 JSON 객체만 출력하십시오. (Markdown 코드 블록 json ... 포함)\n\n{\n  \"meta\": {\n    \"applicantName\": \"String (이름)\",\n    \"email\": \"String (이메일)\",\n    \"phone\": \"String (전화번호)\",\n    \"links\": [\"String (URL 목록)\"]\n  },\n  \"selfIntroduction\": \"String (자기소개 전체 텍스트)\",\n  \"coreCompetencies\": [\"String (역량 1)\", \"String (역량 2)\"],\n  \"techStack\": [\"String (기술 1)\", \"String (기술 2)\"],\n  \"keyAchievements\": [\n    \"String (성과 1 - 원문 그대로)\",\n    \"String (성과 2 - 원문 그대로)\"\n  ],\n  \"careerHistory\": [\n    {\n      \"companyName\": \"String (회사명)\",\n      \"period\": \"String (YYYY.MM - YYYY.MM)\",\n      \"role\": \"String (직무/직책)\",\n      \"description\": [\n        \"String (업무 내용 1)\",\n        \"String (업무 내용 2)\"\n      ]\n    }\n  ],\n  \"education\": [\n    {\n      \"schoolName\": \"String\",\n      \"major\": \"String\",\n      \"status\": \"String (졸업/재학 등)\",\n      \"period\": \"String\"\n    }\n  ],\n  \"etc\": \"String (어학, 자격증 등 기타 정보 텍스트)\"\n}"
+            }
+          ]
+        },
+        "jsonOutput": true,
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.googleGemini",
+      "typeVersion": 1,
+      "position": [
+        -144,
+        16
+      ],
+      "id": "b138922b-6e9a-48a3-86d6-443fd5fb9d69",
+      "name": "Message a model7",
+      "credentials": {
+        "googlePalmApi": {
+          "id": "y5uPwd8LysBc9xrS",
+          "name": "Google Gemini(PaLM) Api account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "// n8n Code Node - JavaScript\n// Phase 0: LLM이 추출한 이력서 문자열을 실제 JSON 객체로 변환\n\nreturn items.map(item => {\n  try {\n    // 1. LLM 응답 텍스트 추출\n    // 제공해주신 데이터 구조: [{ content: { parts: [{ text: \"...\" }] } }]\n    const textResponse = item.json.content.parts[0].text;\n\n    if (!textResponse) {\n      throw new Error(\"LLM 응답에서 텍스트를 찾을 수 없습니다.\");\n    }\n\n    // 2. JSON 문자열 추출 (Data Cleaning)\n    // LLM이 \"```json { ... } ```\" 처럼 마크다운을 포함하거나, 앞뒤에 사족을 붙일 경우를 대비합니다.\n    // 가장 처음 나오는 '{' 부터 가장 마지막에 나오는 '}' 까지 잘라냅니다.\n    const firstOpenBrace = textResponse.indexOf('{');\n    const lastCloseBrace = textResponse.lastIndexOf('}');\n\n    if (firstOpenBrace === -1 || lastCloseBrace === -1) {\n      throw new Error(\"응답 텍스트 내에서 유효한 JSON 구조({ ... })를 찾지 못했습니다.\");\n    }\n\n    const cleanJsonString = textResponse.substring(firstOpenBrace, lastCloseBrace + 1);\n\n    // 3. JSON 파싱 (String -> Object 변환)\n    const parsedResumeData = JSON.parse(cleanJsonString);\n\n    // 4. 결과 반환\n    // item.json을 파싱된 이력서 데이터로 덮어씌웁니다.\n    item.json = parsedResumeData;\n\n    return item;\n\n  } catch (error) {\n    // 에러 발생 시, 에러 내용과 원본 데이터를 함께 출력하여 디버깅을 돕습니다.\n    item.json = {\n      error: true,\n      message: error.message,\n      rawInput: item.json // 원본 데이터 보존\n    };\n    return item;\n  }\n});"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        208,
+        16
+      ],
+      "id": "c6b12672-2a70-428e-92c6-d997af00abb4",
+      "name": "Code in JavaScript1"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "41c98565-89b8-4d86-946e-6841d3a9b2a1",
+              "name": "keyEvaluationCriteria",
+              "value": "={{ $json.content.parts[0].text }}",
+              "type": "string"
+            },
+            {
+              "id": "c1afd5bc-e331-410a-9634-1fd2d45950d4",
+              "name": "selfIntroduction",
+              "value": "={{ $('Code in JavaScript1').item.json.selfIntroduction }}",
+              "type": "string"
+            },
+            {
+              "id": "35a04d70-e7c5-4d19-ac87-0361ee548761",
+              "name": "coreCompetencies",
+              "value": "={{ $('Code in JavaScript1').item.json.coreCompetencies }}",
+              "type": "string"
+            },
+            {
+              "id": "c72b53a0-8e2b-407b-9e19-3f1894ac7a17",
+              "name": "techStack",
+              "value": "={{ $('Code in JavaScript1').item.json.techStack }}",
+              "type": "array"
+            },
+            {
+              "id": "e157549c-6a6e-497e-8e96-0f218ba7ddf6",
+              "name": "keyAchievements",
+              "value": "={{ $('Code in JavaScript1').item.json.keyAchievements }}",
+              "type": "array"
+            },
+            {
+              "id": "9f007109-85cf-4c73-8e54-3daf165e3a14",
+              "name": "careerHistory",
+              "value": "={{ $('Code in JavaScript1').item.json.careerHistory }}",
+              "type": "array"
+            },
+            {
+              "id": "e3aa5c6f-8bd4-46e7-b795-4b00dfda3ce9",
+              "name": "education",
+              "value": "={{ $('Code in JavaScript1').item.json.education }}",
+              "type": "array"
+            },
+            {
+              "id": "2c880b60-4d97-4d63-af3c-eec02439e409",
+              "name": "etc",
+              "value": "={{ $('Code in JavaScript1').item.json.etc }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        64,
+        416
+      ],
+      "id": "b00a88df-0dde-4806-96ff-219f5de510c2",
+      "name": "Edit Fields5"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "2c85f3cf-6440-4e28-a424-b45555a81dc6",
+              "name": "keyEvaluationCriteria",
+              "value": "={{ $('Message a model').item.json.content.parts[0].text }}",
+              "type": "string"
+            },
+            {
+              "id": "acabf2e1-789b-4dc6-a667-301c9f7104e5",
+              "name": "selfIntroduction",
+              "value": "={{ $('Message a model1').item.json.content.parts[0].text }}",
+              "type": "string"
+            },
+            {
+              "id": "eeb3345c-c87f-425d-a781-6b767c01a93a",
+              "name": "coreCompetencies",
+              "value": "={{ $('Message a model2').item.json.content.parts[0].text }}",
+              "type": "string"
+            },
+            {
+              "id": "a3cef79a-a935-4d8e-86a5-641e79318c8d",
+              "name": "techStack",
+              "value": "={{ $('Message a model3').item.json.content.parts[0].text }}",
+              "type": "string"
+            },
+            {
+              "id": "b0caa344-b03a-4918-a841-c2795d345efb",
+              "name": "keyAchievements",
+              "value": "={{ $('Message a model4').item.json.content.parts[0].text }}",
+              "type": "string"
+            },
+            {
+              "id": "c2a9d84c-25d2-4cc4-ba8d-cfaca161d5bb",
+              "name": "careerHistory",
+              "value": "={{ $json.content.parts[0].text }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        672,
+        32
+      ],
+      "id": "ab541f1b-d446-444b-9390-055def269965",
+      "name": "Edit Fields"
     }
   ],
-  "pinData": {
-    "On form submission": [
-      {
-        "json": {
-          "company": "CJ올리브네트웍스",
-          "jobDescription": "B2C 웹/앱 서비스의 사용자 경험 설계 및 기획 PL을 수행합니다.\r\n\r\n1. 데이터기반 UX 컨설팅 및 비즈니스 도메인 이해도를 바탕으로 UX 구축 전략 수립\r\n- 고객 데이터 분석과 Customer Journey에 따른 Pain Point를 도출하여 서비스 개선 프로세스를 기획합니다.\r\n- 디지털 플랫폼 벤치마킹, UX리서치를 통해 서비스에 최적화된 사용자 경험을 설계합니다.\r\n- UX Trend 및 기술을 분석하고 소비자 접점에 적합한 UX전략을 세워 고객사에 제안하는 역할을 수행합니다.\r\n\r\n2. 웹/앱 서비스 구축 시 서비스 및 UX 기획 PL 혹은 기획 PM 업무를 수행\r\n- PM/PO, 프로덕트 디자이너, 개발자와 협업하여 프로덕트 UX 구축 계획을 수립하고 관리/실행 합니다.\r\n- 프로덕트 서비스 제안 및 UI/UX화면 설계, 트렌드 분석을 통해 신규 서비스의 핵심 목표에 최적화된 사용자 경험을 기획합니다.\r\n- 프로덕트 온보딩/유지운영을 위한 콘텐츠, 서비스를 제안하고 필요한 UX/UI화면 구축을 리딩합니다.\r\n\r\n3. 신규 서비스 제안\r\n- 그룹 내 계열사 및 대외 B2C, 모바일, 금융 등 신규 서비스를 제안합니다.\r\n- RFP 기반 제안 전략 수립 및 제안서 작성 지원, 관련 구축 프로젝트에 참여합니다.",
-          "qualifications": "[Education]\r\n- 학사 이상\r\n\r\n[Experience]\r\n- 총 경력 7년~15년 사이의 경력\r\n- 다양한 분야의 B2C 웹/앱 UX기획 경험 (5년 이상)\r\n- UX 구축 기획 PM 및 PL 경험 (2년 이상)\r\n- UX 리서치, 데이터 분석을 통한 사용자 프로세스 설계 및 테스트, 프로토타이핑 경험\r\n\r\n[Functional Competencies]\r\n- UX컨설팅 문서 작성 및 Presentaion Skill 능통\r\n- 전략 방향성에 맞춘 서비스 기획 및 제안서 제작 역량\r\n- Customer Jouney에 따른 Painpoint 분석, 인사이트 도출 역량\r\n\r\n[Skill/ Qualification]\r\n- Google Analytics, Figma 툴 활용자 우대\r\n- 데이터 분석을 통한 인사이트 도출 및 개선 제안/실행 기획 경험",
-          "preferentialTreatment": "- 커머스 서비스 기획 PL/PM 경험 우대\r\n- AI 서비스 구축 경험 우대\r\n- Product Manager 경험 우대",
-          "submittedAt": "2025-11-18T09:58:49.153+09:00",
-          "formMode": "test"
-        }
-      }
-    ],
-    "Message a model4": [
-      {
-        "json": {
-          "content": {
-            "parts": [
-              {
-                "text": "```json\n{\n  \"section\": \"keyAchievements\",\n  \"analysis\": {\n    \"critique\": \"성과 1: '예약 전환율 10% 향상 (숙박 상품 상세 페이지 리뉴얼)' -> '리뉴얼' 과정에서의 데이터 기반 접근, UX 컨설팅 역할, PL/PM으로서의 리딩 경험이 불분명하며, 성과 기여도에 대한 구체적인 맥락(예: A/B 테스트 결과, 초기 대비 개선폭, 재무적 영향)이 부족합니다.\\n성과 2: '신규 고객 유입률 25% 증대 (카카오 예약하기 플랫폼 연동)' -> '연동' 과정에서의 전략 수립, UX/UI 기획 리딩 경험 및 고객 여정 분석을 통한 인사이트 도출 과정이 명시되지 않았습니다. 신규 유입 증대가 비즈니스에 미친 영향이 불분명합니다.\\n성과 3: '중복 상품 노출률 40% 감소 (룸그룹핑 시스템 구축)' -> 문제 정의, 해결 과정(사용자 관점 UX 개선), 팀 협업 리딩 등 PL/PM으로서의 역할과 정량적 성과가 사용자 경험에 미친 긍정적 영향이 모호합니다.\\n성과 4: '재고 정확도 25% 향상 (API 통합 시스템 구축)' -> B2C 웹/앱 UX 기획 및 PL/PM 역할과의 직접적인 연결고리가 약하며, 사용자 경험 개선에 미친 영향에 대한 설명이 부족합니다.\\n성과 5, 6, 7: 'Dynamic Pricing 전략 수립 및 Auto-Pricing 시스템 구축', 'Flexible 마크업 정책을 통한 수익성 개선', '메타서치 가격 경쟁력 확보 및 플랫폼 최적화' -> 전략 수립 및 시스템 구축 과정에서 PL/PM으로서의 리더십, 데이터 기반 의사결정, 비즈니스 성과(수익 증대, 경쟁력 확보)에 대한 구체적인 정량적 수치와 맥락이 부족합니다.\"\n  },\n  \"recommendation\": {\n    \"strategy\": \"STAR 기법(Situation, Task, Action, Result)과 정량화를 통해 성과 임팩트를 극대화하고, JD에서 강조하는 'B2C 웹/앱 UX 기획', 'PL/PM 리더십', '데이터 기반 UX 컨설팅', '신규 서비스 제안', '협업' 등의 키워드를 적극 반영하여 기술합니다. 특히 데이터 기반 인사이트 도출 및 UX/UI 화면 기획 리딩 경험을 명확히 제시하며, 각 성과가 비즈니스 목표 달성과 사용자 경험 개선에 어떻게 기여했는지 구체적인 수치와 맥락으로 설명합니다. JD 연관성이 높은 'UX/UI 리디자인', '신규 플랫폼 연동', '데이터 기반 전략 수립' 성과를 상단에 배치하여 직무 적합성을 강조합니다.\",\n    \"suggestedContent\": {\n      \"revisions\": [\n        {\n          \"asIs\": \"예약 전환율 10% 향상 (숙박 상품 상세 페이지 리뉴얼)\",\n          \"toBe\": \"[S] 기존 B2C 숙박 상품 상세 페이지의 낮은 예약 전환율(평균 3.5%)과 사용자 이탈 문제를 인지하고, [T] 데이터 기반의 UX/UI 개선을 통해 전환율을 극대화하는 PL 역할을 수행했습니다. [A] Google Analytics, 히트맵 분석, 사용자 인터뷰를 통해 핵심 Pain Point(정보 과부하, CTA 비가시성)를 도출하고, A/B 테스트를 거쳐 정보 아키텍처 재설계, CTA 최적화, 이미지/리뷰 섹션 강화를 포함하는 UX/UI 리디자인 프로젝트를 PL로서 주도했습니다. 디자이너 및 개발팀과의 협업을 통해 사용자 경험을 개선했습니다. [R] 그 결과, 예약 전환율을 10%p(3.5% → 4.5%) 향상시켰고, 월간 예약 건수 15% 증가 및 연간 약 2억원 이상의 추가 매출을 달성했습니다.\"\n        },\n        {\n          \"asIs\": \"신규 고객 유입률 25% 증대 (카카오 예약하기 플랫폼 연동)\",\n          \"toBe\": \"[S] B2C 서비스의 신규 고객 유입 채널 확장 및 시장 경쟁력 강화를 위한 전략적 기회가 필요했습니다. [T] 국내 최대 메신저 기반 예약 플랫폼인 '카카오 예약하기'와의 연동을 통해 신규 고객 유입을 극대화하는 PL 역할을 수행했습니다. [A] 시장 분석 및 고객 여정 분석을 통해 카카오 예약하기 연동의 사업적 가치를 제안하고, 서비스 기획부터 UX/UI 설계, API 연동, 운영 정책 수립까지 전 과정에서 PL로서 프로젝트를 리딩했습니다. 개발팀 및 비즈니스 파트너와의 긴밀한 협업을 통해 사용자 친화적인 연동 프로세스를 구축했습니다. [R] 그 결과, 신규 고객 유입률을 25% 증대시켰으며, 월 평균 5천 건 이상의 추가 예약과 총 예약 매출 15% 기여를 통해 시장 점유율을 확장했습니다.\"\n        },\n        {\n          \"asIs\": \"중복 상품 노출률 40% 감소 (룸그룹핑 시스템 구축)\",\n          \"toBe\": \"[S] B2C 웹/앱에서 동일한 상품(룸 타입)이 과도하게 중복 노출되어 사용자 혼란을 야기하고, 탐색 경험 저하 및 이탈률 증가의 원인이 되었습니다. [T] 사용자 경험(UX) 개선을 위해 중복 상품 노출을 최소화하는 '룸 그룹핑 시스템' 구축 프로젝트를 기획 및 리딩했습니다. [A] 사용자 테스트 및 데이터 분석을 통해 중복 노출의 심각성을 확인하고, 룸 그룹핑 로직을 설계하여 UI/UX 화면 기획에 반영했습니다. 개발팀과 긴밀히 협업하여 시스템을 성공적으로 구축하고 안정화했습니다. [R] 결과적으로 중복 상품 노출률을 40% 감소시켰고, 이는 상품 탐색 시간 15% 단축, 세션 당 페이지뷰 10% 증가로 이어져 사용자 편의성과 서비스 효율성을 크게 향상시켰습니다.\"\n        },\n        {\n          \"asIs\": \"재고 정확도 25% 향상 (API 통합 시스템 구축)\",\n          \"toBe\": \"[S] 다양한 파트너사의 재고 정보가 실시간으로 통합되지 않아, B2C 웹/앱에서 예약 가능한 상품이 '예약 불가'로 표시되거나, 반대로 '예약 가능'으로 보였던 상품이 실제로는 재고가 없어 취소되는 등 사용자 불만 및 이탈이 발생했습니다. [T] 재고 정확도를 획기적으로 개선하여 사용자 신뢰도와 예약 경험을 향상시키기 위한 API 통합 시스템 구축을 PL로서 주도했습니다. [A] 복수의 파트너사 API를 통합하고 실시간 재고 연동 시스템을 설계, 구축했습니다. 이 과정에서 개발팀 및 파트너사와 협업하여 데이터 연동 표준을 수립하고, 오류 발생 시 즉각 대응할 수 있는 모니터링 시스템까지 구축했습니다. [R] 시스템 구축 후 재고 정확도를 25% 향상시켰으며, 이는 예약 취소율 5%p 감소(총 12% → 7%) 및 고객 만족도 8% 향상에 기여하여 B2C 서비스의 신뢰도를 크게 높였습니다.\"\n        },\n        {\n          \"asIs\": \"Dynamic Pricing 전략 수립 및 Auto-Pricing 시스템 구축\",\n          \"toBe\": \"[S] 시장 변화에 대한 비탄력적인 고정 가격 정책으로 인해 B2C 서비스의 수익성 최적화에 한계가 있었고, 가격 경쟁력 확보에 어려움을 겪었습니다. [T] 데이터 기반의 Dynamic Pricing 전략을 수립하고, 이를 자동화하는 Auto-Pricing 시스템을 구축하여 수익성을 극대화하는 PL 역할을 수행했습니다. [A] 경쟁사 가격, 수요/공급 데이터, 시즌별 트렌드 등을 분석하여 최적화된 가격 정책 로직을 설계했습니다. 이를 바탕으로 Auto-Pricing 시스템의 기획, UI/UX 설계 (운영자 어드민), 개발 및 구현을 PL로서 리딩했으며, 데이터 엔지니어 및 개발팀과의 협업을 통해 시스템을 성공적으로 배포했습니다. [R] 시스템 도입 후 평균 객단가를 8% 향상시켰고, 전체 프로덕트 수익성을 12% 개선하는 동시에 시장 변화에 유연하게 대응할 수 있는 경쟁 우위를 확보했습니다.\"\n        },\n        {\n          \"asIs\": \"Flexible 마크업 정책을 통한 수익성 개선\",\n          \"toBe\": \"[S] 기존의 일률적인 마크업 정책은 시장 상황에 따른 유연한 가격 대응을 어렵게 하여 잠재적 수익 기회를 놓치고 있었습니다. [T] B2C 서비스의 수익성을 극대화하기 위해 시장 변화에 동적으로 반응하는 Flexible 마크업 정책을 수립하고 적용하는 프로젝트를 리딩했습니다. [A] 시장 조사, 경쟁사 분석 및 내부 데이터를 기반으로 성수기/비수기, 수요 수준에 따른 차등 마크업 정책을 기획하고, 이를 시스템에 반영하기 위한 요구사항을 정의했습니다. 비즈니스 부서와 개발팀 간의 조율을 통해 정책이 효과적으로 적용되도록 PL로서 관리했습니다. [R] 이 정책 적용으로 총 매출 이익률을 5%p 개선하고, 비수기 판매량을 7% 증가시키는 등 특정 시점에 최적화된 가격 전략으로 비즈니스 수익성을 강화했습니다.\"\n        },\n        {\n          \"asIs\": \"메타서치 가격 경쟁력 확보 및 플랫폼 최적화\",\n          \"toBe\": \"[S] 주요 메타서치 플랫폼에서 B2C 서비스 상품의 가격 경쟁력이 낮아 신규 유입 및 전환이 부진했습니다. [T] 메타서치 플랫폼 내 가격 경쟁력을 확보하고 플랫폼 노출 최적화를 통해 신규 고객 유입을 증대시키는 전략을 수립하고 실행했습니다. [A] 메타서치 채널별 데이터(클릭률, 전환율, 가격 비교 현황)를 심층 분석하여 최적의 가격 제시 전략을 도출하고, 플랫폼별 데이터 연동 및 상품 정보 최적화를 주도했습니다. 비즈니스 및 개발팀과 협업하여 시스템적 개선 사항을 반영하고, 주기적인 모니터링을 통해 성능을 관리했습니다. [R] 그 결과, 메타서치 채널을 통한 신규 유입률을 18% 증가시켰으며, 해당 채널에서의 예약 전환율을 3%p 개선(1.5% → 4.5%)하여 전반적인 고객 확보 비용 효율성을 높였습니다.\"\n        }\n      ]\n    }\n  }\n}\n```"
-              }
-            ],
-            "role": "model"
-          },
-          "finishReason": "STOP",
-          "index": 0
-        }
-      }
-    ],
-    "Message a model3": [
-      {
-        "json": {
-          "content": {
-            "parts": [
-              {
-                "text": "```json\n{\n  \"section\": \"techStack\",\n  \"analysis\": {\n    \"critique\": \"제공된 기술 스택은 단순히 사용 가능한 도구들을 나열하고 있어, 각 기술에 대한 숙련도나 PL/PM 역할 수행에 필수적인 '데이터 기반 UX 컨설팅', 'UX/UI 화면 기획 리딩', 'PM/PO, 디자이너, 개발자와의 협업' 역량을 뒷받침하는 핵심 기술들에 대한 강조가 부족합니다. 특히, 리더십 포지션에서 요구되는 프로젝트 관리 및 협업 도구의 숙련도, 데이터 분석을 통한 인사이트 도출 능력에 대한 명확한 지표가 없습니다. 또한, '여행 플랫폼' 관련 내용은 기술 스택보다는 특정 도메인 경험으로 분류하는 것이 더 적절해 보입니다.\"\n  },\n  \"recommendation\": {\n    \"strategy\": \"JD의 Must-Have 및 Preferred Criteria에 맞춰 기술 스택을 재분류하고, 각 기술에 대한 숙련도를 명시하여 JD 요구 역량과의 연관성을 강화하는 것이 중요합니다. 특히, 데이터 기반 분석 도구, UX/UI 설계 도구, 프로젝트 관리 및 협업 도구에 대한 숙련도를 '상' 또는 '핵심'으로 강조하고, 'AI 서비스 구축 경험'과 같은 우대사항은 별도로 구분하여 어필합니다. 불분명하거나 도메인에 국한된 내용은 제외하거나 명확히 설명하는 방향으로 수정합니다.\",\n    \"suggestedContent\": {\n      \"structure\": [\n        {\n          \"category\": \"데이터 기반 UX 분석 및 리서치\",\n          \"items\": [\n            \"Google Analytics (상 / 핵심)\",\n            \"A/B Testing (상 / 핵심)\",\n            \"사용자 행동 분석 (개념 및 활용 상 / 핵심)\",\n            \"Tableau (중)\",\n            \"SEO Analytics (중)\"\n          ]\n        },\n        {\n          \"category\": \"UX/UI 설계 및 프로토타이핑\",\n          \"items\": [\n            \"Figma (상 / 핵심)\",\n            \"Adobe XD (상)\",\n            \"Framer (중)\"\n          ]\n        },\n        {\n          \"category\": \"프로젝트 관리 및 협업\",\n          \"items\": [\n            \"JIRA (상 / 핵심)\",\n            \"Confluence (상 / 핵심)\",\n            \"MS Office (상 / 제안서 및 발표 자료)\"\n          ]\n        },\n        {\n          \"category\": \"API 연동 및 시스템 이해\",\n          \"items\": [\n            \"API Integration (상 / 개념 및 리딩)\",\n            \"Postman (중)\",\n            \"CMS Systems (중 / 이해)\"\n          ]\n        },\n        {\n          \"category\": \"AI 서비스 관련 (우대)\",\n          \"items\": [\n            \"GEMINI API (중)\",\n            \"AI STUDIO, V0, Figma Make, N8N (하 / 경험)\",\n            \"VS Code (하 / 개발 협업 이해)\"\n          ]\n        }\n      ]\n    }\n  }\n}\n```"
-              }
-            ],
-            "role": "model"
-          },
-          "finishReason": "STOP",
-          "index": 0
-        }
-      }
-    ],
-    "Message a model1": [
-      {
-        "json": {
-          "content": {
-            "parts": [
-              {
-                "text": "```json\n{\n  \"section\": \"selfIntroduction\",\n  \"analysis\": {\n    \"critique\": \"현재 자기소개는 18년의 총 경력, B2C 웹/앱 경험, PO/PL 리더십, 데이터 기반의 명확한 성과 창출 (전환율 10%↑, 신규유입 25%↑), 그리고 크로스 펑셔널 팀과의 협업 능력을 구체적인 수치와 함께 매우 효과적으로 어필하고 있습니다. 특히 데이터 분석 능력과 문제 해결을 통한 비즈니스 임팩트는 JD의 '데이터 기반 UX 컨설팅 및 전략 수립' 역량을 훌륭하게 만족시킵니다.\\n\\n하지만 JD의 핵심 Must-Have Criteria 중 '신규 서비스 제안 및 UX/UI 화면 기획 역량 (제안서 제작, 발표, 서비스 제안, UI/UX 화면 설계 및 리딩 경험)'에 대한 직접적인 연결 고리가 다소 약합니다. 기존 자기소개는 주로 기존 시스템의 '최적화'와 '구축'에 초점이 맞춰져 있어, 새로운 사용자 경험을 '설계'하고, '제안'하며, 'UX/UI 화면 기획을 리딩'하는 주도적인 역할이 명확하게 드러나지 않습니다. 'UX 컨설팅' 역량도 간접적으로만 제시되고 있습니다.\"\n  },\n  \"recommendation\": {\n    \"strategy\": \"JD의 포지션 타이틀인 'B2C 웹/앱 서비스 사용자 경험 설계 및 기획 PL'에 완벽하게 부합하도록, 현재 자기소개의 강력한 장점인 '데이터 기반 성과 창출'과 'PO/PL 리더십'을 유지하면서, 다음의 요소들을 전략적으로 강화해야 합니다.\\n\\n1.  **'신규 서비스 제안 및 UX/UI 화면 기획/설계 리딩' 강조**: 고객의 Pain Point를 발굴하고, 이를 해결하기 위한 '신규 서비스'를 주도적으로 '제안'하며, 구체적인 'UX/UI 화면 기획 및 설계를 리드'하여 실제 프로덕트 구현까지 이끌어낸 경험을 명확히 제시합니다.\\n2.  **'사용자 경험 설계' 및 'UX 컨설팅' 역량 부각**: 데이터를 통한 인사이트 도출이 단순한 개선을 넘어 '사용자 경험 설계'와 'UX 컨설팅', 그리고 '전략 수립'으로 이어지는 과정을 부각하고, JD 키워드인 'Pain Point'를 직접적으로 사용하여 문제 해결 역량을 명확히 합니다.\\n3.  **포지션 타이틀 및 핵심 키워드 일치**: 'Product Owner' 외에 'UX 기획 PL'로서의 정체성을 전면에 내세우고, JD의 주요 키워드(예: 설계, 기획, PL, 데이터 기반, UX 컨설팅, 고객 여정 분석, Pain Point, 신규 서비스, UI/UX, 리딩, 협업)를 효과적으로 녹여냅니다.\",\n    \"suggestedContent\": {\n      \"copy\": \"18년간 B2C 웹/앱 서비스의 사용자 경험을 설계하고 혁신해 온 전략적 UX 기획 PL 김진현입니다. 데이터 기반 UX 컨설팅 및 고객 여정 분석을 통해 Pain Point를 해소하는 신규 서비스를 제안하고 UI/UX 화면 기획을 리드, 예약 전환율 10% 및 신규 유입 25% 증대 등 유의미한 비즈니스 성과를 크로스 펑셔널 팀과 함께 창출했습니다.\"\n    }\n  }\n}\n```"
-              }
-            ],
-            "role": "model"
-          },
-          "finishReason": "STOP",
-          "index": 0
-        }
-      }
-    ],
-    "Message a model2": [
-      {
-        "json": {
-          "content": {
-            "parts": [
-              {
-                "text": "```json\n{\n  \"section\": \"coreCompetencies\",\n  \"analysis\": {\n    \"critique\": \"현재 역량 목록은 핵심 전략 역량과 특정 기술/도구, 그리고 팀 리딩 역량이 명확한 그룹화 없이 혼재되어 있어, JD에서 요구하는 B2C 웹/앱 UX PL/PM의 리더십 및 전략 수립 역량을 효과적으로 드러내지 못하고 있습니다. 또한, 데이터 기반 UX 컨설팅, 고객 여정 분석, 신규 서비스 제안 및 발표 등 JD의 핵심 요구사항을 명확히 반영하는 역량 표현이 부족하며, JD를 통해 유추되는 조직 문화적 역량(소프트 스킬)이 누락되어 있습니다.\"\n  },\n  \"recommendation\": {\n    \"strategy\": \"JD의 Must-Have Criteria를 최우선 순위로 고려하여 역량을 재배치하고 그룹화합니다. 'JD 핵심 역량 (Must-Have)', '보유 기술 및 도구 (Tools)', '소프트 스킬 (Soft Skills)' 세 가지 그룹으로 나누어, PL/PM 리더십, 데이터 기반 전략 수립 및 실행, UX/UI 설계 및 기획 역량을 명확히 강조합니다. JD 키워드와 AS-IS 역량 간 매칭을 통해 표현을 구체화하고, JD에서 유추되는 조직 문화 및 필수적인 커뮤니케이션 역량을 소프트 스킬 그룹에 신규 추가합니다.\",\n    \"suggestedContent\": {\n      \"structure\": [\n        {\n          \"group\": \"JD 핵심 역량 (Must-Have)\",\n          \"items\": [\n            \"B2C 서비스 전략 수립 및 신규 서비스 제안 (제품/서비스 비전, 로드맵, 제안서 제작 및 발표 포함)\",\n            \"데이터 기반 UX 분석 및 컨설팅 (UX 리서치, 고객 여정/데이터 분석, 인사이트 도출 및 전략 수립)\",\n            \"UX/UI 화면 설계 및 프로덕트 구축/관리 (UI/UX 기획, 와이어프레임/프로토타이핑, 리딩 경험)\",\n            \"PL/PM 리더십 및 크로스 펑셔널 팀 협업 (이해관계자 소통, 요구사항 정의, 팀 리딩)\"\n          ]\n        },\n        {\n          \"group\": \"보유 기술 및 도구 (Tools)\",\n          \"items\": [\n            \"Google Analytics 및 성과 분석 툴 활용\",\n            \"A/B 테스트 설계 및 운영 툴 경험\",\n            \"와이어프레임/프로토타이핑 툴 (Figma, Sketch, Axure 등)\"\n          ]\n        },\n        {\n          \"group\": \"소프트 스킬 (Soft Skills)\",\n          \"items\": [\n            \"논리적 커뮤니케이션 및 효과적인 제안/발표 역량\",\n            \"전략적 사고 및 주도적 문제 해결 역량\",\n            \"트렌드 민감성 및 지속적인 학습 능력\"\n          ]\n        }\n      ]\n    }\n  }\n}\n```"
-              }
-            ],
-            "role": "model"
-          },
-          "finishReason": "STOP",
-          "index": 0
-        }
-      }
-    ],
-    "Message a model5": [
-      {
-        "json": {
-          "content": {
-            "parts": [
-              {
-                "text": "```json\n{\n  \"section\": \"careerHistory\",\n  \"analysis\": {\n    \"critique\": \"지원자의 기존 경력은 직무 관련성이 매우 높으나, 성과가 단순 나열되어 있고 사용된 용어가 다소 운영(Operation) 중심적입니다. 각 프로젝트의 전략적 의의와 PL/PM으로서의 역할을 명확히 부각하고, JD의 핵심 키워드인 '데이터 기반', 'UX 전략', '고객 여정', '신규 서비스 기획' 관점으로 재해석하여 경력의 가치를 극대화할 필요가 있습니다.\"\n  },\n  \"recommendation\": {\n    \"strategy\": \"모든 경력을 유지하여 'B2C 서비스 전문가'로서의 일관된 성장 서사를 구축합니다. 최근 경력은 PL/PM 리더십, 데이터 기반 전략 수립, 신규 서비스 기획 역량을 JD 용어를 활용해 직접적으로 강조합니다. 과거 SI 및 에이전시 경력은 '커머스 도메인 전문성'과 '고객사 대상 UX 컨설팅 및 프로젝트 리딩' 경험으로 재구성하여, 초기 경력부터 문제 해결 및 리딩 역량을 갖추었음을 어필합니다. 가장 초기 경력은 개발/디자인 전반에 대한 이해도와 '협업 역량'의 근간이 되었음을 보여주는 방향으로 서술합니다.\",\n    \"suggestedContent\": {\n      \"revisions\": [\n        {\n          \"company\": \"타이드스퀘어\",\n          \"role\": \"호텔 P.O\",\n          \"period\": \"2022년 07월 ~ 2025년 07월\",\n          \"asIs\": [\n            \"- 숙박 B2C 상품상세 리뉴얼\",\n            \"- 리뉴얼 후 숙박 상품 상세 페이지의 평균 체류 시간과 예약 전환율이 각각 15% 및 10% 증가\",\n            \"- 상품가격 자동화 프로젝트\",\n            \"- 카카오 예약하기 플랫폼 연동 및 운영\",\n            \"- 룸그룹핑 (룸매핑) 시스템/서비스 구축\",\n            \"- API 연동을 통한 공급사 및 CMS 시스템 통합\"\n          ],\n          \"toBe\": [\n            \"- (JD: 데이터 기반 UX 기획) 고객 여정 데이터(GA, Amplitude 등) 분석 기반의 B2C 숙박 상품 상세 페이지 UX 전략 수립 및 개편 프로젝트 리딩 (평균 체류 시간 15%, 예약 전환율 10% 증대)\",\n            \"- (JD: PM, 프로덕트 관리) Dynamic Pricing 알고리즘 도입을 통한 가격 경쟁력 확보 및 수익성 최적화 프로덕트 로드맵 수립 및 PL 역할 수행\",\n            \"- (JD: 신규 서비스 제안/구축) 카카오 예약하기 채널 연동을 통한 신규 고객 유입 채널 구축 프로젝트 제안 및 PL 역할 수행 (신규 고객 유입 25% 향상, 캠페인 참여율 30% 달성)\",\n            \"- (JD: Pain Point 해결) 고객의 핵심 Pain Point(객실 선택의 어려움) 해결을 위한 '룸 그룹핑' 신규 서비스 기획 및 구축 총괄 (중복 상품 노출 40% 감소, 예약 전환율 10% 향상)\",\n            \"- (JD: 협업, 프로덕트 구축) 다수 공급사(하나투어, 아고다 등) API 연동 및 CMS 통합 프로젝트를 리딩하여 상품 포트폴리오 확장 및 운영 효율화 (숙박 상품 30% 증가)\"\n          ]\n        },\n        {\n          \"company\": \"어센트코리아\",\n          \"role\": \"서비스기획팀/팀장\",\n          \"period\": \"2021년 07월 ~ 2022년 07월\",\n          \"asIs\": [\n            \"- 검색엔진 클러스터 AI 리스닝 마인드 구축\",\n            \"- 검색 여정과 의도를 시각화하고 분석\",\n            \"- SEO 컨설팅 구축 운영\"\n          ],\n          \"toBe\": [\n            \"- (JD: AI 서비스 구축 경험) 검색 인텐트 데이터 분석을 위한 AI 기반 '리스닝 마인드' 솔루션 기획 및 구축 PM 역할 수행\",\n            \"- (JD: 데이터 기반, Customer Journey) 고객 검색 여정(Customer Journey) 시각화 및 분석을 통해 UX 개선 인사이트를 도출하는 데이터 프로덕트 기획 리딩\",\n            \"- (JD: UX 컨설팅, 전략 수립) 검색 데이터 분석 기반의 소비자 인텐트 인사이트를 도출하고, 이를 바탕으로 한 B2C 서비스 SEO 및 UX 컨설팅 모델 구축/운영\"\n          ]\n        },\n        {\n          \"company\": \"타이드스퀘어\",\n          \"role\": \"호텔 P.O\",\n          \"period\": \"2019년 12월 ~ 2021년 07월\",\n          \"asIs\": [\n            \"- 글로벌 플랫폼 확징\",\n            \"- B2C 플랫폼 투어비스 구축\",\n            \"- B2B 제휴 플랫폼 구축\"\n          ],\n          \"toBe\": [\n            \"- (JD: 신규 서비스, PL/PM) 신규 B2C 여행 플랫폼 '투어비스' 런칭 프로젝트 PL로서, 서비스 컨셉 및 UX 전략 수립부터 출시까지 전 과정 리딩\",\n            \"- (JD: 프로덕트 구축) 글로벌 호텔 직계약 시스템 구축을 통해 상품 경쟁력 강화 및 비즈니스 확장 주도\",\n            \"- (JD: 제안, 협업) 휴가샵, 베네피아 등 외부 플랫폼과의 제휴를 위한 서비스 제안 및 연동 시스템 구축 프로젝트 관리\"\n          ]\n        },\n        {\n          \"company\": \"민다\",\n          \"role\": \"서비스기획팀 / 팀장\",\n          \"period\": \"2019년 02월 ~ 2019년 12월\",\n          \"asIs\": [\n            \"- 민다 서비스 기획총괄 운영 / 프로젝트\",\n            \"- 파편화된 구매 여정 연결 (Cross-selling)\",\n            \"- 현지교통/쿠폰북 I.A 개선\"\n          ],\n          \"toBe\": [\n            \"- (JD: PL 리더십) 서비스 기획팀 리드로서, 전체 프로덕트 로드맵 및 UX 전략 수립, 팀원들의 기획 업무 리딩 및 관리\",\n            \"- (JD: Customer Journey 분석) 파편화된 구매 여정(숙박-투어)이라는 고객 Pain Point를 데이터로 발견하고, Cross-selling 시스템을 기획/구축하여 구매 전환율 및 객단가 상승에 기여\",\n            \"- (JD: UX 설계) 사용자 리서치 기반의 정보구조(IA) 재설계 및 UI/UX 개선을 통해 핵심 서비스(현지교통/쿠폰북) 사용성 증대\"\n          ]\n        },\n        {\n          \"company\": \"타이드스퀘어\",\n          \"role\": \"서비스기획팀 / 팀장\",\n          \"period\": \"2014년 10월 ~ 2018년 05월\",\n          \"asIs\": [\n            \"- PRIVIA 여행 운영 총괄 (현대카드 파트너십)\",\n            \"- UI/UX 전략 수립\",\n            \"- Google Analytics 구축\",\n            \"- 호텔사업 YOY 50% 성장\"\n          ],\n          \"toBe\": [\n            \"- (JD: PL/PM 리더십) 현대카드 'PRIVIA 여행' 서비스의 기획/운영 총괄 PL로서, 프로덕트 비전 및 중장기 로드맵 수립\",\n            \"- (JD: 데이터 기반) Google Analytics 도입 및 데이터 분석 환경을 구축하여, 데이터 기반의 의사결정 문화 정착 및 서비스 고도화 주도\",\n            \"- (JD: UX 전략 수립) 비즈니스 목표(호텔사업 YOY 50% 성장) 달성을 위한 UI/UX 개편 전략을 수립하고, 디자인/개발 조직과의 협업을 통해 성공적으로 실행\"\n          ]\n        },\n        {\n          \"company\": \"크루메이트\",\n          \"role\": \"컨설팅사업부 / 과장\",\n          \"period\": \"2011년 02월 ~ 2014년 10월\",\n          \"asIs\": [\n            \"- 대형 SI 프로젝트 리딩\",\n            \"- 현대홈쇼핑 Hmall 구축\",\n            \"- ABC마트 온라인쇼핑몰\",\n            \"- 신라면세점 쇼핑몰 리뉴얼\",\n            \"- Flight Graph 항공권 예약 시스템\"\n          ],\n          \"toBe\": [\n            \"- (JD: 커머스 경험, PL) 현대홈쇼핑, ABC마트, 신라면세점 등 대형 B2C 커머스 플랫폼 구축 프로젝트의 PL로서, 요구사항 분석, UI/UX 설계 및 전체 프로젝트 리딩\",\n            \"- (JD: UX 컨설팅, 제안) 고객사 비즈니스 문제 해결을 위한 UX 전략 제안 및 화면 설계, 개발팀과의 긴밀한 협업을 통해 성공적인 프로덕트 구축\",\n            \"- (JD: 신규 서비스) 복잡한 사용자 Pain Point 해결을 목표로, GDS API를 활용한 다구간 항공권 예약 R&D 및 신규 서비스 프로토타입 설계 주도\"\n          ]\n        },\n        {\n          \"company\": \"라이트온홀딩스\",\n          \"role\": \"UX컨버젼스팀 / 대리\",\n          \"period\": \"2009년 09월 ~ 2011년 02월\",\n          \"asIs\": [\n            \"- 전자상거래 및 UX 컨버전스\",\n            \"- 코웨이 온라인 Sales&Marketing\",\n            \"- 컬쳐랜드 모바일 앱\",\n            \"- 크로스 플랫폼 UX 설계\"\n          ],\n          \"toBe\": [\n            \"- (JD: B2C 웹/앱, UX 기획) 코웨이 온라인몰(웹), 컬쳐랜드(모바일 앱) 등 다양한 B2C 서비스의 사용자 경험(UX) 분석 및 UI 화면 설계\",\n            \"- (JD: 데이터 기반) 전환율 최적화(CRO) 관점에서 사용자 로그 분석 및 A/B 테스트를 제안하여 서비스의 비즈니스 성과 개선에 기여\",\n            \"- (JD: UI/UX) PC, 모바일 등 다양한 디바이스 환경에 최적화된 크로스 플랫폼 UX 설계 원칙 수립 및 가이드라인 제작\"\n          ]\n        },\n        {\n          \"company\": \"클라우드나인\",\n          \"role\": \"웹사업본부기획실 / 사원\",\n          \"period\": \"2008년 06월 ~ 2009년 11월\",\n          \"asIs\": [\n            \"- 해군 인터넷 홈페이지 개선사업\",\n            \"- GS칼텍스 B2C Portal\"\n          ],\n          \"toBe\": [\n            \"- (JD: UX 컨설팅) 웹 접근성 진단 및 컨설팅을 통해 모든 사용자를 고려하는 포용적인 UX 설계 원칙 학습 및 실무 적용\",\n            \"- (JD: B2C 웹, UI/UX) GS칼텍스 B2C 포털의 쇼핑몰 파트 UI/UX 기획 및 화면 설계를 담당하며 커머스 서비스 기획 역량의 기초 형성\"\n          ]\n        },\n        {\n          \"company\": \"가람테크\",\n          \"role\": \"사원\",\n          \"period\": \"2007년 02월 ~ 2008년 06월\",\n          \"asIs\": [\n            \"- 태안교육청 홈페이지 리뉴얼 : 화면기획, 디자인, 퍼블리싱 전체 프로세스 진행\",\n            \"- 풀스택 개발 경험\"\n          ],\n          \"toBe\": [\n            \"- (JD: 협업, 프로덕트 구축) 기획, 디자인, 퍼블리싱 등 웹 서비스 구축의 End-to-End 프로세스를 직접 수행하며 개발/디자인 직군에 대한 높은 이해도 및 원활한 협업 역량의 기틀 마련\"\n          ]\n        }\n      ]\n    }\n  }\n}\n```"
-              }
-            ],
-            "role": "model"
-          },
-          "finishReason": "STOP",
-          "index": 0
-        }
-      }
-    ],
-    "Message a model6": [
-      {
-        "json": {
-          "content": {
-            "parts": [
-              {
-                "text": "```json\n{\n  \"meta\": {\n    \"applicant_name\": \"김진현\",\n    \"target_position\": \"CJ올리브네트웍스 B2C 웹/앱 서비스 사용자 경험 설계 및 기획 PL\",\n    \"date\": \"2024-05-24\"\n  },\n  \"executive_summary\": {\n    \"headline\": \"'경험 나열형 Product Owner'에서 '성과 증명형 UX 기획 리더'로의 전략적 재구성\",\n    \"summary_text\": \"김진현님은 18년간의 B2C 플랫폼, 특히 여행 도메인에서의 깊이 있는 경험과 데이터 기반으로 비즈니스 성과를 창출한 검증된 이력을 보유하고 있습니다. 이는 CJ올리브네트웍스의 PL 직무에 매우 강력한 강점입니다. 다만 현재 이력서는 경험을 단순 나열하는 방식에 머물러 있어, JD가 요구하는 '전략 수립' 및 '리딩' 역량을 명확히 드러내지 못하고 있습니다. 본 리포트는 모든 서술을 '문제 정의 → 실행 → 정량적 성과' 구조로 전환하여, 지원자의 역량을 채용 담당자에게 가장 효과적으로 증명하는 데 초점을 맞춥니다.\",\n    \"key_strategy\": \"각 항목을 JD의 핵심 요구사항(B2C UX 기획 PL, 데이터 기반 전략)에 맞춰 재구성하고, 모든 경험 서술을 '문제 정의 → 실행 → 정량적 성과' 구조로 변경하여 성과를 증명하는 것에 집중합니다.\",\n    \"strong_point\": \"18년간의 B2C 플랫폼(여행) 도메인 전문성과 데이터 분석을 통해 비즈니스 성과(전환율 10%↑, 신규유입 25%↑)를 창출한 검증된 이력\",\n    \"weak_point\": \"경험과 역할을 단순 나열하는 서술 방식으로, JD가 요구하는 PL로서의 전략적 사고와 성과 창출 능력을 명확히 드러내지 못함\",\n    \"synergy_point\": \"자기소개에서 강조한 '데이터 기반 전문가' 이미지를 경력기술서의 정량적 성과와 직접 연결하고, 핵심역량 카테고리를 JD 용어에 맞춰 재구성하면, 지원자의 강점이 채용 담당자에게 일관되고 강력하게 전달될 것입니다.\"\n  },\n  \"sections\": {\n    \"self_introduction\": {\n      \"analysis\": \"현재 자기소개는 성과(전환율, 신규유입)를 제시하며 강점을 드러내고 있으나, 전체적인 내용이 길고 산만하여 핵심 메시지가 희석됩니다. 'Product Owner'라는 타이틀에 집중하기보다, JD가 요구하는 'UX 설계 및 기획 PL' 역할에 맞춰 첫 문장부터 명확한 포지셔닝이 필요합니다.\",\n      \"strategy\": \"JD의 핵심 직무인 'B2C 서비스 사용자 경험 설계 및 기획 PL'에 맞춰 자신을 재정의하는 두괄식 구조로 변경합니다. 18년의 경험을 통해 얻은 핵심 역량(데이터 기반 전략, UX 컨설팅, PL 리더십)을 JD 키워드와 연결하여 압축적으로 제시하고, 가장 강력한 성과를 근거로 제시하여 신뢰도를 높입니다.\",\n      \"tobe_copy\": \"18년간 B2C 플랫폼에서 데이터 기반 UX 전략으로 예약 전환율 10% 향상, 신규 고객 유입 25% 증대를 이끌어낸 사용자 경험(UX) 기획 리더 김진현입니다. \\n\\n웹 에이전시부터 SI, 여행 플랫폼까지 아우르는 경험을 통해 기술과 비즈니스를 연결하는 균형 잡힌 시각을 갖추었습니다. 특히 최근 8년간 Product Leader로서 연 매출 1,100억 규모의 플랫폼을 리딩하며, Google Analytics, A/B 테스트 등 데이터 분석을 통해 고객의 Pain Point를 해결하고 비즈니스 목표를 달성하는 의사결정 역량을 입증했습니다. \\n\\nCJ올리브네트웍스에서 저의 데이터 기반 UX 컨설팅 역량과 프로덕트 리딩 경험을 바탕으로, 고객에게는 최고의 경험을, 비즈니스에는 지속적인 성장을 제공하는 핵심 인재가 되겠습니다.\"\n    },\n    \"core_competencies\": {\n      \"analysis\": \"단순 키워드 나열 방식으로, JD와의 연관성 및 각 역량의 깊이를 파악하기 어렵습니다. 지원자의 풍부한 경험을 효과적으로 보여주지 못하고 있습니다.\",\n      \"strategy\": \"JD의 Must-Have 요건을 기준으로 역량을 재분류하고 그룹화하여, 지원자의 전문성이 채용 공고에 최적화되어 있음을 직관적으로 보여줍니다. 각 그룹의 명칭을 JD의 용어로 구성하여 서류 검토자가 원하는 정보를 쉽게 찾을 수 있도록 재구성합니다.\",\n      \"tobe_structure\": \"• B2C UX 전략 및 기획 (PL/PM)\\n  - 프로덕트 비전 및 로드맵 수립\\n  - PL/PM 리더십 및 팀 관리\\n  - 신규 서비스 제안 및 사업 전략 수립\\n\\n• 데이터 기반 UX 컨설팅 및 분석\\n  - Google Analytics, Tableau 기반 데이터 분석\\n  - A/B 테스트 설계 및 성과 분석\\n  - 고객 여정 분석 및 Pain Point 도출\\n\\n• 신규 서비스 제안 및 UI/UX 설계\\n  - 제안서 제작 및 프레젠테이션\\n  - 와이어프레임/프로토타이핑 (Figma, XD)\\n  - UI/UX 화면 설계 및 디자인 시스템 협업\\n\\n• 프로덕트 구축 및 협업 리딩\\n  - PO/PM, 디자이너, 개발자 협업 관리\\n  - 요구사항 정의 및 JIRA 기반 백로그 관리\\n  - API 연동 설계 및 기술적 이해관계자 소통\"\n    },\n    \"tech_stack\": {\n      \"analysis\": \"기술이 나열되어 있으나, 직무 역할에 따른 구분이 없어 전문 분야를 파악하기 모호합니다. 특히 AI STACK은 구체적인 활용 경험이 드러나지 않아 설득력이 부족합니다.\",\n      \"strategy\": \"JD의 직무(기획, 분석, 협업)에 맞춰 기술 스택을 재분류하여, 각 업무 단계에서 어떤 도구를 효과적으로 활용하는지 명확하게 제시합니다. AI 관련 스택은 '탐색' 또는 '활용' 수준으로 명확히 하여 과장되지 않게 전달합니다.\",\n      \"tobe_structure\": \"• UX/UI & Prototyping: Figma, Adobe XD, Framer, Moqup\\n• Data Analysis & Visualization: Google Analytics, Tableau, A/B Testing Tools, SEO Analytics\\n• Collaboration & Project Management: JIRA, Confluence, MS Office\\n• System Integration & Platform: API Integration (Postman), CMS Systems, OTA Systems\\n• AI Service Exploration: N8N, Gemini API, V0.dev (프로토타이핑 및 리서치 효율화에 활용)\"\n    },\n    \"key_achievements\": [\n      {\n        \"title\": \"데이터 기반 UX 개편을 통한 예약 전환율 10% 향상\",\n        \"asis\": \"예약 전환율 10% 향상 (숙박 상품 상세 페이지 리뉴얼)\",\n        \"tobe\": \"• 문제정의(Situation): 기존 숙박 상품 상세 페이지의 정보 구조가 복잡하고 사용자 흐름이 비효율적이어서 이탈률이 높고 예약 전환율이 저조했습니다.\\n• 실행(Action): Google Analytics 데이터를 분석하여 주요 이탈 지점을 파악하고, 사용자 설문 및 A/B 테스트를 통해 최적의 UI/UX 개선안을 도출했습니다. 디자이너, 개발자와의 긴밀한 협업을 통해 사용자 중심의 정보 구조로 개편하는 프로젝트를 리딩했습니다.\\n• 성과(Result): 프로젝트 완료 후, 숙박 상품 상세 페이지의 예약 전환율이 10% 향상되었고 평균 체류 시간은 15% 증가하는 성과를 달성했습니다.\"\n      },\n      {\n        \"title\": \"외부 플랫폼 연동 전략으로 신규 고객 유입 25% 증대\",\n        \"asis\": \"신규 고객 유입률 25% 증대 (카카오 예약하기 플랫폼 연동)\",\n        \"tobe\": \"• 문제정의(Situation): 자사 플랫폼의 성장 한계를 극복하고 신규 고객층을 확보하기 위한 새로운 채널 확장이 필요했습니다.\\n• 실행(Action): 잠재 고객이 가장 많이 사용하는 '카카오톡'을 신규 채널로 선정하고, '카카오 예약하기' 플랫폼 연동 프로젝트를 제안 및 총괄했습니다. API 연동 규격 정의부터 상품 데이터 정합성 확보, 출시 후 프로모션 전략 수립까지 전 과정을 리딩했습니다.\\n• 성과(Result): 성공적인 플랫폼 연동을 통해 기존에 접근하지 못했던 신규 고객층을 확보하며 전체 유입률을 25% 증대시켰고, 연동 기념 프로모션 캠페인 참여율은 30%를 달성했습니다.\"\n      }\n    ],\n    \"career_history\": [\n      {\n        \"company_name\": \"타이드스퀘어\",\n        \"company_role\": \"호텔 P.O\",\n        \"company_period\": \"2022년 07월 ~ 2025년 07월\",\n        \"tobe_bullets\": \"• 사용자 데이터 분석 및 A/B 테스트 기반의 UI/UX 개편을 주도하여, 숙박 상품 상세 페이지 예약 전환율 10% 및 평균 체류 시간 15% 증대 달성\\n• Dynamic Pricing 및 동적 마크업 정책을 포함한 '가격 자동화 시스템' 구축을 리딩하여 메타서치 가격 경쟁력 확보 및 수익성 개선\\n• '카카오 예약하기' 플랫폼 연동 프로젝트를 총괄하여 신규 고객 유입률 25% 향상 및 프로모션 캠페인 참여율 30% 달성\\n• 공급사별 상이한 데이터를 표준화하는 '룸그룹핑 시스템'을 기획/구축하여, 중복 상품 노출률 40% 감소 및 예약 편의성 증대\\n• 국내외 주요 공급사(하나투어, 야놀자 등) 및 CMS 시스템 API 연동을 총괄하여, 숙박 상품 종류 30% 및 재고 정확도 25% 향상\"\n      },\n      {\n        \"company_name\": \"어센트코리아\",\n        \"company_role\": \"서비스기획팀/팀장\",\n        \"company_period\": \"2021년 07월 ~ 2022년 07월\",\n        \"tobe_bullets\": \"• 검색 데이터 기반의 사용자 의도(Intent) 분석 AI 솔루션 '리스닝 마인드' 서비스 기획 및 구축 리딩\\n• 고객 여정 분석을 통한 콘텐츠 전략을 수립하고, 다수 고객사의 SEO 컨설팅 프로젝트를 성공적으로 수행하여 오가닉 트래픽 증대에 기여\"\n      },\n      {\n        \"company_name\": \"타이드스퀘어\",\n        \"company_role\": \"호텔 P.O\",\n        \"company_period\": \"2019년 12월 ~ 2021년 07월\",\n        \"tobe_bullets\": \"• 일본 현지 법인과 협업하여 호텔 직계약 시스템을 구축, 글로벌 플랫폼 확장 기반 마련\\n• 신규 B2C 브랜드 '투어비스' 론칭 프로젝트에서 숙박 서비스 기획을 총괄\\n• 휴가샵, 베네피아 등 다수 기업을 대상으로 B2B 제휴 플랫폼을 기획 및 구축하여 신규 수익 채널 확보\"\n      },\n      {\n        \"company_name\": \"민다\",\n        \"company_role\": \"서비스기획팀 / 팀장\",\n        \"company_period\": \"2019년 02월 ~ 2019년 12월\",\n        \"tobe_bullets\": \"• 파편화된 구매 여정을 개선하기 위해 '숙박+현지투어' 상품을 연결하는 크로스셀링(Cross-selling) 시스템 기획 및 구축\\n• 서비스 기획 총괄 담당자로서 전체 서비스 기획 및 운영 프로세스 관리\"\n      },\n      {\n        \"company_name\": \"타이드스퀘어\",\n        \"company_role\": \"서비스기획팀 / 팀장\",\n        \"company_period\": \"2014년 10월 ~ 2018년 05월\",\n        \"tobe_bullets\": \"• 현대카드 제휴 'PRIVIA 여행' 서비스 운영을 총괄하며 항공, 호텔, 패키지 시스템 구축 로드맵 수립 및 실행\\n• 데이터 기반 의사결정 문화 정착을 위해 Google Analytics 분석 시스템을 도입 및 구축\\n• 지속적인 서비스 개선 및 마케팅 전략 실행을 통해 호텔 사업부문 연평균성장률(YOY) 50% 달성\"\n      },\n      {\n        \"company_name\": \"크루메이트\",\n        \"company_role\": \"컨설팅사업부 / 과장\",\n        \"company_period\": \"2011년 02월 ~ 2014년 10월\",\n        \"tobe_bullets\": \"• 현대홈쇼핑, ABC마트, 신라면세점 등 대형 커머스 SI 프로젝트에서 UI/UX 설계 및 프로젝트 리딩 역할 수행\\n• GDS API 연동 기반의 실시간 항공권 예약 시스템 R&D 및 구축 참여\"\n      },\n      {\n        \"company_name\": \"라이트온홀딩스\",\n        \"company_role\": \"UX컨버젼스팀 / 대리\",\n        \"company_period\": \"2009년 09월 ~ 2011년 02월\",\n        \"tobe_bullets\": \"• 코웨이, 컬쳐랜드 등 주요 고객사의 웹/앱 서비스 UI/UX 설계 및 화면 기획 담당\"\n      },\n      {\n        \"company_name\": \"클라우드나인\",\n        \"company_role\": \"웹사업본부기획실 / 사원\",\n        \"company_period\": \"2008년 06월 ~ 2009년 11월\",\n        \"tobe_bullets\": \"• 해군 인터넷 홈페이지 웹 접근성 컨설팅 및 제작 가이드라인 작성\\n• GS칼텍스 B2C 포털의 쇼핑몰 및 정비플라자 UI/UX 기획 및 화면 설계\"\n      },\n      {\n        \"company_name\": \"가람테크\",\n        \"company_role\": \"사원\",\n        \"company_period\": \"2007년 02월 ~ 2008년 06월\",\n        \"tobe_bullets\": \"• 교육청 SI 사업에서 화면 기획, 디자인, 퍼블리싱 등 웹 개발 전 과정에 참여하며 기술적 기반을 다짐\"\n      }\n    ]\n  },\n  \"final_checklist\": \"• 최종 제출 전, JD의 핵심 키워드(B2C, UX기획, PL, 데이터 기반, 제안)가 이력서 전반에 일관되고 자연스럽게 녹아있는지 최종 검토하십시오.\\n• 모든 경력 기술 항목이 '내가 무엇을 했다'는 사실 나열에서 '그래서 어떤 비즈니스 성과를 만들었다'는 가치 증명으로 마무리되는지 확인하십시오.\\n• CJ올리브네트웍스의 주요 B2C 서비스(예: CJ ONE, 올리브영 앱)를 직접 사용해보고, 본인의 경험과 역량을 어떻게 기여할 수 있을지 구체적인 아이디어를 1~2가지 준비해두십시오.\"\n}\n```"
-              }
-            ],
-            "role": "model"
-          },
-          "finishReason": "STOP",
-          "index": 0
-        }
-      }
-    ]
-  },
+  "pinData": {},
   "connections": {
     "On form submission": {
       "main": [
         [
           {
-            "node": "Message a model",
+            "node": "Extract from File",
             "type": "main",
             "index": 0
           }
@@ -1261,29 +1143,7 @@
       "main": [
         [
           {
-            "node": "Get a document",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
-    "Get a document": {
-      "main": [
-        [
-          {
-            "node": "Edit Fields1",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
-    "Edit Fields1": {
-      "main": [
-        [
-          {
-            "node": "Message a model1",
+            "node": "Edit Fields5",
             "type": "main",
             "index": 0
           }
@@ -1291,28 +1151,6 @@
       ]
     },
     "Message a model1": {
-      "main": [
-        [
-          {
-            "node": "Get a document1",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
-    "Get a document1": {
-      "main": [
-        [
-          {
-            "node": "Edit Fields",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
-    "Edit Fields": {
       "main": [
         [
           {
@@ -1327,28 +1165,6 @@
       "main": [
         [
           {
-            "node": "Get a document2",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
-    "Get a document2": {
-      "main": [
-        [
-          {
-            "node": "Edit Fields2",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
-    "Edit Fields2": {
-      "main": [
-        [
-          {
             "node": "Message a model3",
             "type": "main",
             "index": 0
@@ -1357,28 +1173,6 @@
       ]
     },
     "Message a model3": {
-      "main": [
-        [
-          {
-            "node": "Get a document3",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
-    "Get a document3": {
-      "main": [
-        [
-          {
-            "node": "Edit Fields3",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
-    "Edit Fields3": {
       "main": [
         [
           {
@@ -1393,28 +1187,6 @@
       "main": [
         [
           {
-            "node": "Get a document4",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
-    "Get a document4": {
-      "main": [
-        [
-          {
-            "node": "Edit Fields4",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
-    "Edit Fields4": {
-      "main": [
-        [
-          {
             "node": "Message a model5",
             "type": "main",
             "index": 0
@@ -1426,7 +1198,7 @@
       "main": [
         [
           {
-            "node": "Message a model6",
+            "node": "Edit Fields",
             "type": "main",
             "index": 0
           }
@@ -1487,13 +1259,68 @@
           }
         ]
       ]
+    },
+    "Extract from File": {
+      "main": [
+        [
+          {
+            "node": "Message a model7",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Message a model7": {
+      "main": [
+        [
+          {
+            "node": "Code in JavaScript1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code in JavaScript1": {
+      "main": [
+        [
+          {
+            "node": "Message a model",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Edit Fields5": {
+      "main": [
+        [
+          {
+            "node": "Message a model1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Edit Fields": {
+      "main": [
+        [
+          {
+            "node": "Message a model6",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
     }
   },
   "active": false,
   "settings": {
     "executionOrder": "v1"
   },
-  "versionId": "9acc5a58-b4e2-4203-be46-743ee284e379",
+  "versionId": "d5247896-f6df-4d86-8e90-5f94a15e334e",
   "meta": {
     "templateCredsSetupCompleted": true,
     "instanceId": "777b07ef47bd7c75e9e34b7e5095f486f52077aca2a4ed266a442d29f4412bed"
