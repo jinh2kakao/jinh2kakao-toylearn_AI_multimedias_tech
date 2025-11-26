@@ -1,0 +1,101 @@
+{
+  "name": "insert_postgresql",
+  "nodes": [
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.manualTrigger",
+      "typeVersion": 1,
+      "position": [
+        0,
+        0
+      ],
+      "id": "859c0edf-75d2-48ed-a123-0a355cdf2ff6",
+      "name": "When clicking ‘Execute workflow’"
+    },
+    {
+      "parameters": {
+        "schema": {
+          "__rl": true,
+          "value": "public",
+          "mode": "list",
+          "cachedResultName": "public"
+        },
+        "table": {
+          "__rl": true,
+          "value": "users_uuid_name",
+          "mode": "list",
+          "cachedResultName": "users_uuid_name"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "name": "jin jja"
+          },
+          "matchingColumns": [],
+          "schema": [
+            {
+              "id": "id_name",
+              "displayName": "id_name",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "name",
+              "displayName": "name",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.6,
+      "position": [
+        208,
+        0
+      ],
+      "id": "02abbd92-c0da-4677-9431-1bcd0ddc8649",
+      "name": "Insert rows in a table",
+      "credentials": {
+        "postgres": {
+          "id": "RycjHeLfLvjF9AGW",
+          "name": "Postgres account"
+        }
+      }
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "When clicking ‘Execute workflow’": {
+      "main": [
+        [
+          {
+            "node": "Insert rows in a table",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "38fa207c-9721-4887-bb45-34a354ad8d92",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "777b07ef47bd7c75e9e34b7e5095f486f52077aca2a4ed266a442d29f4412bed"
+  },
+  "id": "9bui0EBcwtLBL0Pj",
+  "tags": []
+}
