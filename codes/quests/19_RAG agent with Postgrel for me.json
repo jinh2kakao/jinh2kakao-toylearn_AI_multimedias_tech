@@ -1,0 +1,407 @@
+{
+  "name": "RAG agent with Postgrel for me",
+  "nodes": [
+    {
+      "parameters": {
+        "mode": "insert",
+        "tableName": "n8n_vectors_me",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.vectorStorePGVector",
+      "typeVersion": 1.3,
+      "position": [
+        1248,
+        0
+      ],
+      "id": "2e8370dd-92e5-4b44-b765-6c6959b18767",
+      "name": "Postgres PGVector Store",
+      "credentials": {
+        "postgres": {
+          "id": "RycjHeLfLvjF9AGW",
+          "name": "Postgres account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "modelName": "models/embedding-001"
+      },
+      "type": "@n8n/n8n-nodes-langchain.embeddingsGoogleGemini",
+      "typeVersion": 1,
+      "position": [
+        1184,
+        256
+      ],
+      "id": "8a45691e-b579-4dc8-8b90-59e48ab1570d",
+      "name": "Embeddings Google Gemini",
+      "credentials": {
+        "googlePalmApi": {
+          "id": "y5uPwd8LysBc9xrS",
+          "name": "Google Gemini(PaLM) Api account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "dataType": "binary",
+        "textSplittingMode": "custom",
+        "options": {
+          "metadata": {
+            "metadataValues": [
+              {
+                "name": "document_title",
+                "value": "={{ $json.id }}"
+              }
+            ]
+          }
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.documentDefaultDataLoader",
+      "typeVersion": 1.1,
+      "position": [
+        1360,
+        256
+      ],
+      "id": "8668990b-81de-492b-ba9b-1c84651cba03",
+      "name": "Default Data Loader"
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.textSplitterRecursiveCharacterTextSplitter",
+      "typeVersion": 1,
+      "position": [
+        1456,
+        464
+      ],
+      "id": "3480d997-9b3a-413b-bd6d-8100d4ca5e34",
+      "name": "Recursive Character Text Splitter"
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.chatTrigger",
+      "typeVersion": 1.3,
+      "position": [
+        -544,
+        320
+      ],
+      "id": "cc8a770f-1fac-4bff-b562-f3008517be3b",
+      "name": "When chat message received",
+      "webhookId": "485756e9-a996-41a0-b26b-cd3f0f340019"
+    },
+    {
+      "parameters": {
+        "options": {
+          "systemMessage": "Prompt (System Message): You are an elite Resume Consultant and Career Strategist. The context documents provided are multiple versions of resumes and cover letters belonging to a single candidate (the user), tailored for different job applications.\n\nYour Objective: Help the user improve their resume quality, analyze their career consistency, and formulate better application strategies based on their history.\n\nInstructions:\n\nRole & Tone: Act as a professional career coach. Be objective, constructive, and encouraging. Provide specific, actionable feedback.\n\nAnalysis & Consulting:\n\nIdentify Patterns: When asked, analyze common strengths or recurring weaknesses across different resume versions.\n\nComparative Analysis: If the user asks, compare how they presented themselves to 'Company A' vs 'Company B' and evaluate which approach was more effective given the context.\n\nGap Analysis: Point out missing skills or vague descriptions in their project experiences that need clarification.\n\nStrict Data Adherence: Do not invent experience. If a specific skill or project is not found in any of the retrieved documents, clearly state: \"검색된 이력서 데이터 내에서는 해당 경험을 찾을 수 없습니다.\" and ask the user for more details.\n\nLanguage: Always respond in Korean.\n\nResponse Guidelines:\n\nWhen providing feedback, structure it with \"Strengths (강점)\", \"Areas for Improvement (개선할 점)\", \"Actionable Advice (구체적 제안)\".\n\nIf the user asks to rewrite a section, use the retrieved context to draft a better version.\n\nRemember: You are analyzing the user's own data. Treat the retrieved documents as the user's past portfolio to be polished."
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 3,
+      "position": [
+        -336,
+        320
+      ],
+      "id": "be8eb233-398b-4985-9732-f94e43d3150c",
+      "name": "AI Agent"
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatGoogleGemini",
+      "typeVersion": 1,
+      "position": [
+        -464,
+        528
+      ],
+      "id": "58d7354d-6f76-4c39-abf1-ab39e960aba4",
+      "name": "Google Gemini Chat Model",
+      "credentials": {
+        "googlePalmApi": {
+          "id": "y5uPwd8LysBc9xrS",
+          "name": "Google Gemini(PaLM) Api account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "mode": "retrieve-as-tool",
+        "toolDescription": "Call this tool to retrieve the user's historical resumes and cover letters submitted to various companies. Use this to analyze the candidate's career trajectory, compare different versions of their resume, identify skill gaps, or extract specific project details for consulting purposes.",
+        "tableName": "n8n_vectors_me",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.vectorStorePGVector",
+      "typeVersion": 1.3,
+      "position": [
+        -192,
+        576
+      ],
+      "id": "a2726bbd-b960-495d-b4e2-dfcad135ebfb",
+      "name": "Postgres PGVector Store1",
+      "credentials": {
+        "postgres": {
+          "id": "RycjHeLfLvjF9AGW",
+          "name": "Postgres account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "tableName": "n8n_chat_me_histories"
+      },
+      "type": "@n8n/n8n-nodes-langchain.memoryPostgresChat",
+      "typeVersion": 1.3,
+      "position": [
+        -304,
+        688
+      ],
+      "id": "0d34def9-439f-4ae8-9e50-61617b4de5ba",
+      "name": "Postgres Chat Memory",
+      "credentials": {
+        "postgres": {
+          "id": "RycjHeLfLvjF9AGW",
+          "name": "Postgres account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {}
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.2,
+      "position": [
+        -336,
+        0
+      ],
+      "id": "eef48992-930d-4c39-9227-1d9aed1e217b",
+      "name": "Schedule Trigger"
+    },
+    {
+      "parameters": {
+        "resource": "fileFolder",
+        "filter": {
+          "folderId": {
+            "__rl": true,
+            "value": "1SXVQ4lK7780n36tLPPLx039rYZw2D1ER",
+            "mode": "list",
+            "cachedResultName": "RAG_resume",
+            "cachedResultUrl": "https://drive.google.com/drive/folders/1SXVQ4lK7780n36tLPPLx039rYZw2D1ER"
+          }
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleDrive",
+      "typeVersion": 3,
+      "position": [
+        -128,
+        0
+      ],
+      "id": "e2369783-ff4b-4f70-a83a-412d9524dfd6",
+      "name": "Search files and folders1",
+      "credentials": {
+        "googleDriveOAuth2Api": {
+          "id": "rAxALcYeMkM3SOd4",
+          "name": "Google Drive account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "download",
+        "fileId": {
+          "__rl": true,
+          "value": "={{ $json.id }}",
+          "mode": "id"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleDrive",
+      "typeVersion": 3,
+      "position": [
+        832,
+        0
+      ],
+      "id": "cc93b5fe-358d-467c-b12d-a7c7de40cbfe",
+      "name": "Download file",
+      "credentials": {
+        "googleDriveOAuth2Api": {
+          "id": "rAxALcYeMkM3SOd4",
+          "name": "Google Drive account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "n8n-nodes-base.splitInBatches",
+      "typeVersion": 3,
+      "position": [
+        352,
+        0
+      ],
+      "id": "397a9960-f083-4602-8a30-3a295cc8acda",
+      "name": "Loop Over Items"
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Embeddings Google Gemini": {
+      "ai_embedding": [
+        [
+          {
+            "node": "Postgres PGVector Store",
+            "type": "ai_embedding",
+            "index": 0
+          },
+          {
+            "node": "Postgres PGVector Store1",
+            "type": "ai_embedding",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Default Data Loader": {
+      "ai_document": [
+        [
+          {
+            "node": "Postgres PGVector Store",
+            "type": "ai_document",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Recursive Character Text Splitter": {
+      "ai_textSplitter": [
+        [
+          {
+            "node": "Default Data Loader",
+            "type": "ai_textSplitter",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "When chat message received": {
+      "main": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Google Gemini Chat Model": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Postgres PGVector Store1": {
+      "ai_tool": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Postgres Chat Memory": {
+      "ai_memory": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_memory",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Schedule Trigger": {
+      "main": [
+        [
+          {
+            "node": "Search files and folders1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Search files and folders1": {
+      "main": [
+        [
+          {
+            "node": "Loop Over Items",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Download file": {
+      "main": [
+        [
+          {
+            "node": "Postgres PGVector Store",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Loop Over Items": {
+      "main": [
+        [],
+        [
+          {
+            "node": "Download file",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Postgres PGVector Store": {
+      "main": [
+        [
+          {
+            "node": "Loop Over Items",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "b033ed34-48e1-4309-8534-c756757a8dc5",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "777b07ef47bd7c75e9e34b7e5095f486f52077aca2a4ed266a442d29f4412bed"
+  },
+  "id": "rYv3Jnj4MdzyZyv4",
+  "tags": []
+}
