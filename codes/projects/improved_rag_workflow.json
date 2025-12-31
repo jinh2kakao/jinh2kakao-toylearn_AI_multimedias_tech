@@ -1,0 +1,461 @@
+{
+  "name": "RAG_MultiFile_Upload_Final",
+  "nodes": [
+    {
+      "parameters": {
+        "formTitle": "AI 시장 분석 리포트 생성 (Multi-File)",
+        "formDescription": "아이디어와 관련 시장 자료들을 업로드하세요. (여러 파일 동시 선택 가능)",
+        "formFields": {
+          "values": [
+            {
+              "fieldLabel": "idea_input",
+              "fieldType": "textarea",
+              "placeholder": "예: 개인용 프롬프트 관리 및 자산화 서비스",
+              "requiredField": true
+            },
+            {
+              "fieldLabel": "upload_files",
+              "fieldType": "file",
+              "requiredField": true
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.formTrigger",
+      "typeVersion": 2.1,
+      "position": [
+        0,
+        0
+      ],
+      "id": "dd6a1839-eac4-4db1-a2ab-74f3c3047b1a",
+      "name": "On form submission",
+      "webhookId": "b08b2c6b-a7b9-4a34-b868-5a40cd4ddbed"
+    },
+    {
+      "parameters": {
+        "jsCode": "// 다중 파일 처리 어댑터 (Multi-file Adapter)\n// 폼에서 들어온 여러 파일을 개별 아이템으로 분리합니다.\n\nconst results = [];\nconst inputItem = items[0];\nconst idea = inputItem.json.idea_input;\n\n// 바이너리 데이터가 있는지 확인\nif (inputItem.binary) {\n  // 모든 바이너리 키(업로드된 파일들)를 순회\n  Object.keys(inputItem.binary).forEach(key => {\n    results.push({\n      json: {\n        idea_input: idea,\n        filename: inputItem.binary[key].fileName,\n        file_source: 'upload_files' \n      },\n      binary: {\n        // 중요: n8n의 표준 데이터 키인 'data'로 매핑해야 Loader가 인식함\n        data: inputItem.binary[key]\n      }\n    });\n  });\n}\n\nreturn results;"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        220,
+        0
+      ],
+      "id": "8733c0db-95c5-4db6-8d31-e597b9c78249",
+      "name": "다중 파일 분리 처리"
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.documentDefaultDataLoader",
+      "typeVersion": 1,
+      "position": [
+        440,
+        0
+      ],
+      "id": "40b0cc99-1862-464c-ab87-06a6694be115",
+      "name": "Default Data Loader"
+    },
+    {
+      "parameters": {
+        "chunkOverlap": 200,
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.textSplitterRecursiveCharacterTextSplitter",
+      "typeVersion": 1,
+      "position": [
+        560,
+        220
+      ],
+      "id": "36a99727-0282-4091-9a65-9caafeec093b",
+      "name": "Recursive Character Text Splitter"
+    },
+    {
+      "parameters": {
+        "mode": "insert",
+        "tableName": "n8n_vectors_planning",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.vectorStorePGVector",
+      "typeVersion": 1,
+      "position": [
+        660,
+        0
+      ],
+      "id": "db04c55e-21f8-481d-a3e0-c2d249a9c64c",
+      "name": "Postgres Vector Store",
+      "credentials": {
+        "postgres": {
+          "id": "RycjHeLfLvjF9AGW",
+          "name": "Postgres account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "modelName": "models/embedding-001"
+      },
+      "type": "@n8n/n8n-nodes-langchain.embeddingsGoogleGemini",
+      "typeVersion": 1,
+      "position": [
+        660,
+        220
+      ],
+      "id": "c2af73c7-e1eb-49a6-89c2-1093c8dc77cb",
+      "name": "Embeddings Google Gemini",
+      "credentials": {
+        "googlePalmApi": {
+          "id": "y5uPwd8LysBc9xrS",
+          "name": "Google Gemini(PaLM) Api account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "aggregate": "aggregateAllItemData",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.aggregate",
+      "typeVersion": 1,
+      "position": [
+        880,
+        0
+      ],
+      "id": "f2b316d7-92df-465e-9109-ec99943daffb",
+      "name": "모든 파일 처리 완료 대기"
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "=사용자 아이디어: {{ $('On form submission').item.json.idea_input }}\n\n위 아이디어에 대한 시장 분석을 수행해주세요.\n\n**필수 검색 항목:**\n1. 시장 규모 (market size)\n2. 시장 성장률 (growth rate, CAGR)\n3. 주요 경쟁사 (competitors)\n4. 기술 트렌드 (technology trends)\n5. 고객 니즈 (customer needs)\n\n각 항목에 대해 market_research_db 도구를 사용하여 검색하고, 검색 결과를 종합하여 JSON 형식으로 답변하세요.",
+        "hasOutputParser": true,
+        "options": {
+          "systemMessage": "### Role\n당신은 10년차 SaaS 시장 분석 전문가입니다.\n\n### CRITICAL RULES\n1. ⛔ **사전 지식 사용 금지** - 오직 market_research_db 도구로 검색한 내용만 사용\n2. 🔍 **필수 검색** - 각 항목(시장 규모, 성장률, 경쟁사, 트렌드, 고객)마다 최소 1회 검색\n3. 📋 **검색 결과 없음 처리** - 검색했으나 정보가 없으면 \"문서에서 확인되지 않음\"\n4. 📊 **구체적 데이터 우선** - 숫자, 퍼센트, 금액 등 구체적 데이터 우선\n5. 📚 **출처 기록** - 사용한 문서명을 data_sources에 모두 기록\n\n### Output Format\n- Do NOT output markdown code blocks (```json). Return raw JSON only.\n- 반드시 JSON 형식으로 출력"
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 1.6,
+      "position": [
+        1100,
+        0
+      ],
+      "id": "1ddccd3e-db3d-4f51-b0f9-d65b6436495d",
+      "name": "AI Agent1"
+    },
+    {
+      "parameters": {
+        "options": {
+          "temperature": 0.2
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatGoogleGemini",
+      "typeVersion": 1,
+      "position": [
+        1060,
+        280
+      ],
+      "id": "1c6f1514-b64d-49ee-b2a9-39ca7a5b751e",
+      "name": "Google Gemini Chat Model",
+      "credentials": {
+        "googlePalmApi": {
+          "id": "y5uPwd8LysBc9xrS",
+          "name": "Google Gemini(PaLM) Api account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "mode": "retrieve-as-tool",
+        "toolName": "market_research_db",
+        "toolDescription": "Use this tool to search for market trends, competitor analysis, and facts from the uploaded documents.",
+        "tableName": "n8n_vectors_planning",
+        "options": {
+          "topK": 6
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.vectorStorePGVector",
+      "typeVersion": 1,
+      "position": [
+        1220,
+        340
+      ],
+      "id": "f4136a55-42c5-4f4d-b786-72607cfe63e5",
+      "name": "market_research_db",
+      "credentials": {
+        "postgres": {
+          "id": "RycjHeLfLvjF9AGW",
+          "name": "Postgres account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "modelName": "models/embedding-001"
+      },
+      "type": "@n8n/n8n-nodes-langchain.embeddingsGoogleGemini",
+      "typeVersion": 1,
+      "position": [
+        1240,
+        540
+      ],
+      "id": "889c82b4-2ab0-47f9-a521-feb5e60e77c1",
+      "name": "Embeddings Google Gemini1",
+      "credentials": {
+        "googlePalmApi": {
+          "id": "y5uPwd8LysBc9xrS",
+          "name": "Google Gemini(PaLM) Api account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "folderId": "16RN0q7cNVfqM2aRSPB4NNObutG2RIXj6",
+        "title": "={{ $('On form submission').item.json.idea_input }} - 시장분석_{{ $now.format('yyyy-MM-dd_HHmm') }}"
+      },
+      "type": "n8n-nodes-base.googleDocs",
+      "typeVersion": 2,
+      "position": [
+        1460,
+        0
+      ],
+      "id": "23772e42-6114-4474-b7db-4c673730bc32",
+      "name": "Create a document",
+      "credentials": {
+        "googleDocsOAuth2Api": {
+          "id": "4bWErfGpoIsWWRJL",
+          "name": "Google Docs account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "update",
+        "documentURL": "={{ $json.id }}",
+        "actionsUi": {
+          "actionFields": [
+            {
+              "action": "insert",
+              "text": "=# 시장 분석 보고서\n## 아이디어: {{ $('On form submission').item.json.idea_input }}\n\n생성일시: {{ $now.format('yyyy년 MM월 dd일 HH:mm') }}\n\n---\n\n## 1. 시장 개요\n\n### 시장 규모\n{{ $('AI Agent1').item.json.market_overview.market_size }}\n\n### 성장률\n{{ $('AI Agent1').item.json.market_overview.growth_rate }}\n\n### 핵심 성장 동인\n{{ $('AI Agent1').item.json.market_overview.key_drivers.map((d, i) => (i+1) + '. ' + d).join('\\n') }}\n\n---\n\n## 2. 경쟁사 현황\n\n{{ $('AI Agent1').item.json.competitor_landscape.map((c, i) => '### ' + (i+1) + '. ' + c.name + '\\n' + c.description + (c.market_share ? '\\n- 시장 점유율: ' + c.market_share : '')).join('\\n\\n') }}\n\n---\n\n## 3. 기술 트렌드\n\n{{ $('AI Agent1').item.json.technology_trends.map((t, i) => (i+1) + '. ' + t).join('\\n') }}\n\n---\n\n## 4. 고객 니즈\n\n{{ $('AI Agent1').item.json.customer_needs.map((n, i) => (i+1) + '. ' + n).join('\\n') }}\n\n---\n\n## 참고 자료\n\n{{ $('AI Agent1').item.json.data_sources.map((s, i) => (i+1) + '. ' + s).join('\\n') }}\n\n---\n\n*본 보고서는 업로드된 시장 자료를 기반으로 AI가 자동 생성한 문서입니다.*"
+            }
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.googleDocs",
+      "typeVersion": 2,
+      "position": [
+        1680,
+        0
+      ],
+      "id": "dda2a041-b116-4428-a00e-8bd7da66a322",
+      "name": "Update a document",
+      "credentials": {
+        "googleDocsOAuth2Api": {
+          "id": "4bWErfGpoIsWWRJL",
+          "name": "Google Docs account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsonSchema": "={\n  \"type\": \"object\",\n  \"properties\": {\n    \"market_overview\": {\n      \"type\": \"object\",\n      \"properties\": {\n        \"market_size\": {\"type\": \"string\"},\n        \"growth_rate\": {\"type\": \"string\"},\n        \"key_drivers\": {\n          \"type\": \"array\",\n          \"items\": {\"type\": \"string\"},\n          \"minItems\": 3\n        }\n      }\n    },\n    \"competitor_landscape\": {\n      \"type\": \"array\",\n      \"items\": {\n        \"type\": \"object\",\n        \"properties\": {\n          \"name\": {\"type\": \"string\"},\n          \"description\": {\"type\": \"string\"},\n          \"market_share\": {\"type\": \"string\"}\n        }\n      },\n      \"minItems\": 3\n    },\n    \"technology_trends\": {\n      \"type\": \"array\",\n      \"items\": {\"type\": \"string\"},\n      \"minItems\": 3\n    },\n    \"customer_needs\": {\n      \"type\": \"array\",\n      \"items\": {\"type\": \"string\"},\n      \"minItems\": 3\n    },\n    \"data_sources\": {\n      \"type\": \"array\",\n      \"items\": {\"type\": \"string\"}\n    }\n  },\n  \"required\": [\"market_overview\", \"competitor_landscape\", \"technology_trends\", \"customer_needs\", \"data_sources\"]\n}",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.outputParserStructured",
+      "typeVersion": 1.1,
+      "position": [
+        1380,
+        420
+      ],
+      "id": "602fee8f-c9ca-4cb2-8c40-6873a9e62545",
+      "name": "Structured Output Parser"
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.outputParserAutofixing",
+      "typeVersion": 1,
+      "position": [
+        1340,
+        220
+      ],
+      "id": "060d5b78-b397-4b72-99d9-959c5d177741",
+      "name": "Auto-fixing Output Parser"
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "On form submission": {
+      "main": [
+        [
+          {
+            "node": "다중 파일 분리 처리",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "다중 파일 분리 처리": {
+      "main": [
+        [
+          {
+            "node": "Default Data Loader",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Default Data Loader": {
+      "ai_document": [
+        [
+          {
+            "node": "Postgres Vector Store",
+            "type": "ai_document",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Recursive Character Text Splitter": {
+      "ai_textSplitter": [
+        [
+          {
+            "node": "Default Data Loader",
+            "type": "ai_textSplitter",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Postgres Vector Store": {
+      "main": [
+        [
+          {
+            "node": "모든 파일 처리 완료 대기",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Embeddings Google Gemini": {
+      "ai_embedding": [
+        [
+          {
+            "node": "Postgres Vector Store",
+            "type": "ai_embedding",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "모든 파일 처리 완료 대기": {
+      "main": [
+        [
+          {
+            "node": "AI Agent1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Google Gemini Chat Model": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "AI Agent1",
+            "type": "ai_languageModel",
+            "index": 0
+          },
+          {
+            "node": "Auto-fixing Output Parser",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "market_research_db": {
+      "ai_tool": [
+        [
+          {
+            "node": "AI Agent1",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Embeddings Google Gemini1": {
+      "ai_embedding": [
+        [
+          {
+            "node": "market_research_db",
+            "type": "ai_embedding",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Create a document": {
+      "main": [
+        [
+          {
+            "node": "Update a document",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "AI Agent1": {
+      "main": [
+        [
+          {
+            "node": "Create a document",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Structured Output Parser": {
+      "ai_outputParser": [
+        [
+          {
+            "node": "Auto-fixing Output Parser",
+            "type": "ai_outputParser",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Auto-fixing Output Parser": {
+      "ai_outputParser": [
+        [
+          {
+            "node": "AI Agent1",
+            "type": "ai_outputParser",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "dfbc4fc5-a482-4b10-953a-f2c808ad7772",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "777b07ef47bd7c75e9e34b7e5095f486f52077aca2a4ed266a442d29f4412bed"
+  },
+  "id": "jXLvP5g6H0s2h9Ub",
+  "tags": []
+}
